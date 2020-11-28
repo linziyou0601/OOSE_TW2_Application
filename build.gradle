@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+}
+
+group 'org.example'
+version '1.0'
+
+sourceCompatibility = '15'
+mainClassName = "main.MainApplication"
+compileJava.options.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation group: 'io.reactivex.rxjava2', name: 'rxjavafx', version: '2.2.2'
+    implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.2'
+}
+
+javafx {
+    version = "15"
+    modules = [ 'javafx.controls' ,'javafx.fxml', 'javafx.web']
+}
