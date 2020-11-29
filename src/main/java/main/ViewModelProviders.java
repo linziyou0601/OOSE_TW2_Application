@@ -5,7 +5,8 @@ import java.util.HashMap;
 
 public class ViewModelProviders {
     private static final ViewModelProviders mProvider = new ViewModelProviders();
-    private HashMap<String, Object> mViewModelStore = new HashMap<>();
+    private HashMap<String, ViewModel> mViewModelStore = new HashMap<>();
+    private SessionService sessionService = new SessionService();
 
     private ViewModelProviders(){}
 
@@ -20,8 +21,8 @@ public class ViewModelProviders {
             viewModel = (T) mViewModelStore.get(viewModelName);
         } else {
             try {
-                viewModel = modelClass.getConstructor().newInstance();
-                mViewModelStore.put(viewModelName, viewModel);
+                viewModel = modelClass.getConstructor(SessionService.class).newInstance(sessionService);
+                mViewModelStore.put(viewModelName, (ViewModel) viewModel);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -1,25 +1,42 @@
 package ui.Login;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import main.SessionService;
+import main.ViewManager;
+import main.ViewModel;
+import main.ViewModelProviders;
+import model.User;
+import model.UserStorage;
+import ui.Main.MainView;
 
 import java.util.HashMap;
 
-public class LoginViewModel {
+public class LoginViewModel implements ViewModel {
 
+    private SessionService sessionService;
     private StringProperty account = new SimpleStringProperty();
     private StringProperty password = new SimpleStringProperty();
-    private HashMap<String, String> userData = new HashMap<>();
+    private ObjectProperty<Alert> errorAlert = new SimpleObjectProperty<>();
+    private StringProperty navigateTo = new SimpleStringProperty();
 
-    public LoginViewModel() {
-        userData.put("A001", "pwd123");
-        userData.put("A002", "pwd123");
-        userData.put("A003", "pwd123");
+    private UserStorage userStorage = new UserStorage();
+
+    public LoginViewModel(SessionService sessionService) {
+        this.sessionService = sessionService;
+        userStorage.add(new User("A001", "pwd123"));
+        userStorage.add(new User("A002", "pwd123"));
+        userStorage.add(new User("A003", "pwd123"));
     }
 
-    // accountInput & passwordInput
+    // =============== Getter及Setter ===============
     public StringProperty accountProperty(){
         return account;
     }
@@ -28,26 +45,29 @@ public class LoginViewModel {
         return password;
     }
     public String getPassword() { return password.get(); }
+    public ObjectProperty errorAlertProperty() { return errorAlert; }
+    public StringProperty navigateToProperty(){
+        return navigateTo;
+    }
+
+    // =============== 邏輯處理 ===============
+    // 邏輯處理：清除所有輸入資料
     public void clearInput() {
         account.set("");
         password.set("");
     }
 
-    // 邏輯處理：驗證使用者登入資料
-    public Observable<String> login(){
-        Observable observable = Observable.create((ObservableOnSubscribe<String>) subscriber -> {
-            String userPwd = userData.get(getAccount());
-            if(userPwd == null) {
-                subscriber.onError(new Exception("帳號錯誤"));
-            } else{
-                if(!userPwd.equals(getPassword())){
-                    subscriber.onError(new Exception("密碼錯誤"));
-                } else {
-                    subscriber.onNext(getAccount());
-                    subscriber.onComplete();
-                }
-            }
-        });
-        return observable;
+    // 邏輯處理：驗證登入資料
+    public void login(){
+        User user = userStorage.find(account.get());
+        if (user == null)
+            errorAlert.set(new Alert(Alert.AlertType.ERROR, "帳號錯誤", ButtonType.OK));
+        else if (!user.validate(password.get()))
+            errorAlert.set(new Alert(Alert.AlertType.ERROR, "密碼錯誤", ButtonType.OK));
+        else {
+            sessionService.setUser(user);
+            clearInput();
+            ViewManager.navigateTo(MainView.class);
+        }
     }
 }
