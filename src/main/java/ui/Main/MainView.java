@@ -1,37 +1,66 @@
 package ui.Main;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXMasonryPane;
+import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 import main.MainApplication;
-import main.ViewManager;
 import main.ViewModelProviders;
-import ui.Login.LoginView;
+import model.Classroom;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class MainView {
 
     @FXML
-    private Label accountLabel;
+    private JFXButton test_addClassroomBtn; //測試鈕：新增教室物件
 
     @FXML
-    private JFXButton logoutBtn;
+    private JFXTextField queryInput;    //搜尋欄位
+    @FXML
+    private JFXButton searchBtn;    //搜尋按鈕
+    @FXML
+    private DatePicker datepicker;  //日期選擇
+
+    @FXML
+    private Label accountLabel;     //顯示目前帳號
+    @FXML
+    private JFXButton toHomeBtn;    //按鈕前往：總覽
+    @FXML
+    private JFXButton toBookingBtn; //按鈕前往：預約
+    @FXML
+    private JFXButton toSubscribeBtn; //按鈕前往：訂閱
+    @FXML
+    private JFXButton logoutBtn;    //登出按鈕
+
+    @FXML
+    private ScrollPane mainScrollPane;
+    @FXML
+    private JFXMasonryPane classroomListPane;   //教室清單
 
     @FXML
     public void exitApplication(ActionEvent event) {
         Platform.exit();
     }
-
     @FXML
     public void maximumApplication(ActionEvent event) {
         Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
         stage.setMaximized(!stage.maximizedProperty().get());
     }
-
     @FXML
     public void minimumApplication(ActionEvent event) {
         Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
@@ -43,10 +72,42 @@ public class MainView {
     public void initialize() {
         mainViewModel = ViewModelProviders.getInstance().get(MainViewModel.class);
 
-        // 換頁鈕
-        logoutBtn.setOnAction(e -> ViewManager.navigateTo(LoginView.class));
+        // 測試鈕
+        test_addClassroomBtn.setOnAction(e ->  mainViewModel.addClassroom() );
 
-        // 將首頁資料綁定到mainViewModel的user資料
+        // 換頁鈕
+        toHomeBtn.setOnAction(e -> {});
+        toBookingBtn.setOnAction(e -> {});
+        toSubscribeBtn.setOnAction(e -> {});
+
+        // 登出鈕
+        logoutBtn.setOnAction(e -> mainViewModel.logout());
+
+        // 搜尋鈕
+        searchBtn.setOnAction(e -> {
+            System.out.println(mainViewModel.queryDateProperty().get());
+        });
+
+        // 雙向View資料和ViewModel資料
+        queryInput.textProperty().bindBidirectional(mainViewModel.queryStringProperty());
+        datepicker.valueProperty().bindBidirectional(mainViewModel.queryDateProperty());
         accountLabel.textProperty().bindBidirectional(mainViewModel.accountProperty());
+
+        // 教室清單
+        mainViewModel.classroomListProperty().addListener((observable, oldValue, classroomList) -> {
+            classroomListPane.getChildren().clear();
+            for(Classroom classroom: classroomList){
+                try {
+                    FXMLLoader loader = new FXMLLoader();
+                    Parent rootNode = loader.load(this.getClass().getResource("/drawable/classroomCard.fxml").openStream());
+                    Label classroomIdLabel = (Label) rootNode.lookup("#classroomIdLabel");
+                    classroomIdLabel.setText(classroom.getClassroomId());
+                    classroomListPane.getChildren().add(rootNode);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 }

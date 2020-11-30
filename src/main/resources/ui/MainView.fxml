@@ -1,68 +1,205 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXMasonryPane?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="768.0" minWidth="1280.0" prefHeight="768.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.Main.MainView">
-    <AnchorPane prefWidth="200.0" style="-fx-background-color: #1b6cd7;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <children>
-            <VBox prefHeight="655.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                <children>
-                    <Label fx:id="accountLabel" text="Account" textFill="WHITE">
+<AnchorPane minHeight="768.0" minWidth="1280.0" prefHeight="768.0" prefWidth="1280.0" style="-fx-background-color: #F4F4F4;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.Main.MainView">
+   <BorderPane prefHeight="768.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <center>
+         <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <center>
+               <AnchorPane BorderPane.alignment="CENTER">
+                  <children>
+                     <ScrollPane fx:id="mainScrollPane" fitToWidth="true" style="-fx-border-color: #F4F4F4;" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <content>
+                           <JFXMasonryPane fx:id="classroomListPane" HSpacing="10.0" VSpacing="10.0" cellHeight="200.0" cellWidth="300.0">
+                              <padding>
+                                 <Insets left="30.0" right="30.0" />
+                              </padding>
+                           </JFXMasonryPane>
+                        </content>
+                     </ScrollPane>
+                  </children>
+               </AnchorPane>
+            </center>
+            <top>
+               <Pane prefHeight="85.0" prefWidth="1030.0" BorderPane.alignment="CENTER">
+                  <children>
+                          <Label layoutX="30.0" layoutY="17.0" text="總覽">
+                              <font>
+                                  <Font name="Microsoft JhengHei Bold" size="36.0" />
+                              </font>
+                          </Label>
+                     <JFXButton fx:id="test_addClassroomBtn" contentDisplay="TEXT_ONLY" graphicTextGap="0.0" layoutX="137.0" layoutY="28.0" style="-fx-border-color: #1b6cd7; -fx-border-width: 2; -fx-border-radius: 1em; -fx-background-radius: 1em;" text="測試鈕：新增教室物件" textFill="#1b6cd7">
                         <font>
-                            <Font name="Microsoft JhengHei Bold" size="20.0" />
+                           <Font name="Microsoft JhengHei Bold" size="12.0" />
                         </font>
-                    </Label>
-               <JFXButton alignment="BASELINE_LEFT" focusTraversable="false" prefHeight="30.0" prefWidth="160.0" text="個人檔案" textFill="WHITE">
-                  <VBox.margin>
-                     <Insets top="30.0" />
-                  </VBox.margin>
-                  <font>
-                     <Font name="Microsoft JhengHei Bold" size="15.0" />
-                  </font>
-               </JFXButton>
-                    <Label textFill="WHITE">
+                     </JFXButton>
+                  </children>
+               </Pane>
+            </top>
+         </BorderPane>
+      </center>
+      <left>
+         <AnchorPane BorderPane.alignment="CENTER">
+            <children>
+               <AnchorPane style="-fx-background-color: #1b6cd7; -fx-background-radius: 0 50 0 0; -fx-border-radius: 0 50 0 0;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <children>
+                        <VBox alignment="TOP_CENTER" prefWidth="250.0" spacing="20.0" AnchorPane.bottomAnchor="150.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <Label fx:id="accountLabel" text="Account" textFill="WHITE">
+                                    <font>
+                                        <Font name="Microsoft JhengHei Bold" size="20.0" />
+                                    </font>
+                                </Label>
+                           <Separator prefWidth="200.0" />
+                           <JFXButton fx:id="toHomeBtn" alignment="BASELINE_LEFT" focusTraversable="false" graphicTextGap="15.0" prefHeight="40.0" prefWidth="200.0" text="總覽" textFill="WHITE">
+                              <VBox.margin>
+                                 <Insets />
+                              </VBox.margin>
+                              <font>
+                                 <Font name="Microsoft JhengHei Bold" size="15.0" />
+                              </font>
+                              <graphic>
+                                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                       <Image url="@../images/icons8_home_52px_1.png" />
+                                    </image>
+                                 </ImageView>
+                              </graphic>
+                           </JFXButton>
+                           <JFXButton fx:id="toBookingBtn" alignment="BASELINE_LEFT" focusTraversable="false" graphicTextGap="15.0" prefHeight="40.0" prefWidth="200.0" text="我的預約" textFill="WHITE">
+                              <font>
+                                 <Font name="Microsoft JhengHei Bold" size="15.0" />
+                              </font>
+                              <graphic>
+                                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                       <Image url="@../images/icons8_pin_52px_1.png" />
+                                    </image>
+                                 </ImageView>
+                              </graphic>
+                           </JFXButton>
+                           <JFXButton fx:id="toSubscribeBtn" alignment="BASELINE_LEFT" focusTraversable="false" graphicTextGap="15.0" prefHeight="40.0" prefWidth="200.0" text="訂閱列表" textFill="WHITE">
+                              <font>
+                                 <Font name="Microsoft JhengHei Bold" size="15.0" />
+                              </font>
+                              <graphic>
+                                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                       <Image url="@../images/icons8_rss_52px_2.png" />
+                                    </image>
+                                 </ImageView>
+                              </graphic>
+                           </JFXButton>
+                            </children>
+                            <padding>
+                                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                            </padding>
+                        </VBox>
+                            <JFXButton fx:id="logoutBtn" focusTraversable="false" layoutX="70.0" layoutY="600.0" prefHeight="40.0" prefWidth="111.0" style="-fx-border-radius: 5em; -fx-border-color: #FFFFFF; -fx-background-radius: 5em;" text="登出" textFill="WHITE" AnchorPane.bottomAnchor="50.0">
+                                <font>
+                                    <Font name="Microsoft JhengHei Bold" size="15.0" />
+                                </font>
+                            </JFXButton>
+                  </children>
+               </AnchorPane>
+            </children>
+         </AnchorPane>
+      </left>
+      <top>
+         <AnchorPane prefHeight="70.0" prefWidth="200.0" style="-fx-background-color: #FFF;" BorderPane.alignment="CENTER">
+            <children>
+               <AnchorPane prefHeight="70.0" prefWidth="250.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1030.0">
+                  <children>
+                     <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="29.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="30.0">
+                        <image>
+                           <Image url="@../images/icons8_school_52px_2.png" />
+                        </image>
+                     </ImageView>
+                     <Label layoutX="77.0" layoutY="18.0" text="JENNY教室" textFill="#1b6cd7" AnchorPane.leftAnchor="80.0">
                         <font>
-                            <Font name="Microsoft JhengHei" size="12.0" />
+                           <Font name="Microsoft JhengHei Bold" size="25.0" />
                         </font>
-                    </Label>
-                </children>
-                <padding>
-                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                </padding>
-            </VBox>
-                <JFXButton fx:id="logoutBtn" focusTraversable="false" layoutX="45.0" layoutY="693.0" prefHeight="40.0" prefWidth="111.0" style="-fx-border-radius: 5em; -fx-border-color: #FFFFFF; -fx-background-radius: 5em;" text="登出" textFill="WHITE">
-                    <font>
-                        <Font name="Microsoft JhengHei Bold" size="15.0" />
-                    </font>
-                </JFXButton>
-        </children>
-    </AnchorPane>
-    <AnchorPane layoutX="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <children>
-            <VBox layoutX="23.0" layoutY="103.0" prefWidth="300.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-                <children>
-                    <Label text="總覽">
+                     </Label>
+                  </children>
+               </AnchorPane>
+               <AnchorPane prefHeight="70.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.0">
+                  <children>
+                     <JFXTextField fx:id="queryInput" focusColor="TRANSPARENT" layoutX="30.0" layoutY="15.0" prefHeight="40.0" prefWidth="429.0" promptText="尋找教室" style="-fx-background-color: #EFEFEF; -fx-background-radius: 5em; -fx-border-radius: 5em;" unFocusColor="TRANSPARENT" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="15.0">
+                        <padding>
+                           <Insets left="20.0" right="60.0" />
+                        </padding>
                         <font>
-                            <Font name="Microsoft JhengHei Bold" size="40.0" />
+                           <Font name="Microsoft JhengHei Bold" size="14.0" />
                         </font>
-                        <VBox.margin>
-                            <Insets left="30.0" top="30.0" />
-                        </VBox.margin>
-                    </Label>
-                </children>
-            </VBox>
-        </children>
-    </AnchorPane>
-    <AnchorPane prefHeight="40.0" prefWidth="400.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <children>
-            <JFXButton focusTraversable="false" onAction="#exitApplication" ripplerFill="RED" text="╳" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
-            <JFXButton focusTraversable="false" onAction="#maximumApplication" text="□" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="5.0" />
-            <JFXButton focusTraversable="false" onAction="#minimumApplication" prefWidth="24.0" text="_" AnchorPane.rightAnchor="65.0" AnchorPane.topAnchor="5.0" />
-        </children>
-    </AnchorPane>
+                     </JFXTextField>
+                     <JFXButton fx:id="searchBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="419.0" layoutY="15.0" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: #FFF; -fx-background-radius: 50%; -fx-border-radius: 50%; -fx-border-color: #EDEDED; -fx-border-width: 2;" AnchorPane.bottomAnchor="15.0" AnchorPane.topAnchor="15.0">
+                        <graphic>
+                           <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/icons8_search_52px_3.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                        <font>
+                           <Font size="1.0" />
+                        </font>
+                     </JFXButton>
+                     <JFXButton alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="973.0" layoutY="35.0" onAction="#exitApplication" prefHeight="20.0" prefWidth="20.0" ripplerFill="#ff000000" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                        <font>
+                           <Font size="1.0" />
+                        </font>
+                        <graphic>
+                           <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/icons8_multiply_52px_4.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                     </JFXButton>
+                     <JFXButton alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="983.0" layoutY="45.0" onAction="#maximumApplication" prefHeight="20.0" prefWidth="20.0" ripplerFill="#ffa10000" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="10.0">
+                        <font>
+                           <Font size="1.0" />
+                        </font>
+                        <graphic>
+                           <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/icons8_enlarge_52px_2.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                     </JFXButton>
+                     <JFXButton alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="993.0" layoutY="55.0" onAction="#minimumApplication" prefHeight="20.0" prefWidth="20.0" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="10.0">
+                        <font>
+                           <Font size="1.0" />
+                        </font>
+                        <graphic>
+                           <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/icons8_subtract_52px_2.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                     </JFXButton>
+                     <DatePicker fx:id="datepicker" layoutX="503.0" layoutY="20.0" prefHeight="30.0" />
+                  </children>
+               </AnchorPane>
+            </children>
+         </AnchorPane>
+      </top>
+   </BorderPane>
 </AnchorPane>

@@ -1,8 +1,14 @@
 package main;
 
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -43,9 +49,18 @@ public class ViewManager {
                 scene = new Scene(root);
                 stage.setTitle(viewName);
                 stage.setScene(scene);
+                centerStage(root);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void centerStage(Parent root) {
+        double width = ((Region)root).getPrefWidth();
+        double height = ((Region)root).getPrefHeight();
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX((screenBounds.getWidth() - width) / 2);
+        stage.setY((screenBounds.getHeight() - height) / 2);
     }
 }
