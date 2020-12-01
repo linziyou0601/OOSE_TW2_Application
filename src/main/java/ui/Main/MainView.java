@@ -4,8 +4,6 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXMasonryPane;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,14 +13,10 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
-import main.MainApplication;
 import main.ViewModelProviders;
 import model.Classroom;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Random;
 
 public class MainView {
 

@@ -3,22 +3,17 @@ package ui.Main;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import main.MainApplication;
 import main.SessionService;
 import main.ViewManager;
-import main.ViewModel;
+import main.IViewModel;
 import model.Classroom;
-import model.User;
 import ui.Login.LoginView;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.spi.CalendarDataProvider;
 
-public class MainViewModel implements ViewModel {
+public class MainViewModel implements IViewModel {
 
     private SessionService sessionService;
     private StringProperty queryString = new SimpleStringProperty();

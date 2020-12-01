@@ -1,31 +1,26 @@
 package ui.Login;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
+import com.jfoenix.controls.JFXAlert;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import main.SessionService;
 import main.ViewManager;
-import main.ViewModel;
-import main.ViewModelProviders;
+import main.IViewModel;
 import model.User;
 import model.UserStorage;
+import ui.Dialog.AlertDirector;
+import ui.Dialog.BasicAlertBuilder;
+import ui.Dialog.IAlertBuilder;
 import ui.Main.MainView;
 
-import java.util.HashMap;
-
-public class LoginViewModel implements ViewModel {
+public class LoginViewModel implements IViewModel {
 
     private SessionService sessionService;
     private StringProperty account = new SimpleStringProperty();
     private StringProperty password = new SimpleStringProperty();
-    private ObjectProperty<Alert> errorAlert = new SimpleObjectProperty<>();
-    private StringProperty navigateTo = new SimpleStringProperty();
+    private ObjectProperty<JFXAlert> loginAlert = new SimpleObjectProperty<>();
 
     private UserStorage userStorage = new UserStorage();
 
@@ -40,14 +35,11 @@ public class LoginViewModel implements ViewModel {
     public StringProperty accountProperty(){
         return account;
     }
-    public String getAccount() { return account.get(); }
     public StringProperty passwordProperty(){
         return password;
     }
-    public String getPassword() { return password.get(); }
-    public ObjectProperty errorAlertProperty() { return errorAlert; }
-    public StringProperty navigateToProperty(){
-        return navigateTo;
+    public ObjectProperty<JFXAlert> loginAlertProperty(){
+        return loginAlert;
     }
 
     // =============== 邏輯處理 ===============
@@ -60,14 +52,25 @@ public class LoginViewModel implements ViewModel {
     // 邏輯處理：驗證登入資料
     public void login(){
         User user = userStorage.find(account.get());
-        if (user == null)
-            errorAlert.set(new Alert(Alert.AlertType.ERROR, "帳號錯誤", ButtonType.OK));
-        else if (!user.validate(password.get()))
-            errorAlert.set(new Alert(Alert.AlertType.ERROR, "密碼錯誤", ButtonType.OK));
-        else {
+        String prompt = null;
+
+        if (user == null) {
+            prompt = "帳號錯誤";
+        } else if (!user.validate(password.get())) {
+            prompt = "密碼錯誤";
+        } else {
             sessionService.setUser(user);
             clearInput();
             ViewManager.navigateTo(MainView.class);
+        }
+
+        if(prompt!=null) {
+            // Builder Pattern：建立BasicAlert
+            IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.ERROR, "錯誤", "帳號錯誤", IAlertBuilder.AlertButtonType.OKCANCEL);
+            AlertDirector alertDirector = new AlertDirector(alertBuilder);
+            alertDirector.build();
+            JFXAlert alert = alertBuilder.getAlert();
+            loginAlert.set(alert);
         }
     }
 }

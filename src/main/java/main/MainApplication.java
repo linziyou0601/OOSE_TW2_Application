@@ -29,6 +29,7 @@ public class MainApplication extends Application {
         /* 設定用啟始頁面的View並顯示畫面 */
         ViewManager.initStage(primaryStage, LoginView.class);
         primaryStage.initStyle(StageStyle.UNDECORATED);
+        primaryStage.setResizable(true);
         primaryStage.setTitle("Login");
         primaryStage.show();
     }

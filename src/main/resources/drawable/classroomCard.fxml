@@ -6,7 +6,7 @@
 
 <AnchorPane prefHeight="200.0" prefWidth="279.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-effect: dropshadow(GAUSSIAN, rgba(0,0,0,0.4), 5, 0, 0, 0); -fx-background-color: #FFF; -fx-background-radius: 0.5em;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-effect: dropshadow(GAUSSIAN, rgba(0,0,0,0.1), 8, 0, 0, 0); -fx-background-color: #FFF; -fx-background-radius: 0.5em;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
          <children>
             <Label fx:id="classroomIdLabel" alignment="CENTER" layoutX="75.0" layoutY="81.0" prefHeight="29.0" prefWidth="120.0" text="Label">
                <font>

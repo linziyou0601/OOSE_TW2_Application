@@ -23,7 +23,7 @@
             <center>
                <AnchorPane BorderPane.alignment="CENTER">
                   <children>
-                     <ScrollPane fx:id="mainScrollPane" fitToWidth="true" style="-fx-border-color: #F4F4F4;" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <ScrollPane fx:id="mainScrollPane" fitToWidth="true" style="-fx-border-color: #F4F4F4;" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                         <content>
                            <JFXMasonryPane fx:id="classroomListPane" HSpacing="10.0" VSpacing="10.0" cellHeight="200.0" cellWidth="300.0">
                               <padding>
@@ -123,7 +123,7 @@
       <top>
          <AnchorPane prefHeight="70.0" prefWidth="200.0" style="-fx-background-color: #FFF;" BorderPane.alignment="CENTER">
             <children>
-               <AnchorPane prefHeight="70.0" prefWidth="250.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1030.0">
+               <AnchorPane prefHeight="70.0" prefWidth="250.0" AnchorPane.leftAnchor="0.0">
                   <children>
                      <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="29.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="30.0">
                         <image>
@@ -159,42 +159,6 @@
                            <Font size="1.0" />
                         </font>
                      </JFXButton>
-                     <JFXButton alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="973.0" layoutY="35.0" onAction="#exitApplication" prefHeight="20.0" prefWidth="20.0" ripplerFill="#ff000000" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-                        <font>
-                           <Font size="1.0" />
-                        </font>
-                        <graphic>
-                           <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                              <image>
-                                 <Image url="@../images/icons8_multiply_52px_4.png" />
-                              </image>
-                           </ImageView>
-                        </graphic>
-                     </JFXButton>
-                     <JFXButton alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="983.0" layoutY="45.0" onAction="#maximumApplication" prefHeight="20.0" prefWidth="20.0" ripplerFill="#ffa10000" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="10.0">
-                        <font>
-                           <Font size="1.0" />
-                        </font>
-                        <graphic>
-                           <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                              <image>
-                                 <Image url="@../images/icons8_enlarge_52px_2.png" />
-                              </image>
-                           </ImageView>
-                        </graphic>
-                     </JFXButton>
-                     <JFXButton alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="993.0" layoutY="55.0" onAction="#minimumApplication" prefHeight="20.0" prefWidth="20.0" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="10.0">
-                        <font>
-                           <Font size="1.0" />
-                        </font>
-                        <graphic>
-                           <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                              <image>
-                                 <Image url="@../images/icons8_subtract_52px_2.png" />
-                              </image>
-                           </ImageView>
-                        </graphic>
-                     </JFXButton>
                      <DatePicker fx:id="datepicker" layoutX="503.0" layoutY="20.0" prefHeight="30.0" />
                   </children>
                </AnchorPane>
@@ -202,4 +166,44 @@
          </AnchorPane>
       </top>
    </BorderPane>
+   <AnchorPane prefHeight="70.0" prefWidth="110.0" AnchorPane.leftAnchor="1170.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+         <JFXButton alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" onAction="#exitApplication" prefHeight="20.0" prefWidth="20.0" ripplerFill="#ff000000" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <font>
+               <Font size="1.0" />
+            </font>
+            <graphic>
+               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../images/icons8_multiply_52px_4.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+         </JFXButton>
+         <JFXButton alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" onAction="#maximumApplication" prefHeight="20.0" prefWidth="20.0" ripplerFill="#ffa10000" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="10.0">
+            <font>
+               <Font size="1.0" />
+            </font>
+            <graphic>
+               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../images/icons8_enlarge_52px_2.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+         </JFXButton>
+         <JFXButton alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" onAction="#minimumApplication" prefHeight="20.0" prefWidth="20.0" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="10.0">
+            <font>
+               <Font size="1.0" />
+            </font>
+            <graphic>
+               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../images/icons8_subtract_52px_2.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+         </JFXButton>
+      </children>
+   </AnchorPane>
 </AnchorPane>

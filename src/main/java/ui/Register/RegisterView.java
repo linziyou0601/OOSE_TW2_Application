@@ -1,15 +1,17 @@
-package ui.Login;
+package ui.Register;
 
-import com.jfoenix.controls.*;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import main.ViewModelProviders;
 
-
-public class LoginView {
+public class RegisterView {
 
     @FXML
     private JFXTextField accountInput;
@@ -37,20 +39,19 @@ public class LoginView {
         stage.setIconified(true);
     }
 
-    private LoginViewModel loginViewModel;
+    private RegisterViewModel registerViewModel;
 
     public void initialize() {
-
-        loginViewModel = ViewModelProviders.getInstance().get(LoginViewModel.class);
+        registerViewModel = ViewModelProviders.getInstance().get(RegisterViewModel.class);
 
         // 換頁鈕
-        loginBtn.setOnAction(e -> loginViewModel.login());
+        loginBtn.setOnAction(e -> registerViewModel.login());
 
         // 雙向綁定 accountInput 和 account 資料變數
-        accountInput.textProperty().bindBidirectional(loginViewModel.accountProperty());
-        passwordInput.textProperty().bindBidirectional(loginViewModel.passwordProperty());
+        accountInput.textProperty().bindBidirectional(registerViewModel.accountProperty());
+        passwordInput.textProperty().bindBidirectional(registerViewModel.passwordProperty());
 
-        // 綁定 loginAlert 變數
-        loginViewModel.loginAlertProperty().addListener((observable, oldAlert, newAlert) -> newAlert.showAndWait());
+        // 綁定 errorAlert 變數
+        registerViewModel.errorAlertProperty().addListener((ChangeListener<Alert>) (observable, oldAlert, newAlert) -> newAlert.show());
     }
 }

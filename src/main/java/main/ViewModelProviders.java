@@ -1,11 +1,10 @@
 package main;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public class ViewModelProviders {
     private static final ViewModelProviders mProvider = new ViewModelProviders();
-    private HashMap<String, ViewModel> mViewModelStore = new HashMap<>();
+    private HashMap<String, IViewModel> mViewModelStore = new HashMap<>();
     private SessionService sessionService = new SessionService();
 
     private ViewModelProviders(){}
@@ -22,7 +21,7 @@ public class ViewModelProviders {
         } else {
             try {
                 viewModel = modelClass.getConstructor(SessionService.class).newInstance(sessionService);
-                mViewModelStore.put(viewModelName, (ViewModel) viewModel);
+                mViewModelStore.put(viewModelName, (IViewModel) viewModel);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -1,23 +1,28 @@
 package main;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
+import javafx.scene.control.Label;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.net.URL;
 import java.util.HashMap;
 
 public class ViewManager {
-    public static HashMap<String, URL> viewPaneMap = new HashMap<>();
-    public static Scene scene;
-    public static Stage stage;
+    private static HashMap<String, URL> viewPaneMap = new HashMap<>();
+    private static Scene scene;
+    private static Stage stage;
 
     private static double xOffset = 0;
     private static double yOffset = 0;
@@ -38,29 +43,28 @@ public class ViewManager {
             String viewName = viewClass.getSimpleName();
             try {
                 Parent root = FXMLLoader.load(viewPaneMap.get(viewName));
-                root.setOnMousePressed(event -> {
-                    xOffset = event.getSceneX();
-                    yOffset = event.getSceneY();
-                });
-                root.setOnMouseDragged(event -> {
-                    stage.setX(event.getScreenX() - xOffset);
-                    stage.setY(event.getScreenY() - yOffset);
-                });
                 scene = new Scene(root);
                 stage.setTitle(viewName);
                 stage.setScene(scene);
-                centerStage(root);
+                stage.setWidth(((Pane)root).getMinWidth());
+                stage.setHeight(((Pane)root).getMinHeight());
+                centerStage(stage, root);
+                ResizeHelper.addResizeListener(stage);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static void centerStage(Parent root) {
+    public static void centerStage(Stage s, Parent root) {
         double width = ((Region)root).getPrefWidth();
         double height = ((Region)root).getPrefHeight();
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX((screenBounds.getWidth() - width) / 2);
-        stage.setY((screenBounds.getHeight() - height) / 2);
+        s.setX((screenBounds.getWidth() - width) / 2);
+        s.setY((screenBounds.getHeight() - height) / 2);
+    }
+
+    public static Stage getPrimaryStage() {
+        return stage;
     }
 }
