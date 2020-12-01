@@ -18,7 +18,13 @@ public class LoginView {
     private JFXPasswordField passwordInput;
 
     @FXML
+    private JFXButton signUpBtn;
+
+    @FXML
     private JFXButton loginBtn;
+
+    @FXML
+    private JFXButton resizeBtn;
 
     @FXML
     public void exitApplication(ActionEvent event) {
@@ -44,6 +50,7 @@ public class LoginView {
         loginViewModel = ViewModelProviders.getInstance().get(LoginViewModel.class);
 
         // 換頁鈕
+        signUpBtn.setOnAction(e -> loginViewModel.signUp());
         loginBtn.setOnAction(e -> loginViewModel.login());
 
         // 雙向綁定 accountInput 和 account 資料變數
@@ -51,6 +58,6 @@ public class LoginView {
         passwordInput.textProperty().bindBidirectional(loginViewModel.passwordProperty());
 
         // 綁定 loginAlert 變數
-        loginViewModel.loginAlertProperty().addListener((observable, oldAlert, newAlert) -> newAlert.showAndWait());
+        loginViewModel.loginAlertProperty().addListener((observable, oldAlert, newAlert) -> newAlert.show());
     }
 }

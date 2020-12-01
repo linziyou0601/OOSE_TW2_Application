@@ -135,6 +135,7 @@ public class BasicAlertBuilder implements IAlertBuilder {
         defaultButton.setOnAction(addEvent -> {
             alert.setResult(true);
             alert.hideWithAnimation();
+            alert.close();
         });
 
         // 設定cancelButton
@@ -146,6 +147,7 @@ public class BasicAlertBuilder implements IAlertBuilder {
         cancelButton.setOnAction(addEvent -> {
             alert.setResult(false);
             alert.hideWithAnimation();
+            alert.close();
         });
 
         // 將Button設定到layout上

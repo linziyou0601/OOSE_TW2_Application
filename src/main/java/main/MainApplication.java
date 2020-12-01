@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ui.Login.LoginView;
 import ui.Main.MainView;
+import ui.Register.RegisterView;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         /* 將所有View放入Map中 */
+        ViewManager.addView(RegisterView.class);
         ViewManager.addView(LoginView.class);
         ViewManager.addView(MainView.class);
         /* 設定用啟始頁面的View並顯示畫面 */

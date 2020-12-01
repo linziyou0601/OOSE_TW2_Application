@@ -72,7 +72,7 @@
                </JFXPasswordField>
                <HBox alignment="CENTER" fillHeight="false" minHeight="-Infinity">
                   <children>
-                     <JFXButton prefHeight="40.0" prefWidth="150.0" style="-fx-border-radius: 5em; -fx-border-color: #1b6cd7; -fx-background-radius: 5em;" text="註冊" textFill="#1b6cd7">
+                     <JFXButton fx:id="signUpBtn" prefHeight="40.0" prefWidth="150.0" style="-fx-border-radius: 5em; -fx-border-color: #1b6cd7; -fx-background-radius: 5em;" text="註冊" textFill="#1b6cd7">
                         <font>
                            <Font name="Microsoft JhengHei Bold" size="15.0" />
                         </font>
@@ -137,4 +137,16 @@
          </JFXButton>
       </children>
    </AnchorPane>
+   <JFXButton fx:id="resizeBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" prefHeight="10.0" prefWidth="10.0" ripplerFill="#ffffff00" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <graphic>
+         <ImageView fitHeight="10.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" rotate="90.0">
+            <image>
+               <Image url="@../images/resizeicon.png" />
+            </image>
+         </ImageView>
+      </graphic>
+      <font>
+         <Font size="1.0" />
+      </font>
+   </JFXButton>
 </AnchorPane>

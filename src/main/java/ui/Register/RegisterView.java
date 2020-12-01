@@ -14,13 +14,22 @@ import main.ViewModelProviders;
 public class RegisterView {
 
     @FXML
+    private JFXTextField usernameInput;
+
+    @FXML
     private JFXTextField accountInput;
 
     @FXML
     private JFXPasswordField passwordInput;
 
     @FXML
-    private JFXButton loginBtn;
+    private JFXPasswordField passwordConfirmInput;
+
+    @FXML
+    private JFXButton signInBtn;
+
+    @FXML
+    private JFXButton submitBtn;
 
     @FXML
     public void exitApplication(ActionEvent event) {
@@ -45,13 +54,16 @@ public class RegisterView {
         registerViewModel = ViewModelProviders.getInstance().get(RegisterViewModel.class);
 
         // 換頁鈕
-        loginBtn.setOnAction(e -> registerViewModel.login());
+        signInBtn.setOnAction(e -> registerViewModel.signIn());
+        submitBtn.setOnAction(e -> registerViewModel.submit());
 
         // 雙向綁定 accountInput 和 account 資料變數
+        usernameInput.textProperty().bindBidirectional(registerViewModel.usernameProperty());
         accountInput.textProperty().bindBidirectional(registerViewModel.accountProperty());
         passwordInput.textProperty().bindBidirectional(registerViewModel.passwordProperty());
+        passwordConfirmInput.textProperty().bindBidirectional(registerViewModel.passwordConfirmProperty());
 
-        // 綁定 errorAlert 變數
-        registerViewModel.errorAlertProperty().addListener((ChangeListener<Alert>) (observable, oldAlert, newAlert) -> newAlert.show());
+        // 綁定 registerAlert 變數
+        registerViewModel.registerAlertProperty().addListener((observable, oldAlert, newAlert) -> newAlert.show());
     }
 }

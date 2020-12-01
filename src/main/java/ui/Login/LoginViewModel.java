@@ -1,34 +1,30 @@
 package ui.Login;
 
 import com.jfoenix.controls.JFXAlert;
+import database.DBMgr;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import main.SessionService;
+import main.SessionContext;
 import main.ViewManager;
 import main.IViewModel;
 import model.User;
-import model.UserStorage;
 import ui.Dialog.AlertDirector;
 import ui.Dialog.BasicAlertBuilder;
 import ui.Dialog.IAlertBuilder;
 import ui.Main.MainView;
+import ui.Register.RegisterView;
 
 public class LoginViewModel implements IViewModel {
 
-    private SessionService sessionService;
+    private DBMgr dbmgr;
     private StringProperty account = new SimpleStringProperty();
     private StringProperty password = new SimpleStringProperty();
     private ObjectProperty<JFXAlert> loginAlert = new SimpleObjectProperty<>();
 
-    private UserStorage userStorage = new UserStorage();
-
-    public LoginViewModel(SessionService sessionService) {
-        this.sessionService = sessionService;
-        userStorage.add(new User("A001", "pwd123"));
-        userStorage.add(new User("A002", "pwd123"));
-        userStorage.add(new User("A003", "pwd123"));
+    public LoginViewModel(DBMgr dbmgr) {
+        this.dbmgr = dbmgr;
     }
 
     // =============== Getter及Setter ===============
@@ -49,24 +45,31 @@ public class LoginViewModel implements IViewModel {
         password.set("");
     }
 
+    // 邏輯處理：前往註冊頁面
+    public void signUp() {
+        ViewManager.navigateTo(RegisterView.class);
+    }
+
     // 邏輯處理：驗證登入資料
     public void login(){
-        User user = userStorage.find(account.get());
+        User user = dbmgr.getUserByAccount(account.get());
         String prompt = null;
 
-        if (user == null) {
+        // 驗證登入資料
+        if(user == null) {
             prompt = "帳號錯誤";
-        } else if (!user.validate(password.get())) {
+        } else if(!user.validate(password.get())) {
             prompt = "密碼錯誤";
         } else {
-            sessionService.setUser(user);
+            SessionContext.getSession().set("user", user);
             clearInput();
             ViewManager.navigateTo(MainView.class);
         }
 
+        // 執行登入邏輯
         if(prompt!=null) {
             // Builder Pattern：建立BasicAlert
-            IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.ERROR, "錯誤", "帳號錯誤", IAlertBuilder.AlertButtonType.OKCANCEL);
+            IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.ERROR, "錯誤", prompt, IAlertBuilder.AlertButtonType.OK);
             AlertDirector alertDirector = new AlertDirector(alertBuilder);
             alertDirector.build();
             JFXAlert alert = alertBuilder.getAlert();

@@ -44,9 +44,9 @@
    </AnchorPane>
    <AnchorPane layoutX="300.0" prefHeight="500.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
-         <VBox alignment="CENTER_LEFT" layoutX="23.0" layoutY="103.0" prefWidth="300.0" AnchorPane.bottomAnchor="102.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="103.0">
+         <VBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="53.0" prefWidth="300.0" spacing="30.0" AnchorPane.bottomAnchor="52.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="53.0">
             <children>
-               <Label text="登入">
+               <Label text="註冊">
                   <font>
                      <Font name="Microsoft JhengHei Bold" size="40.0" />
                   </font>
@@ -59,7 +59,15 @@
                      <Font name="Microsoft JhengHei" size="15.0" />
                   </font>
                   <VBox.margin>
-                     <Insets left="30.0" right="30.0" top="30.0" />
+                     <Insets left="30.0" right="30.0" />
+                  </VBox.margin>
+               </JFXTextField>
+               <JFXTextField fx:id="usernameInput" prefHeight="30.0" prefWidth="310.0" promptText="使用者名稱">
+                  <font>
+                     <Font name="Microsoft JhengHei" size="15.0" />
+                  </font>
+                  <VBox.margin>
+                     <Insets left="30.0" right="30.0" />
                   </VBox.margin>
                </JFXTextField>
                <JFXPasswordField fx:id="passwordInput" prefHeight="23.0" prefWidth="310.0" promptText="密碼">
@@ -67,12 +75,20 @@
                      <Font name="Microsoft JhengHei" size="15.0" />
                   </font>
                   <VBox.margin>
-                     <Insets left="30.0" right="30.0" top="30.0" />
+                     <Insets left="30.0" right="30.0" />
+                  </VBox.margin>
+               </JFXPasswordField>
+               <JFXPasswordField fx:id="passwordConfirmInput" prefHeight="23.0" prefWidth="310.0" promptText="確認密碼">
+                  <font>
+                     <Font name="Microsoft JhengHei" size="15.0" />
+                  </font>
+                  <VBox.margin>
+                     <Insets left="30.0" right="30.0" />
                   </VBox.margin>
                </JFXPasswordField>
                <HBox alignment="CENTER" fillHeight="false" minHeight="-Infinity">
                   <children>
-                     <JFXButton prefHeight="40.0" prefWidth="150.0" style="-fx-border-radius: 5em; -fx-border-color: #1b6cd7; -fx-background-radius: 5em;" text="註冊" textFill="#1b6cd7">
+                     <JFXButton fx:id="signInBtn" prefHeight="40.0" prefWidth="150.0" style="-fx-border-radius: 5em; -fx-border-color: #1b6cd7; -fx-background-radius: 5em;" text="已有帳號" textFill="#1b6cd7">
                         <font>
                            <Font name="Microsoft JhengHei Bold" size="15.0" />
                         </font>
@@ -80,7 +96,7 @@
                            <Insets right="10.0" />
                         </HBox.margin>
                      </JFXButton>
-                     <JFXButton fx:id="loginBtn" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #1b6cd7; -fx-background-radius: 5em;" text="登入" textFill="WHITE">
+                     <JFXButton fx:id="submitBtn" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #1b6cd7; -fx-background-radius: 5em;" text="提交" textFill="WHITE">
                         <font>
                            <Font name="Microsoft JhengHei Bold" size="15.0" />
                         </font>
@@ -90,7 +106,7 @@
                      </JFXButton>
                   </children>
                   <VBox.margin>
-                     <Insets left="30.0" right="30.0" top="80.0" />
+                     <Insets left="30.0" right="30.0" top="30.0" />
                   </VBox.margin>
                </HBox>
             </children>
@@ -137,4 +153,16 @@
          </JFXButton>
       </children>
    </AnchorPane>
+   <JFXButton fx:id="resizeBtn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" prefHeight="10.0" prefWidth="10.0" ripplerFill="#ffffff00" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <graphic>
+         <ImageView fitHeight="10.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" rotate="90.0">
+            <image>
+               <Image url="@../images/resizeicon.png" />
+            </image>
+         </ImageView>
+      </graphic>
+      <font>
+         <Font size="1.0" />
+      </font>
+   </JFXButton>
 </AnchorPane>

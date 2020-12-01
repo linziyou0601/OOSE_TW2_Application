@@ -24,9 +24,6 @@ public class ViewManager {
     private static Scene scene;
     private static Stage stage;
 
-    private static double xOffset = 0;
-    private static double yOffset = 0;
-
     /* 將View放入Map中 */
     public static void addView(Class viewClass) {
         String viewName = viewClass.getSimpleName();
@@ -49,7 +46,7 @@ public class ViewManager {
                 stage.setWidth(((Pane)root).getMinWidth());
                 stage.setHeight(((Pane)root).getMinHeight());
                 centerStage(stage, root);
-                ResizeHelper.addResizeListener(stage);
+                ResizeHelper.addListener(stage);
             } catch (Exception e) {
                 e.printStackTrace();
             }
