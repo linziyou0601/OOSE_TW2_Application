@@ -99,7 +99,7 @@
    </AnchorPane>
    <AnchorPane prefHeight="40.0" prefWidth="400.0" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
-         <JFXButton alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="973.0" layoutY="35.0" onAction="#exitApplication" prefHeight="20.0" prefWidth="20.0" ripplerFill="#ff000000" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <JFXButton fx:id="closeStageBtn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="973.0" layoutY="35.0" prefHeight="20.0" prefWidth="20.0" ripplerFill="#ff000000" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
             <font>
                <Font size="1.0" />
             </font>
@@ -111,7 +111,7 @@
                </ImageView>
             </graphic>
          </JFXButton>
-         <JFXButton alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="983.0" layoutY="45.0" onAction="#maximumApplication" prefHeight="20.0" prefWidth="20.0" ripplerFill="#ffa10000" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="10.0">
+         <JFXButton fx:id="maximumBtn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="983.0" layoutY="45.0" prefHeight="20.0" prefWidth="20.0" ripplerFill="#ffa10000" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="10.0">
             <font>
                <Font size="1.0" />
             </font>
@@ -123,7 +123,7 @@
                </ImageView>
             </graphic>
          </JFXButton>
-         <JFXButton alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="993.0" layoutY="55.0" onAction="#minimumApplication" prefHeight="20.0" prefWidth="20.0" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="10.0">
+         <JFXButton fx:id="minimumBtn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="993.0" layoutY="55.0" prefHeight="20.0" prefWidth="20.0" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="10.0">
             <font>
                <Font size="1.0" />
             </font>

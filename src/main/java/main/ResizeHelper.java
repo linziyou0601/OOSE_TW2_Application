@@ -1,6 +1,7 @@
 package main;
 
 import com.jfoenix.controls.JFXButton;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -22,7 +23,26 @@ public class ResizeHelper {
         Parent root = scene.getRoot();
         addResizeListener(stage, root);
         addDragListener(stage, root);
-        // 把右上角三個鈕也放過來這裡;
+        addFunctionButtonListener(stage, root);
+    }
+
+    private static void addFunctionButtonListener(Stage stage, Parent root) {
+        JFXButton closeStageBtn = (JFXButton) root.lookup("#closeStageBtn");
+        JFXButton maximumBtn = (JFXButton) root.lookup("#maximumBtn");
+        JFXButton minimumBtn = (JFXButton) root.lookup("#minimumBtn");
+        if(closeStageBtn != null) {
+            closeStageBtn.setOnAction(e -> stage.close());
+        }
+        if(maximumBtn != null) {
+            maximumBtn.setOnAction(e -> {
+                stage.setMaximized(!stage.maximizedProperty().get());
+            });
+        }
+        if(minimumBtn != null) {
+            minimumBtn.setOnAction(e -> {
+                stage.setIconified(true);
+            });
+        }
     }
 
     private static void addDragListener(Stage stage, Parent root) {
@@ -38,22 +58,24 @@ public class ResizeHelper {
 
     private static void addResizeListener(Stage stage, Parent root) {
         JFXButton resizeBtn = (JFXButton) root.lookup("#resizeBtn");
-        resizeBtn.setOnMouseDragged(event -> {
-            double newX = event.getScreenX() - stage.getX() + 13;
-            double newY = event.getScreenY() - stage.getY() + 10;
-            if (newX % 5 == 0 || newY % 5 == 0) {
-                if (newX > 550) {
-                    stage.setWidth(newX);
-                } else {
-                    stage.setWidth(550);
-                }
+        if(resizeBtn!=null) {
+            resizeBtn.setOnMouseDragged(event -> {
+                double newX = event.getScreenX() - stage.getX() + 13;
+                double newY = event.getScreenY() - stage.getY() + 10;
+                if (newX % 5 == 0 || newY % 5 == 0) {
+                    if (newX > 550) {
+                        stage.setWidth(newX);
+                    } else {
+                        stage.setWidth(550);
+                    }
 
-                if (newY > 200) {
-                    stage.setHeight(newY);
-                } else {
-                    stage.setHeight(200);
+                    if (newY > 200) {
+                        stage.setHeight(newY);
+                    } else {
+                        stage.setHeight(200);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }

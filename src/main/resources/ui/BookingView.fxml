@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<?import java.util.ArrayList?>
+<AnchorPane minHeight="520.0" minWidth="720.0" prefHeight="520.0" prefWidth="720.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.Booking.BookingView">
+   <children>
+      <AnchorPane layoutX="8.0" layoutY="8.0" minHeight="500.0" minWidth="700.0" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF; -fx-effect: dropshadow(GAUSSIAN, rgba(0,0,0,0.4), 10, 0, 0, 0);" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <AnchorPane prefHeight="370.0" prefWidth="700.0" AnchorPane.bottomAnchor="130.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+               <HBox alignment="BASELINE_LEFT" layoutX="30.0" layoutY="37.0" prefHeight="40.0" prefWidth="640.0" spacing="20.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+                  <children>
+                     <Label fx:id="classroomIdLabel" text="MA214">
+                        <font>
+                           <Font name="Microsoft JhengHei Bold" size="30.0" />
+                        </font>
+                     </Label>
+                     <Label fx:id="classroomTypeLabel" text="專業教室" textFill="#727272">
+                        <font>
+                           <Font name="Microsoft JhengHei Bold" size="18.0" />
+                        </font>
+                     </Label>
+                  </children>
+               </HBox>
+               <VBox layoutX="30.0" layoutY="86.0" prefHeight="270.0" prefWidth="360.0" spacing="10.0">
+                  <children>
+                     <Label text="可借時間">
+                        <font>
+                           <Font name="Microsoft JhengHei Bold" size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="5.0" />
+                        </VBox.margin>
+                     </Label>
+                     <GridPane alignment="CENTER" hgap="5.0" prefHeight="230.0" prefWidth="350.0" vgap="5.0">
+                       <columnConstraints>
+                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                       </columnConstraints>
+                       <rowConstraints>
+                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                       </rowConstraints>
+                        <children>
+                           <JFXButton fx:id="timeBtn0" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="00 - 01" textFill="WHITE" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn1" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="01 - 02" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn2" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="02- 03" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn3" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="03 - 04" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn4" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="04 - 05" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn5" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="05 - 06" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn6" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="06 - 07" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn7" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="07 - 08" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn8" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="08 - 09" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn9" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="09 - 10" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn10" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="10 - 11" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn11" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="11 - 12" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn12" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="12 - 13" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn13" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="13 - 14" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn14" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="14 - 15" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn15" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="15 - 16" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn16" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="16 - 17" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn17" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="17 - 18" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn18" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="18 - 19" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn19" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="19 - 20" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn20" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="20 - 21" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn21" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="21 - 22" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn22" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="22 - 23" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                           <JFXButton fx:id="timeBtn23" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="0.0" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #E6E6E6; -fx-background-radius: 10;" text="23 - 24" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+                              <font>
+                                 <Font name="Poppins Medium" size="15.0" />
+                              </font>
+                           </JFXButton>
+                        </children>
+                     </GridPane>
+                  </children>
+               </VBox>
+               <VBox layoutX="410.0" layoutY="86.0" prefHeight="270.0" prefWidth="260.0" spacing="5.0">
+                  <children>
+                     <Label text="設備列表">
+                        <font>
+                           <Font name="Microsoft JhengHei Bold" size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="5.0" />
+                        </VBox.margin>
+                     </Label>
+                     <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="200.0" spacing="10.0">
+                        <children>
+                           <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/computer.png" />
+                              </image>
+                           </ImageView>
+                           <Label prefWidth="200.0" text="電腦" textFill="#365a86">
+                              <font>
+                                 <Font name="Microsoft JhengHei Bold" size="20.0" />
+                              </font>
+                           </Label>
+                           <ImageView fx:id="computerCheck" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/available.png" />
+                              </image>
+                           </ImageView>
+                        </children>
+                     </HBox>
+                     <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="200.0" spacing="10.0">
+                        <children>
+                           <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/projector.png" />
+                              </image>
+                           </ImageView>
+                           <Label prefWidth="200.0" text="投影機" textFill="#365a86">
+                              <font>
+                                 <Font name="Microsoft JhengHei Bold" size="20.0" />
+                              </font>
+                           </Label>
+                           <ImageView fx:id="projectorCheck" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/available.png" />
+                              </image>
+                           </ImageView>
+                        </children>
+                     </HBox>
+                     <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="200.0" spacing="10.0">
+                        <children>
+                           <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/blackboard.png" />
+                              </image>
+                           </ImageView>
+                           <Label prefWidth="200.0" text="黑/白板" textFill="#365a86">
+                              <font>
+                                 <Font name="Microsoft JhengHei Bold" size="20.0" />
+                              </font>
+                           </Label>
+                           <ImageView fx:id="blackboardCheck" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/unavailable.png" />
+                              </image>
+                           </ImageView>
+                        </children>
+                     </HBox>
+                     <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="200.0" spacing="10.0">
+                        <children>
+                           <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/air_cond.png" />
+                              </image>
+                           </ImageView>
+                           <Label prefWidth="200.0" text="冷氣" textFill="#365a86">
+                              <font>
+                                 <Font name="Microsoft JhengHei Bold" size="20.0" />
+                              </font>
+                           </Label>
+                           <ImageView fx:id="air_condCheck" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/available.png" />
+                              </image>
+                           </ImageView>
+                        </children>
+                     </HBox>
+                     <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="200.0" spacing="10.0">
+                        <children>
+                           <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/speaker.png" />
+                              </image>
+                           </ImageView>
+                           <Label prefWidth="200.0" text="擴大機" textFill="#365a86">
+                              <font>
+                                 <Font name="Microsoft JhengHei Bold" size="20.0" />
+                              </font>
+                           </Label>
+                           <ImageView fx:id="speakerCheck" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/unavailable.png" />
+                              </image>
+                           </ImageView>
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox>
+            </children>
+         </AnchorPane>
+      
+            <AnchorPane layoutY="366.0" prefHeight="130.0" prefWidth="700.0" style="-fx-background-color: #1b6cd7; -fx-background-radius: 3em 3em 0 0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="370.0">
+               <children>
+                     <JFXButton fx:id="submitBtn" focusTraversable="false" layoutX="530.0" layoutY="46.0" style="-fx-background-color: #FFFFFF;" text="確認預約" textFill="#1b6cd7">
+                  <font>
+                     <Font name="Microsoft JhengHei Bold" size="20.0" />
+                  </font>
+               </JFXButton>
+               <JFXTextField fx:id="timeStartInput" alignment="CENTER" focusColor="TRANSPARENT" labelFloat="true" layoutX="186.0" layoutY="37.0" prefHeight="60.0" prefWidth="60.0" style="-fx-background-color: #1658B1; -fx-background-radius: 15; -fx-border-radius: 15; -fx-text-inner-color: #FFFFFF;" text="00" unFocusColor="TRANSPARENT">
+                  <font>
+                     <Font name="Microsoft JhengHei" size="25.0" />
+                  </font>
+               </JFXTextField>
+               <Label alignment="CENTER" layoutX="40.0" layoutY="49.0" text="借用時間：" textFill="WHITE">
+                  <font>
+                     <Font name="Microsoft JhengHei Bold" size="25.0" />
+                  </font>
+               </Label>
+               <Label alignment="CENTER" layoutX="274.0" layoutY="48.0" text="到" textFill="WHITE">
+                  <font>
+                     <Font name="Microsoft JhengHei Bold" size="25.0" />
+                  </font>
+               </Label>
+               <JFXTextField fx:id="timeEndInput" alignment="CENTER" focusColor="TRANSPARENT" labelFloat="true" layoutX="327.0" layoutY="37.0" prefHeight="60.0" prefWidth="60.0" style="-fx-background-color: #1658B1; -fx-background-radius: 15; -fx-border-radius: 15; -fx-text-inner-color: #FFFFFF;" text="00" unFocusColor="TRANSPARENT">
+                  <font>
+                     <Font name="Microsoft JhengHei" size="25.0" />
+                  </font>
+               </JFXTextField>
+               </children>
+         </AnchorPane>
+             <AnchorPane prefHeight="40.0" prefWidth="400.0" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                 <children>
+                     <JFXButton fx:id="closeStageBtn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="973.0" layoutY="35.0" prefHeight="20.0" prefWidth="20.0" ripplerFill="#ff000000" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                         <font>
+                             <Font size="1.0" />
+                         </font>
+                         <graphic>
+                             <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                     <Image url="@../images/icons8_multiply_52px_4.png" />
+                                 </image>
+                             </ImageView>
+                         </graphic>
+                     </JFXButton>
+                 </children>
+             </AnchorPane>
+      
+      
+              <fx:define>
+                  <ArrayList fx:id="timeBtnList">
+                      <fx:reference source="timeBtn0" />
+                      <fx:reference source="timeBtn1" />
+                      <fx:reference source="timeBtn2" />
+                      <fx:reference source="timeBtn3" />
+                      <fx:reference source="timeBtn4" />
+                      <fx:reference source="timeBtn5" />
+                      <fx:reference source="timeBtn6" />
+                      <fx:reference source="timeBtn7" />
+                      <fx:reference source="timeBtn8" />
+                      <fx:reference source="timeBtn9" />
+                      <fx:reference source="timeBtn10" />
+                      <fx:reference source="timeBtn11" />
+                      <fx:reference source="timeBtn12" />
+                      <fx:reference source="timeBtn13" />
+                      <fx:reference source="timeBtn14" />
+                      <fx:reference source="timeBtn15" />
+                      <fx:reference source="timeBtn16" />
+                      <fx:reference source="timeBtn17" />
+                      <fx:reference source="timeBtn18" />
+                      <fx:reference source="timeBtn19" />
+                      <fx:reference source="timeBtn20" />
+                      <fx:reference source="timeBtn21" />
+                      <fx:reference source="timeBtn22" />
+                      <fx:reference source="timeBtn23" />
+                  </ArrayList>
+              </fx:define>
+      </AnchorPane>
+   </children>
+</AnchorPane>

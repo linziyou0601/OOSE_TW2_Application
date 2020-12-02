@@ -4,10 +4,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -40,6 +45,31 @@ public class ViewManager {
                 stage.setHeight(((Pane)root).getMinHeight());
                 centerStage(stage, root);
                 ResizeHelper.addListener(stage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void popUp(Class viewClass) {
+        if(viewClass != null) {
+            String viewName = viewClass.getSimpleName();
+            try {
+                Parent root = FXMLLoader.load(viewPaneMap.get(viewName));
+                scene = new Scene(root, stage.getWidth(),stage.getWidth());
+                scene.setFill(Color.TRANSPARENT);
+                Stage popUpStage = new Stage();
+                popUpStage.initModality(Modality.APPLICATION_MODAL);
+                popUpStage.initOwner(stage);
+                popUpStage.initStyle(StageStyle.UNDECORATED);
+                popUpStage.initStyle(StageStyle.TRANSPARENT);
+                popUpStage.setTitle(viewName);
+                popUpStage.setScene(scene);
+                popUpStage.setWidth(((Pane)root).getMinWidth());
+                popUpStage.setHeight(((Pane)root).getMinHeight());
+                popUpStage.show();
+                centerStage(popUpStage, root);
+                ResizeHelper.addListener(popUpStage);
             } catch (Exception e) {
                 e.printStackTrace();
             }

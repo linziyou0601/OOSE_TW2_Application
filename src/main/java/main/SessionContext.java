@@ -20,11 +20,15 @@ public class SessionContext {
         session.put(key, value);
     }
 
+    public void unset(String key) {
+        session.remove(key);
+    }
+
     public <T> T get(String key) {
         return (T) session.get(key);
     }
 
-    public void unset() {
+    public void clear() {
         session = new HashMap<>();
     }
 }

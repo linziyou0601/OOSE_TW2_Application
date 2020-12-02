@@ -9,6 +9,7 @@ import main.ViewManager;
 import main.IViewModel;
 import model.Classroom;
 import model.User;
+import ui.Booking.BookingView;
 import ui.Login.LoginView;
 
 import java.time.LocalDate;
@@ -47,15 +48,22 @@ public class MainViewModel implements IViewModel {
     }
 
     // 邏輯處理：登出
-    public void logout(){
-        SessionContext.getSession().unset();        //清除Session
+    public void logout() {
+        SessionContext.getSession().clear();        //清除Session
         ViewManager.navigateTo(LoginView.class);
     }
 
     // 邏輯處理：新增教室
-    public void addClassroom(){
-        Classroom classroom = new Classroom("教室代碼: " + String.valueOf(count++));
+    public void addClassroom() {
+        Classroom classroom = new Classroom("教室代碼: " + String.valueOf(count++), "討論室");
         dbmgr.insertClassroom(classroom);
         refresh();
+    }
+
+    // 邏輯處理：選擇教室
+    public void selectClassroom(String id) {
+        SessionContext.getSession().set("selectedClassroomId", id);
+        SessionContext.getSession().set("selectedDate", queryDate.get());
+        ViewManager.popUp(BookingView.class);
     }
 }

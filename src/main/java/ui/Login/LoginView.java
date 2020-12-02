@@ -23,26 +23,6 @@ public class LoginView {
     @FXML
     private JFXButton loginBtn;
 
-    @FXML
-    private JFXButton resizeBtn;
-
-    @FXML
-    public void exitApplication(ActionEvent event) {
-        Platform.exit();
-    }
-
-    @FXML
-    public void maximumApplication(ActionEvent event) {
-        Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
-        stage.setMaximized(!stage.maximizedProperty().get());
-    }
-
-    @FXML
-    public void minimumApplication(ActionEvent event) {
-        Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
-        stage.setIconified(true);
-    }
-
     private LoginViewModel loginViewModel;
 
     public void initialize() {

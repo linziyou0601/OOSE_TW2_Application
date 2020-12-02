@@ -35,6 +35,7 @@ public class User {
         this.username = username;
     }
 
+    // 待資料庫補齊需要改
     public boolean validate(String password) {
         return this.password.equals(password);
     }

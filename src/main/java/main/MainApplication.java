@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import ui.Booking.BookingView;
 import ui.Login.LoginView;
 import ui.Main.MainView;
 import ui.Register.RegisterView;
@@ -28,6 +29,7 @@ public class MainApplication extends Application {
         ViewManager.addView(RegisterView.class);
         ViewManager.addView(LoginView.class);
         ViewManager.addView(MainView.class);
+        ViewManager.addView(BookingView.class);
         /* 設定用啟始頁面的View並顯示畫面 */
         ViewManager.initStage(primaryStage, LoginView.class);
         primaryStage.initStyle(StageStyle.UNDECORATED);

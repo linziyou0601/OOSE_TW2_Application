@@ -31,23 +31,6 @@ public class RegisterView {
     @FXML
     private JFXButton submitBtn;
 
-    @FXML
-    public void exitApplication(ActionEvent event) {
-        Platform.exit();
-    }
-
-    @FXML
-    public void maximumApplication(ActionEvent event) {
-        Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
-        stage.setMaximized(!stage.maximizedProperty().get());
-    }
-
-    @FXML
-    public void minimumApplication(ActionEvent event) {
-        Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
-        stage.setIconified(true);
-    }
-
     private RegisterViewModel registerViewModel;
 
     public void initialize() {

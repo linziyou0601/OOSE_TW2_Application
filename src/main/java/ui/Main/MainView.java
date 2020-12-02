@@ -46,21 +46,6 @@ public class MainView {
     @FXML
     private JFXMasonryPane classroomListPane;   //教室清單
 
-    @FXML
-    public void exitApplication(ActionEvent event) {
-        Platform.exit();
-    }
-    @FXML
-    public void maximumApplication(ActionEvent event) {
-        Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
-        stage.setMaximized(!stage.maximizedProperty().get());
-    }
-    @FXML
-    public void minimumApplication(ActionEvent event) {
-        Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
-        stage.setIconified(true);
-    }
-
     private MainViewModel mainViewModel;
 
     public void initialize() {
@@ -96,7 +81,10 @@ public class MainView {
                     FXMLLoader loader = new FXMLLoader();
                     Parent rootNode = loader.load(this.getClass().getResource("/drawable/classroomCard.fxml").openStream());
                     Label classroomIdLabel = (Label) rootNode.lookup("#classroomIdLabel");
+                    Label classroomTypeLabel = (Label) rootNode.lookup("#classroomTypeLabel");
                     classroomIdLabel.setText(classroom.getId());
+                    classroomTypeLabel.setText(classroom.getType());
+                    rootNode.setOnMouseClicked(e -> mainViewModel.selectClassroom(classroom.getId()));
                     classroomListPane.getChildren().add(rootNode);
                 } catch (IOException e) {
                     e.printStackTrace();
