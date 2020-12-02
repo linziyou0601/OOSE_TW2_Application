@@ -64,10 +64,10 @@ public class RegisterViewModel implements IViewModel {
 
         // 驗證註冊資料
         if(existUser!=null) prompt = "帳號已被使用";
-        else if(account.get()==null) prompt = "帳號未輸入";
-        else if(password.get()==null) prompt = "密碼未輸入";
+        else if(account.get()==null || account.get().equals("")) prompt = "帳號未輸入";
+        else if(password.get()==null || password.get().equals("")) prompt = "密碼未輸入";
         else if(!password.get().equals(passwordConfirm.get())) prompt = "密碼不一致";
-        else if(username.get()==null) prompt = "使用者名稱未輸入";
+        else if(username.get()==null || username.get().equals("")) prompt = "使用者名稱未輸入";
 
         // 執行註冊邏輯
         if(prompt!=null) {

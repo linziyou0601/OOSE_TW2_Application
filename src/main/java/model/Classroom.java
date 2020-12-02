@@ -1,17 +1,17 @@
 package model;
 
 public class Classroom {
-    private String classroomId ; // doesn't change
+    private String id; // doesn't change
 
-    public Classroom(String classroomId) {
-        this.classroomId = classroomId;
+    public Classroom(String id) {
+        this.id = id;
     }
 
-    public String getClassroomId() {
-        return classroomId;
+    public String getId() {
+        return id;
     }
 
-    public void setClassroomId(String classroomId) {
-        this.classroomId = classroomId;
+    public void setId(String id) {
+        this.id = id;
     }
 }

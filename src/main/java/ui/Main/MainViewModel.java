@@ -33,12 +33,17 @@ public class MainViewModel implements IViewModel {
     public ObjectProperty<LocalDate> queryDateProperty(){ return queryDate; }
     public StringProperty accountProperty(){ return account; }
     public ListProperty<Classroom> classroomListProperty(){ return classroomList; }
-    public List<Classroom> getClassroomList(){ return classroomList.get(); }
 
     // =============== 邏輯處理 ===============
     // 邏輯處理：登入後參數對session綁定
     public void init() {
         account.bind(Bindings.createStringBinding(() -> ((User) SessionContext.getSession().get("user")).getUsername()));    //account綁定到User的account變數上
+        refresh();
+    }
+
+    // 邏輯處理：刷新頁面資料
+    public void refresh() {
+        classroomList.setAll(dbmgr.getClassrooms());
     }
 
     // 邏輯處理：登出
@@ -49,6 +54,8 @@ public class MainViewModel implements IViewModel {
 
     // 邏輯處理：新增教室
     public void addClassroom(){
-        classroomList.add(new Classroom("教室代碼: " + String.valueOf(count++)));
+        Classroom classroom = new Classroom("教室代碼: " + String.valueOf(count++));
+        dbmgr.insertClassroom(classroom);
+        refresh();
     }
 }

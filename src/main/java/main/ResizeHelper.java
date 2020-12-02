@@ -22,6 +22,7 @@ public class ResizeHelper {
         Parent root = scene.getRoot();
         addResizeListener(stage, root);
         addDragListener(stage, root);
+        // 把右上角三個鈕也放過來這裡;
     }
 
     private static void addDragListener(Stage stage, Parent root) {

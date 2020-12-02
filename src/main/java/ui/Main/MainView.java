@@ -65,6 +65,7 @@ public class MainView {
 
     public void initialize() {
         mainViewModel = ViewModelProviders.getInstance().get(MainViewModel.class);
+        mainViewModel.init();
 
         // 測試鈕
         test_addClassroomBtn.setOnAction(e ->  mainViewModel.addClassroom() );
@@ -95,7 +96,7 @@ public class MainView {
                     FXMLLoader loader = new FXMLLoader();
                     Parent rootNode = loader.load(this.getClass().getResource("/drawable/classroomCard.fxml").openStream());
                     Label classroomIdLabel = (Label) rootNode.lookup("#classroomIdLabel");
-                    classroomIdLabel.setText(classroom.getClassroomId());
+                    classroomIdLabel.setText(classroom.getId());
                     classroomListPane.getChildren().add(rootNode);
                 } catch (IOException e) {
                     e.printStackTrace();
