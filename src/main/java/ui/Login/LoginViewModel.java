@@ -9,12 +9,15 @@ import javafx.beans.property.StringProperty;
 import main.SessionContext;
 import main.ViewManager;
 import main.IViewModel;
+import model.Booking;
 import model.User;
 import ui.Dialog.AlertDirector;
 import ui.Dialog.BasicAlertBuilder;
 import ui.Dialog.IAlertBuilder;
 import ui.Main.MainView;
 import ui.Register.RegisterView;
+
+import java.util.Optional;
 
 public class LoginViewModel implements IViewModel {
 
@@ -60,20 +63,25 @@ public class LoginViewModel implements IViewModel {
             prompt = "帳號錯誤";
         } else if(!user.validate(password.get())) {
             prompt = "密碼錯誤";
+        }
+
+        // 執行登入邏輯
+        if(prompt!=null) {
+            triggerFailedAlert(prompt);
         } else {
             SessionContext.getSession().set("user", user);
             clearInput();
             ViewManager.navigateTo(MainView.class);
         }
+    }
 
-        // 執行登入邏輯
-        if(prompt!=null) {
-            // Builder Pattern：建立BasicAlert
-            IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.ERROR, "錯誤", prompt, IAlertBuilder.AlertButtonType.OK);
-            AlertDirector alertDirector = new AlertDirector(alertBuilder);
-            alertDirector.build();
-            JFXAlert alert = alertBuilder.getAlert();
-            loginAlert.set(alert);
-        }
+    // 邏輯處理：觸發失敗
+    public void triggerFailedAlert(String prompt){
+        // Builder Pattern：建立BasicAlert
+        IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.ERROR, "錯誤", prompt, IAlertBuilder.AlertButtonType.OK);
+        AlertDirector alertDirector = new AlertDirector(alertBuilder);
+        alertDirector.build();
+        JFXAlert alert = alertBuilder.getAlert();
+        loginAlert.set(alert);
     }
 }

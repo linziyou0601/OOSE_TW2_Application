@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import main.IViewModel;
 import main.SessionContext;
 import main.ViewManager;
+import model.Booking;
 import model.Classroom;
 import model.User;
 import ui.Dialog.AlertDirector;
@@ -70,6 +71,7 @@ public class BookingViewModel implements IViewModel {
         air_condCheck.bind(Bindings.createStringBinding(() -> (selectedClassroom.hasAirCond()? "available": "unavailable")));
         speakerCheck.bind(Bindings.createStringBinding(() -> (selectedClassroom.hasSpeaker()? "available": "unavailable")));
         availableTime.setAll(selectedClassroom.getAvailableTimes());
+        closeStage.set(false);
     }
 
     // 邏輯處理：預約處理
@@ -88,23 +90,43 @@ public class BookingViewModel implements IViewModel {
         }
 
         if(prompt != null) {
-            IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.ERROR, "預約失敗", prompt, IAlertBuilder.AlertButtonType.OK);
-            AlertDirector alertDirector = new AlertDirector(alertBuilder);
-            alertDirector.build();
-            JFXAlert alert = alertBuilder.getAlert();
-            submitAlert.set(alert);
+            triggerFailedAlert(prompt);
         } else {
-            prompt = "你選擇的教室是: " + SessionContext.getSession().get("selectedClassroomId") + "\n" +
-                     "你選擇的日期是: " + SessionContext.getSession().get("selectedDate") + "\n" +
-                     "你選擇的時間是: " + timeStart.get() + ":00 到 " + timeEnd.get() + ":00";
-            IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.SUCCESS, "預約成功", prompt, IAlertBuilder.AlertButtonType.OK);
-            AlertDirector alertDirector = new AlertDirector(alertBuilder);
-            alertDirector.build();
-            JFXAlert alert = alertBuilder.getAlert();
-            Optional<Boolean> result = alert.showAndWait();
-            if (result.isPresent()) {
-                closeStage.set(true);
-            }
+            String date = SessionContext.getSession().get("selectedDate").toString();
+            String classroomId = SessionContext.getSession().get("selectedClassroomId");
+            String account = ((User) SessionContext.getSession().get("user")).getAccount();
+            Booking booking = new Booking(date, Integer.parseInt(timeStart.get()), Integer.parseInt(timeEnd.get())-1, classroomId, account);
+            dbmgr.saveBooking(booking);
+            triggerSucceedAlert(booking);
+        }
+    }
+
+    // 邏輯處理：觸發失敗
+    public void triggerFailedAlert(String prompt){
+        // Builder Pattern：建立BasicAlert
+        IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.ERROR, "預約失敗", prompt, IAlertBuilder.AlertButtonType.OK);
+        AlertDirector alertDirector = new AlertDirector(alertBuilder);
+        alertDirector.build();
+        JFXAlert alert = alertBuilder.getAlert();
+        submitAlert.set(alert);
+    }
+
+    // 邏輯處理：觸發成功
+    public void triggerSucceedAlert(Booking booking) {
+        String prompt = "你選擇的教室是: " + booking.getClassroomId() + "\n" +
+                        "你選擇的日期是: " + booking.getDate() + "\n" +
+                        "你選擇的時間是: " + booking.getStartTime() + ":00 到 " + (booking.getEndTime()+1) + ":00";
+        // Builder Pattern：建立BasicAlert
+        IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.SUCCESS, "預約成功", prompt, IAlertBuilder.AlertButtonType.OK);
+        AlertDirector alertDirector = new AlertDirector(alertBuilder);
+        alertDirector.build();
+        JFXAlert alert = alertBuilder.getAlert();
+        // Show and wait for selection
+        Optional<Boolean> result = alert.showAndWait();
+        if (result.isPresent()) {
+            SessionContext.getSession().unset("selectedClassroomId");
+            SessionContext.getSession().unset("selectedDate");
+            closeStage.set(true);
         }
     }
 

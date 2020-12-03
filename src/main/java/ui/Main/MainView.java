@@ -31,7 +31,7 @@ public class MainView {
     private DatePicker datepicker;  //日期選擇
 
     @FXML
-    private Label accountLabel;     //顯示目前帳號
+    private Label usernameLabel;     //顯示目前帳號
     @FXML
     private JFXButton toHomeBtn;    //按鈕前往：總覽
     @FXML
@@ -42,22 +42,19 @@ public class MainView {
     private JFXButton logoutBtn;    //登出按鈕
 
     @FXML
-    private ScrollPane mainScrollPane;
-    @FXML
     private JFXMasonryPane classroomListPane;   //教室清單
 
     private MainViewModel mainViewModel;
 
     public void initialize() {
         mainViewModel = ViewModelProviders.getInstance().get(MainViewModel.class);
-        mainViewModel.init();
 
         // 測試鈕
         test_addClassroomBtn.setOnAction(e ->  mainViewModel.addClassroom() );
 
         // 換頁鈕
         toHomeBtn.setOnAction(e -> {});
-        toBookingBtn.setOnAction(e -> {});
+        toBookingBtn.setOnAction(e -> mainViewModel.toMyBooking());
         toSubscribeBtn.setOnAction(e -> {});
 
         // 登出鈕
@@ -71,17 +68,19 @@ public class MainView {
         // 雙向View資料和ViewModel資料
         queryInput.textProperty().bindBidirectional(mainViewModel.queryStringProperty());
         datepicker.valueProperty().bindBidirectional(mainViewModel.queryDateProperty());
-        accountLabel.textProperty().bindBidirectional(mainViewModel.accountProperty());
+        usernameLabel.textProperty().bindBidirectional(mainViewModel.usernameProperty());
 
         // 教室清單
         mainViewModel.classroomListProperty().addListener((observable, oldValue, classroomList) -> {
             classroomListPane.getChildren().clear();
             for(Classroom classroom: classroomList){
                 try {
-                    FXMLLoader loader = new FXMLLoader();
-                    Parent rootNode = loader.load(this.getClass().getResource("/drawable/classroomCard.fxml").openStream());
+                    // 取得 classroomCard 佈局元件
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/drawable/classroomCard.fxml"));
+                    Parent rootNode = loader.load();
                     Label classroomIdLabel = (Label) rootNode.lookup("#classroomIdLabel");
                     Label classroomTypeLabel = (Label) rootNode.lookup("#classroomTypeLabel");
+                    // 將資料設到元件上
                     classroomIdLabel.setText(classroom.getId());
                     classroomTypeLabel.setText(classroom.getType());
                     rootNode.setOnMouseClicked(e -> mainViewModel.selectClassroom(classroom.getId()));
@@ -92,5 +91,6 @@ public class MainView {
             }
         });
 
+        mainViewModel.init();
     }
 }

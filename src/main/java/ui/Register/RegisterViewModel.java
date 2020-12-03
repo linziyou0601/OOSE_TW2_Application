@@ -6,6 +6,7 @@ import javafx.beans.property.*;
 import main.IViewModel;
 import main.SessionContext;
 import main.ViewManager;
+import model.Booking;
 import model.User;
 import ui.Dialog.AlertDirector;
 import ui.Dialog.BasicAlertBuilder;
@@ -71,23 +72,35 @@ public class RegisterViewModel implements IViewModel {
 
         // 執行註冊邏輯
         if(prompt!=null) {
-            // Builder Pattern：建立BasicAlert
-            IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.ERROR, "錯誤", prompt, IAlertBuilder.AlertButtonType.OK);
-            AlertDirector alertDirector = new AlertDirector(alertBuilder);
-            alertDirector.build();
-            JFXAlert alert = alertBuilder.getAlert();
-            registerAlert.set(alert);
+            triggerFailedAlert(prompt);
         } else {
-            dbmgr.insertUser(new User(account.get(), password.get(), username.get()));
+            dbmgr.saveUser(new User(account.get(), password.get(), username.get()));
             clearInput();
-            IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.SUCCESS, "成功註冊", "導向登入畫面", IAlertBuilder.AlertButtonType.OK);
-            AlertDirector alertDirector = new AlertDirector(alertBuilder);
-            alertDirector.build();
-            JFXAlert alert = alertBuilder.getAlert();
-            Optional<Boolean> result = alert.showAndWait();
-            if(result.isPresent()){
-                ViewManager.navigateTo(LoginView.class);
-            }
+            triggerSucceedAlert();
+        }
+    }
+
+    // 邏輯處理：觸發失敗
+    public void triggerFailedAlert(String prompt){
+        // Builder Pattern：建立BasicAlert
+        IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.ERROR, "錯誤", prompt, IAlertBuilder.AlertButtonType.OK);
+        AlertDirector alertDirector = new AlertDirector(alertBuilder);
+        alertDirector.build();
+        JFXAlert alert = alertBuilder.getAlert();
+        registerAlert.set(alert);
+    }
+
+    // 邏輯處理：觸發成功
+    public void triggerSucceedAlert() {
+        // Builder Pattern：建立BasicAlert
+        IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.SUCCESS, "成功註冊", "導向登入畫面", IAlertBuilder.AlertButtonType.OK);
+        AlertDirector alertDirector = new AlertDirector(alertBuilder);
+        alertDirector.build();
+        JFXAlert alert = alertBuilder.getAlert();
+        // Show and wait for selection
+        Optional<Boolean> result = alert.showAndWait();
+        if(result.isPresent()){
+            ViewManager.navigateTo(LoginView.class);
         }
     }
 }

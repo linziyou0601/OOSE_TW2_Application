@@ -1,50 +1,70 @@
 package database;
 
+import model.Booking;
 import model.Classroom;
 import model.User;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DBMgr {
-    private List<User> userStorage = new ArrayList<>();
-    private List<Classroom> classroomStorage = new ArrayList<>();
+    private HashMap<String, User> userStorage = new HashMap<>();
+    private HashMap<String, Classroom> classroomStorage = new HashMap<>();
+    private HashMap<Integer, Booking> bookingStorage = new HashMap<>();
 
     public DBMgr() {
 
     }
 
     // For User
-    public void insertUser(User user) {
-        userStorage.add(user);
+    public void saveUser(User user) {
+        userStorage.put(user.getAccount(), user);
     }
 
     public List<User> getUsers() {
-        return userStorage;
+        return new ArrayList<>(userStorage.values());
     }
 
     public User getUserByAccount(String account) {
-        for(User user: userStorage){
-            if(user.getAccount().equals(account))
-                return user;
-        }
-        return null;
+        return userStorage.get(account);
     }
 
     // For Classroom
-    public void insertClassroom(Classroom classroom) {
-        classroomStorage.add(classroom);
+    public void saveClassroom(Classroom classroom) {
+        classroomStorage.put(classroom.getId(), classroom);
     }
 
     public List<Classroom> getClassrooms() {
-        return classroomStorage;
+        List<Classroom> result = classroomStorage.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(e -> e.getValue()).collect(Collectors.toList());
+        return result;
     }
 
-    public Classroom getClassroomById(String account) {
-        for(Classroom classroom: classroomStorage){
-            if(classroom.getId().equals(account))
-                return classroom;
+    public Classroom getClassroomById(String id) {
+        return classroomStorage.get(id);
+    }
+
+    // For Booking
+    public void saveBooking(Booking booking) {
+        bookingStorage.put(booking.getId(), booking);
+    }
+
+    public List<Booking> getBookings() {
+        return new ArrayList<>(bookingStorage.values());
+    }
+
+    public Booking getBookingById(int id) {
+        return bookingStorage.get(id);
+    }
+
+    public List<Booking> getBookingsByAccount(String account) {
+        ArrayList<Booking> result = new ArrayList<>();
+        Iterator<Booking> bookingItr = bookingStorage.values().iterator();
+        while (bookingItr.hasNext()) {
+            Booking booking = bookingItr.next();
+            if(booking.getAccount().equals(account)){
+                result.add(booking);
+            }
         }
-        return null;
+        return result;
     }
 }

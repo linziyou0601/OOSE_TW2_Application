@@ -12,6 +12,7 @@ import javafx.stage.StageStyle;
 import ui.Booking.BookingView;
 import ui.Login.LoginView;
 import ui.Main.MainView;
+import ui.MyBooking.MyBookingView;
 import ui.Register.RegisterView;
 
 import java.net.URL;
@@ -30,6 +31,7 @@ public class MainApplication extends Application {
         ViewManager.addView(LoginView.class);
         ViewManager.addView(MainView.class);
         ViewManager.addView(BookingView.class);
+        ViewManager.addView(MyBookingView.class);
         /* 設定用啟始頁面的View並顯示畫面 */
         ViewManager.initStage(primaryStage, LoginView.class);
         primaryStage.initStyle(StageStyle.UNDECORATED);

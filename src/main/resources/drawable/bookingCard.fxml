@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="200.0" prefWidth="300.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane prefHeight="170.0" prefWidth="290.0" style="-fx-effect: dropshadow(GAUSSIAN, rgba(0,0,0,0.1), 8, 0, 0, 0); -fx-background-color: #FFF; -fx-background-radius: 0.5em;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+         <children>
+            <AnchorPane prefHeight="65.0" prefWidth="270.0" style="-fx-background-color: #3B86E6; -fx-background-radius: 0.5em  0.5em 0 0;" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label fx:id="classroomTypeLabel" layoutX="14.0" layoutY="8.0" prefHeight="29.0" prefWidth="71.0" text="預約時間" textFill="#cdcdcd" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="5.0">
+                     <font>
+                        <Font name="Microsoft JhengHei" size="12.0" />
+                     </font>
+                  </Label>
+                  <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="33.0">
+                     <image>
+                        <Image url="@../images/icons8_calendar_52px_2.png" />
+                     </image>
+                  </ImageView>
+                  <Label fx:id="datetimeLabel" layoutX="45.0" layoutY="30.0" prefHeight="29.0" prefWidth="221.0" text="2020-01-01, 08:00 - 10:00" textFill="WHITE" AnchorPane.leftAnchor="45.0" AnchorPane.topAnchor="30.0">
+                     <font>
+                        <Font name="Microsoft JhengHei Bold" size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <Label fx:id="classroomIdLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="54.0" layoutY="84.0" prefHeight="35.0" prefWidth="180.0" text="MA214" AnchorPane.leftAnchor="55.0" AnchorPane.rightAnchor="55.0">
+               <font>
+                  <Font name="Microsoft JhengHei Bold" size="30.0" />
+               </font>
+            </Label>
+            <JFXButton fx:id="operateBtn" layoutX="14.0" layoutY="121.0" prefHeight="35.0" prefWidth="164.0" style="-fx-background-color: #1b6cd7; -fx-background-radius: 5em; -fx-border-radius: 5em;" text="操作" textFill="WHITE" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0">
+               <font>
+                  <Font name="Microsoft JhengHei Bold" size="15.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="cancelBtn" layoutX="97.0" layoutY="140.0" prefHeight="35.0" prefWidth="77.0" style="-fx-background-color: #E7EEF6; -fx-background-radius: 5em; -fx-border-radius: 5em;" text="取消" textFill="#545454" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0">
+               <font>
+                  <Font name="Microsoft JhengHei Bold" size="15.0" />
+               </font>
+            </JFXButton>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

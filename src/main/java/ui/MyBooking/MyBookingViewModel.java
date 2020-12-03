@@ -1,40 +1,39 @@
-package ui.Main;
+package ui.MyBooking;
 
 import database.DBMgr;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
+import main.IViewModel;
 import main.SessionContext;
 import main.ViewManager;
-import main.IViewModel;
+import model.Booking;
 import model.Classroom;
 import model.User;
 import ui.Booking.BookingView;
 import ui.Login.LoginView;
-import ui.MyBooking.MyBookingView;
+import ui.Main.MainView;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
-public class MainViewModel implements IViewModel {
+public class MyBookingViewModel implements IViewModel {
 
     private DBMgr dbmgr;
-    private StringProperty queryString = new SimpleStringProperty();
-    private ObjectProperty<LocalDate> queryDate = new SimpleObjectProperty<>(LocalDate.now());
     private StringProperty username = new SimpleStringProperty();
-    private ListProperty<Classroom> classroomList = new SimpleListProperty<>(FXCollections.observableArrayList(new ArrayList<>()));
+    private StringProperty periodShowType = new SimpleStringProperty("CURRENT");
+    private ListProperty<Booking> bookingList = new SimpleListProperty<>(FXCollections.observableArrayList(new ArrayList<>()));
     private int count = 0;
 
-    public MainViewModel(DBMgr dbmgr) {
+    public MyBookingViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
     }
 
     // =============== Getter及Setter ===============
-    public StringProperty queryStringProperty(){ return queryString; }
-    public ObjectProperty<LocalDate> queryDateProperty(){ return queryDate; }
     public StringProperty usernameProperty(){ return username; }
-    public ListProperty<Classroom> classroomListProperty(){ return classroomList; }
+    public StringProperty periodShowTypeProperty(){ return periodShowType; }
+    public String getPeriodShowType(){ return periodShowType.get(); }
+    public ListProperty<Booking> bookingListProperty(){ return bookingList; }
 
     // =============== 邏輯處理 ===============
     // 邏輯處理：登入後參數對session綁定
@@ -45,7 +44,8 @@ public class MainViewModel implements IViewModel {
 
     // 邏輯處理：刷新頁面資料
     public void refresh() {
-        classroomList.setAll(dbmgr.getClassrooms());
+        String account = ((User) SessionContext.getSession().get("user")).getAccount();
+        bookingList.setAll(dbmgr.getBookingsByAccount(account));
     }
 
     // 邏輯處理：登出
@@ -54,22 +54,31 @@ public class MainViewModel implements IViewModel {
         ViewManager.navigateTo(LoginView.class);
     }
 
-    // 邏輯處理：新增教室
-    public void addClassroom() {
-        Classroom classroom = new Classroom("教室代碼: " + (count++), "討論室");
-        dbmgr.saveClassroom(classroom);
-        refresh();
+    // 邏輯處理：顯示目前時段
+    public void currentPeriod() {
+        periodShowType.set("CURRENT");
+    }
+
+    // 邏輯處理：顯示目前時段
+    public void futurePeriod() {
+        periodShowType.set("FUTURE");
+    }
+
+    // 邏輯處理：顯示所有時段
+    public void allPeriod() {
+        periodShowType.set("ALL");
     }
 
     // 邏輯處理：選擇教室
+    /*
     public void selectClassroom(String id) {
         SessionContext.getSession().set("selectedClassroomId", id);
         SessionContext.getSession().set("selectedDate", queryDate.get());
         ViewManager.popUp(BookingView.class);
-    }
+    }*/
 
-    // 邏輯處理：換頁 - 我的預約
-    public void toMyBooking() {
-        ViewManager.navigateTo(MyBookingView.class);
+    // 邏輯處理：換頁 - 總覽
+    public void toHome() {
+        ViewManager.navigateTo(MainView.class);
     }
 }
