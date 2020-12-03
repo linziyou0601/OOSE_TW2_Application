@@ -61,7 +61,7 @@ public class DBMgr {
         Iterator<Booking> bookingItr = bookingStorage.values().iterator();
         while (bookingItr.hasNext()) {
             Booking booking = bookingItr.next();
-            if(booking.getAccount().equals(account)){
+            if(booking.getUserAccount().equals(account)){
                 result.add(booking);
             }
         }

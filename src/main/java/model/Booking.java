@@ -11,17 +11,17 @@ public class Booking {
     private String date;
     private int startTime;
     private int endTime;
-    private String classroomId;
-    private String account;
+    private Classroom classroom;
+    private User user;
     private boolean activate = false;
 
-    public Booking(String date, int startTime, int endTime, String classroomId, String account) {
+    public Booking(String date, int startTime, int endTime, Classroom classroom, User user) {
         this.id = Booking.count++;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.classroomId = classroomId;
-        this.account = account;
+        this.classroom = classroom;
+        this.user = user;
     }
 
     public int getId() {
@@ -40,12 +40,12 @@ public class Booking {
         return endTime;
     }
 
-    public String getClassroomId() {
-        return classroomId;
+    public Classroom getClassroom() {
+        return classroom;
     }
 
-    public String getAccount() {
-        return account;
+    public User getUser() {
+        return user;
     }
 
     public boolean getActivate() {
@@ -64,16 +64,25 @@ public class Booking {
         this.endTime = endTime;
     }
 
-    public void setClassroomId(String classroomId) {
-        this.classroomId = classroomId;
+    public void setClassroom(Classroom classroom) {
+        this.classroom = classroom;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setActivate(boolean activate) {
         this.activate = activate;
+    }
+
+    // 中介方法（守LoD）
+    public String getClassroomId() {
+        return classroom.getId();
+    }
+
+    public String getUserAccount() {
+        return user.getAccount();
     }
 
     // 待資料庫補齊需要改

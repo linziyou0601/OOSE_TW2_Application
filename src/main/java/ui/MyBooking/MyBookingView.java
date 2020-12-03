@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import main.ViewModelProviders;
 import model.Booking;
+import ui.Booking.BookingView;
 
 import java.io.IOException;
 
@@ -82,7 +83,7 @@ public class MyBookingView {
                         classroomIdLabel.setText(booking.getClassroomId());
                         operateBtn.setDisable(!booking.isPeriod());
                         cancelBtn.setDisable(!booking.isFuture());
-                        //rootNode.setOnMouseClicked(e -> myBookingViewModel.(booking.getId()));
+                        operateBtn.setOnAction(e -> myBookingViewModel.operateBooking(booking));
                         bookingListPane.getChildren().add(rootNode);
                     } catch (IOException e) {
                         e.printStackTrace();

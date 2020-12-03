@@ -93,9 +93,9 @@ public class BookingViewModel implements IViewModel {
             triggerFailedAlert(prompt);
         } else {
             String date = SessionContext.getSession().get("selectedDate").toString();
-            String classroomId = SessionContext.getSession().get("selectedClassroomId");
-            String account = ((User) SessionContext.getSession().get("user")).getAccount();
-            Booking booking = new Booking(date, Integer.parseInt(timeStart.get()), Integer.parseInt(timeEnd.get())-1, classroomId, account);
+            User user = SessionContext.getSession().get("user");
+            Classroom classroom = dbmgr.getClassroomById(selectedClassroom.getId());
+            Booking booking = new Booking(date, Integer.parseInt(timeStart.get()), Integer.parseInt(timeEnd.get())-1, classroom, user);
             dbmgr.saveBooking(booking);
             triggerSucceedAlert(booking);
         }
