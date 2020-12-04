@@ -14,9 +14,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 import main.ViewModelProviders;
+import model.Booking;
 import model.Classroom;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 public class MainView {
 
@@ -73,7 +75,9 @@ public class MainView {
         // 教室清單
         mainViewModel.classroomListProperty().addListener((observable, oldValue, classroomList) -> {
             classroomListPane.getChildren().clear();
-            for(Classroom classroom: classroomList){
+            Iterator<Classroom> classroomItr = classroomList.iterator();
+            while(classroomItr.hasNext()) {
+                Classroom classroom = classroomItr.next();
                 try {
                     // 取得 classroomCard 佈局元件
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/drawable/classroomCard.fxml"));

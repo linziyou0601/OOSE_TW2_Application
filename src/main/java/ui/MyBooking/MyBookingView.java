@@ -14,6 +14,7 @@ import model.Booking;
 import ui.Booking.BookingView;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 public class MyBookingView {
 
@@ -67,27 +68,26 @@ public class MyBookingView {
         // 教室清單
         myBookingViewModel.bookingListProperty().addListener((observable, oldValue, bookingList) -> {
             bookingListPane.getChildren().clear();
-            String periodShowType = myBookingViewModel.getPeriodShowType();
-            for(Booking booking: bookingList){
-                if((periodShowType.equals("CURRENT") && booking.isPeriod()) || (periodShowType.equals("FUTURE") && booking.isFuture()) || periodShowType.equals("ALL")) {
-                    try {
-                        // 取得 bookingCard 佈局元件
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drawable/bookingCard.fxml"));
-                        Parent rootNode = loader.load();
-                        Label datetimeLabel = (Label) rootNode.lookup("#datetimeLabel");
-                        Label classroomIdLabel = (Label) rootNode.lookup("#classroomIdLabel");
-                        JFXButton operateBtn = (JFXButton) rootNode.lookup("#operateBtn");
-                        JFXButton cancelBtn = (JFXButton) rootNode.lookup("#cancelBtn");
-                        // 將資料設到元件上
-                        datetimeLabel.setText(booking.getDate() + ", " + booking.getStartTime() + ":00 - " + (booking.getEndTime() + 1) + ":00");
-                        classroomIdLabel.setText(booking.getClassroomId());
-                        operateBtn.setDisable(!booking.isPeriod());
-                        cancelBtn.setDisable(!booking.isFuture());
-                        operateBtn.setOnAction(e -> myBookingViewModel.operateBooking(booking));
-                        bookingListPane.getChildren().add(rootNode);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            Iterator<Booking> bookingItr = bookingList.iterator();
+            while(bookingItr.hasNext()) {
+                Booking booking = bookingItr.next();
+                try {
+                    // 取得 bookingCard 佈局元件
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/drawable/bookingCard.fxml"));
+                    Parent rootNode = loader.load();
+                    Label datetimeLabel = (Label) rootNode.lookup("#datetimeLabel");
+                    Label classroomIdLabel = (Label) rootNode.lookup("#classroomIdLabel");
+                    JFXButton operateBtn = (JFXButton) rootNode.lookup("#operateBtn");
+                    JFXButton cancelBtn = (JFXButton) rootNode.lookup("#cancelBtn");
+                    // 將資料設到元件上
+                    datetimeLabel.setText(booking.getDate() + ", " + booking.getStartTime() + ":00 - " + (booking.getEndTime() + 1) + ":00");
+                    classroomIdLabel.setText(booking.getClassroomId());
+                    operateBtn.setDisable(!booking.isPeriod());
+                    cancelBtn.setDisable(!booking.isFuture());
+                    operateBtn.setOnAction(e -> myBookingViewModel.operateBooking(booking));
+                    bookingListPane.getChildren().add(rootNode);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         });

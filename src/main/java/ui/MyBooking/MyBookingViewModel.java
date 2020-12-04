@@ -17,6 +17,8 @@ import ui.Main.MainView;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class MyBookingViewModel implements IViewModel {
 
@@ -44,8 +46,16 @@ public class MyBookingViewModel implements IViewModel {
 
     // 邏輯處理：刷新頁面資料
     public void refresh() {
+        bookingList.clear();
         String account = ((User) SessionContext.getSession().get("user")).getAccount();
-        bookingList.setAll(dbmgr.getBookingsByAccount(account));
+        List<Booking> bookings = dbmgr.getBookingsByAccount(account);
+        Iterator<Booking> bookingItr = bookings.iterator();
+        while(bookingItr.hasNext()) {
+            Booking booking = bookingItr.next();
+            if((periodShowType.get().equals("CURRENT") && booking.isPeriod()) || (periodShowType.get().equals("FUTURE") && booking.isFuture()) || periodShowType.get().equals("ALL")) {
+                bookingList.add(booking);
+            }
+        }
     }
 
     // 邏輯處理：登出
