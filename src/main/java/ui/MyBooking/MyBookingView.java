@@ -56,7 +56,7 @@ public class MyBookingView {
         allBookingBtn.setOnAction(e -> myBookingViewModel.allPeriod());
         myBookingViewModel.periodShowTypeProperty().addListener((observable, oldValue, periodShowType) -> {
             currentBookingBtn.setStyle("-fx-background-color: " + (periodShowType.equals("CURRENT")? "#EAEAEA": "transparent"));
-            futureBookingBtn.setStyle("-fx-background-color: " + (periodShowType.equals("CURRENT")? "#EAEAEA": "transparent"));
+            futureBookingBtn.setStyle("-fx-background-color: " + (periodShowType.equals("FUTURE")? "#EAEAEA": "transparent"));
             allBookingBtn.setStyle("-fx-background-color: " + (periodShowType.equals("ALL")? "#EAEAEA": "transparent"));
             myBookingViewModel.refresh();
         });

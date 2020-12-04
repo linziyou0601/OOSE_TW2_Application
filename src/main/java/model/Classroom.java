@@ -1,8 +1,6 @@
 package model;
 
-import devices.IoTDevice;
-import devices.SmartComputer;
-import devices.SmartLock;
+import devices.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,14 +14,14 @@ public class Classroom {
     public Classroom(String id, String type) {
         this.id = id;
         this.type = type;
-        devices.add(new SmartLock(id+"_IOT001", "Lock Door 1", true));
-        devices.add(new SmartLock(id+"_IOT002", "Lock Door 2", true));
-        devices.add(new SmartComputer(id+"_IOT003", "Computer 1", false));
-        devices.add(new SmartComputer(id+"_IOT004", "Computer 2", false));
-        devices.add(new SmartComputer(id+"_IOT005", "Computer 3", false));
-        devices.add(new SmartComputer(id+"_IOT006", "Computer 4", false));
-        devices.add(new SmartComputer(id+"_IOT007", "Computer 5", false));
-        devices.add(new SmartComputer(id+"_IOT008", "Computer 6", false));
+        devices.add(new SmartLock(id+"_IOT001", "Lock Door", true));
+        devices.add(new SmartLight(id+"_IOT002", "Light 1-1", false));
+        devices.add(new SmartLight(id+"_IOT003", "Light 1-2", false));
+        devices.add(new SmartLight(id+"_IOT004", "Light 2-1", false));
+        devices.add(new SmartLight(id+"_IOT005", "Light 2-2", false));
+        devices.add(new SmartProjector(id+"_IOT006", "Projector", false));
+        devices.add(new SmartComputer(id+"_IOT007", "Computer", false));
+        devices.add(new SmartAirConditioner(id+"_IOT008", "Air Cond", false));
     }
 
     public String getId() {
