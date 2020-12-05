@@ -1,24 +1,22 @@
 package ui.Register;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import javafx.beans.property.*;
-import main.IViewModel;
+import main.ViewModel;
 import main.SessionContext;
 import main.ViewManager;
-import model.Booking;
 import model.User;
 import ui.Dialog.AlertDirector;
 import ui.Dialog.BasicAlertBuilder;
 import ui.Dialog.IAlertBuilder;
 import ui.Login.LoginView;
-import ui.Main.MainView;
 
 import java.util.Optional;
 
-public class RegisterViewModel implements IViewModel {
+public class RegisterViewModel extends ViewModel {
 
-    private DBMgr dbmgr;
     private StringProperty username = new SimpleStringProperty();
     private StringProperty account = new SimpleStringProperty();
     private StringProperty password = new SimpleStringProperty();
@@ -27,6 +25,7 @@ public class RegisterViewModel implements IViewModel {
 
     public RegisterViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
+        this.sessionContext = SessionContext.getInstance();
     }
 
     // =============== Getter及Setter ===============
@@ -74,7 +73,8 @@ public class RegisterViewModel implements IViewModel {
         if(prompt!=null) {
             triggerFailedAlert(prompt);
         } else {
-            dbmgr.saveUser(new User(account.get(), password.get(), username.get()));
+            String password_hash = BCrypt.with(BCrypt.Version.VERSION_2Y).hashToString(10, password.get().toCharArray());
+            dbmgr.saveUser(new User(account.get(), password_hash, username.get()));
             clearInput();
             triggerSucceedAlert();
         }

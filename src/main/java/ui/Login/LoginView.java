@@ -1,15 +1,12 @@
 package ui.Login;
 
 import com.jfoenix.controls.*;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
+import main.View;
 import main.ViewModelProviders;
 
 
-public class LoginView {
+public class LoginView implements View {
 
     @FXML
     private JFXTextField accountInput;
@@ -25,6 +22,7 @@ public class LoginView {
 
     private LoginViewModel loginViewModel;
 
+    @Override
     public void initialize() {
 
         loginViewModel = ViewModelProviders.getInstance().get(LoginViewModel.class);
@@ -33,7 +31,7 @@ public class LoginView {
         signUpBtn.setOnAction(e -> loginViewModel.signUp());
         loginBtn.setOnAction(e -> loginViewModel.login());
 
-        // 雙向綁定 accountInput 和 account 資料變數
+        // 雙向綁定View資料和ViewModel資料
         accountInput.textProperty().bindBidirectional(loginViewModel.accountProperty());
         passwordInput.textProperty().bindBidirectional(loginViewModel.passwordProperty());
 

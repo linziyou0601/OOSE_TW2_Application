@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import main.View;
 import main.ViewModelProviders;
 import model.Classroom;
 
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ListIterator;
 
-public class BookingView {
+public class BookingView implements View {
 
     @FXML
     private Label classroomIdLabel; //教室名稱標籤
@@ -62,6 +63,7 @@ public class BookingView {
 
     private BookingViewModel bookingViewModel;
 
+    @Override
     public void initialize() {
         bookingViewModel = ViewModelProviders.getInstance().get(BookingViewModel.class);
 
@@ -73,7 +75,7 @@ public class BookingView {
             if(newValue) closeStageBtn.fire();
         });
 
-        // 雙向View資料和ViewModel資料
+        // 雙向綁定View資料和ViewModel資料
         ChangeListener<String> forceTimeSelectListener = ((observable, oldValue, newValue) -> {
             if (!newValue.matches("^(2[01234]|[10]?\\d)$")) ((StringProperty) observable).set(oldValue);
         });

@@ -91,7 +91,7 @@ public class Booking {
         LocalDate date_today = LocalDate.now();
         if(date_booking.equals(date_today)){
             LocalTime time_now = LocalTime.now();
-            if(time_now.getHour() >= startTime && time_now.getHour() <= (endTime+1)){
+            if(time_now.getHour() >= startTime && time_now.getHour() <= endTime){
                 return true;
             } else {
                 return false;

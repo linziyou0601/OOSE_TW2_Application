@@ -9,9 +9,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import main.View;
 import main.ViewModelProviders;
 
-public class RegisterView {
+public class RegisterView implements View {
 
     @FXML
     private JFXTextField usernameInput;
@@ -33,6 +34,7 @@ public class RegisterView {
 
     private RegisterViewModel registerViewModel;
 
+    @Override
     public void initialize() {
         registerViewModel = ViewModelProviders.getInstance().get(RegisterViewModel.class);
 
@@ -40,7 +42,7 @@ public class RegisterView {
         signInBtn.setOnAction(e -> registerViewModel.signIn());
         submitBtn.setOnAction(e -> registerViewModel.submit());
 
-        // 雙向綁定 accountInput 和 account 資料變數
+        // 雙向綁定View資料和ViewModel資料
         usernameInput.textProperty().bindBidirectional(registerViewModel.usernameProperty());
         accountInput.textProperty().bindBidirectional(registerViewModel.accountProperty());
         passwordInput.textProperty().bindBidirectional(registerViewModel.passwordProperty());

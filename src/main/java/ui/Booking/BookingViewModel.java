@@ -2,28 +2,22 @@ package ui.Booking;
 
 import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
-import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import main.IViewModel;
+import main.ViewModel;
 import main.SessionContext;
-import main.ViewManager;
 import model.Booking;
 import model.Classroom;
 import model.User;
 import ui.Dialog.AlertDirector;
 import ui.Dialog.BasicAlertBuilder;
 import ui.Dialog.IAlertBuilder;
-import ui.Login.LoginView;
-import ui.Main.MainView;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class BookingViewModel implements IViewModel {
-    private DBMgr dbmgr;
+public class BookingViewModel extends ViewModel {
+
     private Classroom selectedClassroom;
     private StringProperty classroomIdLabel = new SimpleStringProperty();
     private StringProperty classroomTypeLabel = new SimpleStringProperty();
@@ -40,6 +34,7 @@ public class BookingViewModel implements IViewModel {
 
     public BookingViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
+        this.sessionContext = SessionContext.getInstance();
     }
 
     // =============== Getter及Setter ===============
@@ -61,15 +56,14 @@ public class BookingViewModel implements IViewModel {
     // =============== 邏輯處理 ===============
     // 邏輯處理：登入後參數對session綁定
     public void init() {
-        String classroomId = SessionContext.getSession().get("selectedClassroomId");
-        selectedClassroom = dbmgr.getClassroomById(classroomId);
+        selectedClassroom = sessionContext.get("selectedClassroom");
         classroomIdLabel.set(selectedClassroom.getId());
         classroomTypeLabel.set(selectedClassroom.getType());
-        computerCheck.bind(Bindings.createStringBinding(() -> (selectedClassroom.hasComputer()? "available": "unavailable")));
-        projectorCheck.bind(Bindings.createStringBinding(() -> (selectedClassroom.hasProjector()? "available": "unavailable")));
-        blackboardCheck.bind(Bindings.createStringBinding(() -> (selectedClassroom.hasBlackboard()? "available": "unavailable")));
-        air_condCheck.bind(Bindings.createStringBinding(() -> (selectedClassroom.hasAirCond()? "available": "unavailable")));
-        speakerCheck.bind(Bindings.createStringBinding(() -> (selectedClassroom.hasSpeaker()? "available": "unavailable")));
+        computerCheck.set(selectedClassroom.hasComputer()? "available": "unavailable");
+        projectorCheck.set(selectedClassroom.hasProjector()? "available": "unavailable");
+        blackboardCheck.set(selectedClassroom.hasBlackboard()? "available": "unavailable");
+        air_condCheck.set(selectedClassroom.hasAirCond()? "available": "unavailable");
+        speakerCheck.set(selectedClassroom.hasSpeaker()? "available": "unavailable");
         availableTime.setAll(selectedClassroom.getAvailableTimes());
         closeStage.set(false);
     }
@@ -92,10 +86,9 @@ public class BookingViewModel implements IViewModel {
         if(prompt != null) {
             triggerFailedAlert(prompt);
         } else {
-            String date = SessionContext.getSession().get("selectedDate").toString();
-            User user = SessionContext.getSession().get("user");
-            Classroom classroom = dbmgr.getClassroomById(selectedClassroom.getId());
-            Booking booking = new Booking(date, Integer.parseInt(timeStart.get()), Integer.parseInt(timeEnd.get())-1, classroom, user);
+            String date = sessionContext.get("selectedDate").toString();
+            User user = sessionContext.get("user");
+            Booking booking = new Booking(date, Integer.parseInt(timeStart.get()), Integer.parseInt(timeEnd.get())-1, selectedClassroom, user);
             dbmgr.saveBooking(booking);
             triggerSucceedAlert(booking);
         }
@@ -124,8 +117,8 @@ public class BookingViewModel implements IViewModel {
         // Show and wait for selection
         Optional<Boolean> result = alert.showAndWait();
         if (result.isPresent()) {
-            SessionContext.getSession().unset("selectedClassroomId");
-            SessionContext.getSession().unset("selectedDate");
+            sessionContext.unset("selectedClassroomId");
+            sessionContext.unset("selectedDate");
             closeStage.set(true);
         }
     }

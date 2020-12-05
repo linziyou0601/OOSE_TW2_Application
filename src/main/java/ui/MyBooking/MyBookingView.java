@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import main.View;
 import main.ViewModelProviders;
 import model.Booking;
 import ui.Booking.BookingView;
@@ -16,7 +17,7 @@ import ui.Booking.BookingView;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class MyBookingView {
+public class MyBookingView implements View {
 
     @FXML
     private Label usernameLabel;     //顯示目前帳號
@@ -40,6 +41,7 @@ public class MyBookingView {
 
     private MyBookingViewModel myBookingViewModel;
 
+    @Override
     public void initialize() {
         myBookingViewModel = ViewModelProviders.getInstance().get(MyBookingViewModel.class);
 
@@ -62,7 +64,7 @@ public class MyBookingView {
             myBookingViewModel.refresh();
         });
 
-        // 雙向View資料和ViewModel資料
+        // 雙向綁定View資料和ViewModel資料
         usernameLabel.textProperty().bindBidirectional(myBookingViewModel.usernameProperty());
 
         // 教室清單

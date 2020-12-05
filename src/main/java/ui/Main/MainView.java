@@ -13,6 +13,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
+import main.View;
 import main.ViewModelProviders;
 import model.Booking;
 import model.Classroom;
@@ -20,7 +21,7 @@ import model.Classroom;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class MainView {
+public class MainView implements View {
 
     @FXML
     private JFXButton test_addClassroomBtn; //測試鈕：新增教室物件
@@ -48,6 +49,7 @@ public class MainView {
 
     private MainViewModel mainViewModel;
 
+    @Override
     public void initialize() {
         mainViewModel = ViewModelProviders.getInstance().get(MainViewModel.class);
 
@@ -67,7 +69,7 @@ public class MainView {
             System.out.println(mainViewModel.queryDateProperty().get());
         });
 
-        // 雙向View資料和ViewModel資料
+        // 雙向綁定View資料和ViewModel資料
         queryInput.textProperty().bindBidirectional(mainViewModel.queryStringProperty());
         datepicker.valueProperty().bindBidirectional(mainViewModel.queryDateProperty());
         usernameLabel.textProperty().bindBidirectional(mainViewModel.usernameProperty());
@@ -87,7 +89,7 @@ public class MainView {
                     // 將資料設到元件上
                     classroomIdLabel.setText(classroom.getId());
                     classroomTypeLabel.setText(classroom.getType());
-                    rootNode.setOnMouseClicked(e -> mainViewModel.selectClassroom(classroom.getId()));
+                    rootNode.setOnMouseClicked(e -> mainViewModel.selectClassroom(classroom));
                     classroomListPane.getChildren().add(rootNode);
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -1,12 +1,11 @@
 package ui.Main;
 
 import database.DBMgr;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import main.SessionContext;
 import main.ViewManager;
-import main.IViewModel;
+import main.ViewModel;
 import model.Classroom;
 import model.User;
 import ui.Booking.BookingView;
@@ -15,11 +14,9 @@ import ui.MyBooking.MyBookingView;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
-public class MainViewModel implements IViewModel {
+public class MainViewModel extends ViewModel {
 
-    private DBMgr dbmgr;
     private StringProperty queryString = new SimpleStringProperty();
     private ObjectProperty<LocalDate> queryDate = new SimpleObjectProperty<>(LocalDate.now());
     private StringProperty username = new SimpleStringProperty();
@@ -28,6 +25,7 @@ public class MainViewModel implements IViewModel {
 
     public MainViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
+        this.sessionContext = SessionContext.getInstance();
     }
 
     // =============== Getter及Setter ===============
@@ -39,7 +37,7 @@ public class MainViewModel implements IViewModel {
     // =============== 邏輯處理 ===============
     // 邏輯處理：登入後參數對session綁定
     public void init() {
-        username.bind(Bindings.createStringBinding(() -> ((User) SessionContext.getSession().get("user")).getUsername()));    //account綁定到User的account變數上
+        username.set(((User)sessionContext.get("user")).getUsername());
         refresh();
     }
 
@@ -50,7 +48,7 @@ public class MainViewModel implements IViewModel {
 
     // 邏輯處理：登出
     public void logout() {
-        SessionContext.getSession().clear();        //清除Session
+        sessionContext.clear();        //清除Session
         ViewManager.navigateTo(LoginView.class);
     }
 
@@ -62,9 +60,10 @@ public class MainViewModel implements IViewModel {
     }
 
     // 邏輯處理：選擇教室
-    public void selectClassroom(String id) {
-        SessionContext.getSession().set("selectedClassroomId", id);
-        SessionContext.getSession().set("selectedDate", queryDate.get());
+    public void selectClassroom(Classroom classroom) {
+        refresh();
+        sessionContext.set("selectedClassroom", classroom);
+        sessionContext.set("selectedDate", queryDate.get());
         ViewManager.popUp(BookingView.class);
     }
 

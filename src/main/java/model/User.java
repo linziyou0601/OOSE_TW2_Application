@@ -1,5 +1,7 @@
 package model;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+
 public class User {
     private String account;
     private String password;
@@ -37,6 +39,7 @@ public class User {
 
     // 待資料庫補齊需要改
     public boolean validate(String password) {
-        return this.password.equals(password);
+        BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), this.password);
+        return result.verified;
     }
 }

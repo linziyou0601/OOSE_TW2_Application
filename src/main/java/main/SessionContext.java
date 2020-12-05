@@ -12,7 +12,7 @@ public class SessionContext {
 
     private SessionContext(){}
 
-    public static SessionContext getSession(){
+    public static SessionContext getInstance(){
         return sessionContext;
     }
 

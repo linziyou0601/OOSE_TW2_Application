@@ -1,34 +1,31 @@
 package ui.MyBooking;
 
 import database.DBMgr;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import main.IViewModel;
+import main.ViewModel;
 import main.SessionContext;
 import main.ViewManager;
 import model.Booking;
-import model.Classroom;
 import model.User;
-import ui.Booking.BookingView;
 import ui.BookingDetail.BookingDetailView;
 import ui.Login.LoginView;
 import ui.Main.MainView;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MyBookingViewModel implements IViewModel {
+public class MyBookingViewModel extends ViewModel {
 
-    private DBMgr dbmgr;
+    private User currentUser;
     private StringProperty username = new SimpleStringProperty();
     private StringProperty periodShowType = new SimpleStringProperty("CURRENT");
     private ListProperty<Booking> bookingList = new SimpleListProperty<>(FXCollections.observableArrayList(new ArrayList<>()));
 
     public MyBookingViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
+        this.sessionContext = SessionContext.getInstance();
     }
 
     // =============== Getter及Setter ===============
@@ -40,14 +37,15 @@ public class MyBookingViewModel implements IViewModel {
     // =============== 邏輯處理 ===============
     // 邏輯處理：登入後參數對session綁定
     public void init() {
-        username.bind(Bindings.createStringBinding(() -> ((User) SessionContext.getSession().get("user")).getUsername()));    //account綁定到User的account變數上
+        currentUser = sessionContext.get("user");
+        username.set(currentUser.getUsername());
         refresh();
     }
 
     // 邏輯處理：刷新頁面資料
     public void refresh() {
         bookingList.clear();
-        String account = ((User) SessionContext.getSession().get("user")).getAccount();
+        String account = currentUser.getAccount();
         List<Booking> bookings = dbmgr.getBookingsByAccount(account);
         Iterator<Booking> bookingItr = bookings.iterator();
         while(bookingItr.hasNext()) {
@@ -60,7 +58,7 @@ public class MyBookingViewModel implements IViewModel {
 
     // 邏輯處理：登出
     public void logout() {
-        SessionContext.getSession().clear();        //清除Session
+        sessionContext.clear();        //清除Session
         ViewManager.navigateTo(LoginView.class);
     }
 
@@ -81,7 +79,8 @@ public class MyBookingViewModel implements IViewModel {
 
     // 邏輯處理：操作預約教室
     public void operateBooking(Booking booking) {
-        SessionContext.getSession().set("selectedBooking", booking);
+        refresh();
+        sessionContext.set("selectedBooking", booking);
         ViewManager.popUp(BookingDetailView.class);
     }
 

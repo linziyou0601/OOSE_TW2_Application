@@ -1,13 +1,14 @@
 package main;
 
 import database.DBMgr;
+import database.MySQLDBMgrImpl;
 
 import java.util.HashMap;
 
 public class ViewModelProviders {
     private static final ViewModelProviders vmProvider = new ViewModelProviders();
-    private HashMap<String, IViewModel> viewModelStore = new HashMap<>();
-    private DBMgr dbMgr = new DBMgr();
+    private HashMap<String, ViewModel> viewModelStore = new HashMap<>();
+    private DBMgr dbMgr = new DBMgr(new MySQLDBMgrImpl());
 
     private ViewModelProviders(){}
 
@@ -23,7 +24,7 @@ public class ViewModelProviders {
         } else {
             try {
                 viewModel = modelClass.getConstructor(DBMgr.class).newInstance(dbMgr);
-                viewModelStore.put(viewModelName, (IViewModel) viewModel);
+                viewModelStore.put(viewModelName, (ViewModel) viewModel);
             } catch (Exception e) {
                 e.printStackTrace();
             }

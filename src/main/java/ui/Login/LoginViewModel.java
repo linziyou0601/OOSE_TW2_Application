@@ -8,8 +8,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import main.SessionContext;
 import main.ViewManager;
-import main.IViewModel;
-import model.Booking;
+import main.ViewModel;
 import model.User;
 import ui.Dialog.AlertDirector;
 import ui.Dialog.BasicAlertBuilder;
@@ -17,17 +16,16 @@ import ui.Dialog.IAlertBuilder;
 import ui.Main.MainView;
 import ui.Register.RegisterView;
 
-import java.util.Optional;
+public class LoginViewModel extends ViewModel {
 
-public class LoginViewModel implements IViewModel {
-
-    private DBMgr dbmgr;
     private StringProperty account = new SimpleStringProperty();
     private StringProperty password = new SimpleStringProperty();
     private ObjectProperty<JFXAlert> loginAlert = new SimpleObjectProperty<>();
 
     public LoginViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
+        this.sessionContext = SessionContext.getInstance();
+        dbmgr.testQuery();
     }
 
     // =============== Getter及Setter ===============
@@ -69,7 +67,7 @@ public class LoginViewModel implements IViewModel {
         if(prompt!=null) {
             triggerFailedAlert(prompt);
         } else {
-            SessionContext.getSession().set("user", user);
+            sessionContext.set("user", user);
             clearInput();
             ViewManager.navigateTo(MainView.class);
         }

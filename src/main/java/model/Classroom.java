@@ -66,6 +66,6 @@ public class Classroom {
     }
 
     public List<Boolean> getAvailableTimes() {
-        return new ArrayList<>(Arrays.asList(true, true, true, false, true, true, false, true, false, true, true, false, true, true, false, true, true, false, false, false, true, true, true, true));
+        return new ArrayList<>(Arrays.asList(true, true, true, false, true, true, false, true, false, true, true, false, true, true, true, true, true, false, false, false, true, true, true, true));
     }
 }
