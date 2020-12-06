@@ -1,7 +1,9 @@
 package ui.MyBooking;
 
+import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXMasonryPane;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,6 +11,9 @@ import javafx.scene.control.Label;
 import mvvm.View;
 import mvvm.ViewModelProviders;
 import model.Booking;
+import ui.Dialog.AlertDirector;
+import ui.Dialog.IAlertBuilder;
+import ui.Dialog.LoadingAlertBuilder;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -93,6 +98,9 @@ public class MyBookingView implements View {
 
         // 綁定 alert 變數
         myBookingViewModel.cancelAlertProperty().addListener((observable, oldAlert, newAlert) -> newAlert.show());
+
+        // 綁定 Loading Alert 變數
+        myBookingViewModel.loadingAlertProperty().addListener((observable, oldAlert, newAlert) -> Platform.runLater(() -> newAlert.show()));
 
         myBookingViewModel.init();
     }

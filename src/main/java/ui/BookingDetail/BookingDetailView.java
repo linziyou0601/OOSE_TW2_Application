@@ -2,6 +2,7 @@ package ui.BookingDetail;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXMasonryPane;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +13,7 @@ import mvvm.View;
 import mvvm.ViewModelProviders;
 import devices.IoTDevice;
 import observer.and.adapter.DeviceIconObserver;
-import observer.and.adapter.Observable;
+import observer.and.adapter.IObservable;
 import observer.and.adapter.PowerBtnObserver;
 
 import java.io.IOException;
@@ -82,8 +83,8 @@ public class BookingDetailView implements View {
                     // 將資料設到元件上
                     DeviceIconObserver deviceIconObserver = new DeviceIconObserver(deviceImage, deviceNameLabel);
                     PowerBtnObserver powerBtnObserver = new PowerBtnObserver(powerBtn);
-                    ((Observable)device).addObserve(deviceIconObserver);
-                    ((Observable)device).addObserve(powerBtnObserver);
+                    ((IObservable)device).addObserve(deviceIconObserver);
+                    ((IObservable)device).addObserve(powerBtnObserver);
                     powerBtn.setOnAction(e -> device.switchState());
                     deviceListPane.getChildren().add(rootNode);
                 } catch (IOException e) {
@@ -91,6 +92,9 @@ public class BookingDetailView implements View {
                 }
             }
         });
+
+        // 綁定 Loading Alert 變數
+        bookingDetailViewModel.loadingAlertProperty().addListener((observable, oldAlert, newAlert) -> Platform.runLater(() -> newAlert.show()));
 
         bookingDetailViewModel.init();
     }

@@ -1,11 +1,16 @@
 package ui.Register;
 
+import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import mvvm.View;
 import mvvm.ViewModelProviders;
+import ui.Dialog.AlertDirector;
+import ui.Dialog.IAlertBuilder;
+import ui.Dialog.LoadingAlertBuilder;
 
 public class RegisterView implements View {
 
@@ -49,5 +54,8 @@ public class RegisterView implements View {
 
         // 綁定 registerAlert 變數
         registerViewModel.registerAlertProperty().addListener((observable, oldAlert, newAlert) -> newAlert.show());
+
+        // 綁定 Loading Alert 變數
+        registerViewModel.loadingAlertProperty().addListener((observable, oldAlert, newAlert) -> Platform.runLater(() -> newAlert.show()));
     }
 }

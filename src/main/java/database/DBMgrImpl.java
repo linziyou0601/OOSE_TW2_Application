@@ -16,6 +16,7 @@ public interface DBMgrImpl {
 
     // For Classroom
     List<Classroom> getClassrooms();
+    List<Classroom> getClassroomsByKeyword(String keyword);
     Classroom getClassroomById(String id);
     List<Boolean> getAvailableTime(String classroomId, String date);
 

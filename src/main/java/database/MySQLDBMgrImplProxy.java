@@ -5,13 +5,10 @@ import model.Booking;
 import model.Classroom;
 import model.User;
 
-import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class MySQLDBMgrImplProxy implements DBMgrImpl{
     private final MySQLDBMgrImpl mySQLDBMgr = new MySQLDBMgrImpl();
@@ -34,11 +31,34 @@ public class MySQLDBMgrImplProxy implements DBMgrImpl{
     }
 
     // ============================== For Classroom ==============================
-    @Override   //重建快取
+    @Override   //快取
     public List<Classroom> getClassrooms() {
-        List<Classroom> result = mySQLDBMgr.getClassrooms();
-        for(Classroom classroom: result){
-            classroomCache.put(classroom.getId(), classroom);
+        if(classroomCache.size()>0){
+            return (List<Classroom>)classroomCache.values();
+        } else {
+            List<Classroom> result = mySQLDBMgr.getClassrooms();
+            for (Classroom classroom : result) {
+                classroom.setDevices(getIoTDevicesByClassroomId(classroom.getId()));
+                classroomCache.put(classroom.getId(), classroom);
+            }
+            return result;
+        }
+    }
+    @Override   //快取
+    public List<Classroom> getClassroomsByKeyword(String keyword) {
+        List<Classroom> result;
+        if(classroomCache.size()>0){
+            Pattern p = Pattern.compile(".*"+keyword+".*"); // the regexp you want to match
+            result = new ArrayList<>();
+            for(String key: classroomCache.keySet())
+                if(p.matcher(key).matches())
+                    result.add(classroomCache.get(key));
+        } else {
+            result = mySQLDBMgr.getClassroomsByKeyword(keyword);
+            for(Classroom classroom: result){
+                classroom.setDevices(getIoTDevicesByClassroomId(classroom.getId()));
+                classroomCache.put(classroom.getId(), classroom);
+            }
         }
         return result;
     }
@@ -106,6 +126,7 @@ public class MySQLDBMgrImplProxy implements DBMgrImpl{
         List<IoTDevice> devices = iotDeviceCache.get(id);
         if(devices == null) {
             devices = mySQLDBMgr.getIoTDevicesByClassroomId(id);
+            iotDeviceCache.put(id, devices);
         }
         return devices;
     }

@@ -1,33 +1,31 @@
 package devices;
 
-import database.DBMgr;
-import database.MySQLDBMgrImpl;
 import main.APIService;
-import main.MainApplication;
-import observer.and.adapter.Observable;
-import observer.and.adapter.Observer;
+import mvvm.RxJavaObserver;
+import observer.and.adapter.IObservable;
+import observer.and.adapter.IObserver;
 import org.reactfx.util.FxTimer;
 
 import java.time.Duration;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class SmartSpeaker implements IoTDevice, Observable {
+public class SmartSpeaker implements IoTDevice, IObservable {
     private int id;
     private String name;
     private String state;
-    private List<Observer> observerList = new ArrayList<>();
+    private List<IObserver> observerList = new ArrayList<>();
 
     public SmartSpeaker(int id, String name, String state) {
         this.id = id;
         this.name = name;
         this.state = state;
-        FxTimer.runPeriodically(Duration.ofMillis(1000), () -> loadState());
+        FxTimer.runPeriodically(Duration.ofMillis(5000), () -> loadState());
     }
 
+    // ==================== For IoTDevice Interface ====================
+    @Override
     public int getId() {
         return id;
     }
@@ -54,8 +52,12 @@ public class SmartSpeaker implements IoTDevice, Observable {
 
     @Override
     public void loadState() {
-        this.state = APIService.loadIoTState(this.id);
-        notifyObservers();
+        APIService.loadIoTState(this.id).subscribe(new RxJavaObserver<>(){
+            @Override
+            public void onNext(String result) { state = result; }
+            @Override
+            public void onComplete(){ notifyObservers(); }
+        });
     }
 
     @Override
@@ -65,20 +67,21 @@ public class SmartSpeaker implements IoTDevice, Observable {
         uploadState();
     }
 
+    // ==================== For IObservable Interface ====================
     @Override
-    public void addObserve(Observer observer) {
+    public void addObserve(IObserver observer) {
         observerList.add(observer);
         observer.update(this);
     }
 
     @Override
-    public void removeObserve(Observer observer) {
+    public void removeObserve(IObserver observer) {
         observerList.remove(observer);
     }
 
     @Override
     public void notifyObservers(){
-        Iterator<Observer> observerItr = observerList.iterator();
+        Iterator<IObserver> observerItr = observerList.iterator();
         while(observerItr.hasNext()){
             observerItr.next().update(this);
         }

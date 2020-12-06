@@ -81,7 +81,6 @@ public class Booking {
         this.activate = activate;
     }
 
-    // 待資料庫補齊需要改
     public boolean isPeriod() {
         LocalDate date_booking = LocalDate.parse(date);
         LocalDate date_today = LocalDate.now();
@@ -100,15 +99,15 @@ public class Booking {
     public boolean isFuture() {
         LocalDate date_booking = LocalDate.parse(date);
         LocalDate date_today = LocalDate.now();
-        if(date_booking.isAfter(date_today)){
-            return true;
-        } else {
+        if(!date_booking.isBefore(date_today)){
             LocalTime time_now = LocalTime.now();
-            if(time_now.getHour() < startTime){
+            if(startTime > time_now.getHour() || date_booking.isAfter(date_today)){
                 return true;
             } else {
                 return false;
             }
+        } else {
+            return false;
         }
     }
 }

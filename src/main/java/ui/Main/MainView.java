@@ -1,8 +1,10 @@
 package ui.Main;
 
+import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXMasonryPane;
 import com.jfoenix.controls.JFXTextField;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +13,10 @@ import javafx.scene.control.Label;
 import mvvm.View;
 import mvvm.ViewModelProviders;
 import model.Classroom;
+import ui.Dialog.AlertDirector;
+import ui.Dialog.BasicAlertBuilder;
+import ui.Dialog.IAlertBuilder;
+import ui.Dialog.LoadingAlertBuilder;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -57,7 +63,7 @@ public class MainView implements View {
 
         // 搜尋鈕
         searchBtn.setOnAction(e -> {
-            System.out.println(mainViewModel.queryDateProperty().get());
+            mainViewModel.refresh();
         });
 
         // 雙向綁定View資料和ViewModel資料
@@ -87,6 +93,9 @@ public class MainView implements View {
                 }
             }
         });
+
+        // 綁定 Loading Alert 變數
+        mainViewModel.loadingAlertProperty().addListener((observable, oldAlert, newAlert) -> Platform.runLater(() -> newAlert.show()));
 
         mainViewModel.init();
     }

@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import devices.IoTDevice;
 
-public class DeviceIconObserver implements Observer{
+public class DeviceIconObserver implements IObserver {
     ImageView deviceImage;
     Label deviceNameLabel;
 
@@ -16,7 +16,7 @@ public class DeviceIconObserver implements Observer{
     }
 
     @Override
-    public void update(Observable device) {
+    public void update(IObservable device) {
         String deviceImagePathPostfix, deviceNameColor;
         if (((IoTDevice)device).getState().equals("ON")){
             deviceImagePathPostfix = "green";

@@ -11,10 +11,13 @@ import java.time.LocalTime;
 import java.util.*;
 
 public class MySQLDBMgrImpl implements DBMgrImpl{
-    private final String url = "jdbc:mysql://localhost:3306/oosetw2?useUnicode=true&characterEncoding=UTF-8";
+    /*private final String url = "jdbc:mariadb://localhost:3306/oosetw2?useUnicode=true&characterEncoding=UTF-8";
     private final String user = "root";
-    private final String password = "";
+    private final String password = "";*/
 
+    private final String url = "jdbc:mariadb://oosetw2.linziyou.info:3306/oosetw2?useUnicode=true&characterEncoding=UTF-8";
+    private final String user = "oosetw2";
+    private final String password = "drjennyoosetw";
     public Connection openConnection() {
         // 開啟與MySQL資料庫之間的連線
         Connection con = null;
@@ -124,6 +127,29 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
         return result;
     }
     @Override
+    public List<Classroom> getClassroomsByKeyword(String keyword) {
+        List<Classroom> result = new ArrayList<>();
+
+        //資料庫操作
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            con = openConnection();
+            stmt = con.prepareStatement("SELECT * from classroom WHERE id LIKE CONCAT('%', UPPER(?), '%')");
+            stmt.setString(1, keyword);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                Classroom classroom = getClassroomFromResultSet(rs);
+                result.add(classroom);
+            }
+        }
+        catch (Exception throwables) { throwables.printStackTrace(); }
+        finally { closeConnection(con, stmt, rs); }
+        return result;
+    }
+
+    @Override
     public Classroom getClassroomById(String id) {
         //資料庫操作
         Connection con = null;
@@ -146,6 +172,28 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
     }
     @Override
     public List<Boolean> getAvailableTime(String classroomId, String date) {
+         List<HashMap<String, Integer>> bookedList = new ArrayList<>();
+        //資料庫操作
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            con = openConnection();
+            stmt = con.prepareStatement("SELECT startTime, endTime from booking WHERE classroomId = ? AND date = ?");
+            stmt.setString(1, classroomId);
+            stmt.setString(2, date);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                HashMap<String, Integer> valueSet = new HashMap<>();
+                valueSet.put("startTime", rs.getInt("startTime"));
+                valueSet.put("endTime", rs.getInt("endTime"));
+                bookedList.add(valueSet);
+            }
+        }
+        catch (Exception throwables) { throwables.printStackTrace(); }
+        finally { closeConnection(con, stmt, rs); }
+
+        //開始找有無重疊
         List<Boolean> result = new ArrayList<>();
         for(int i = 0; i <24; i++) {
             LocalDate date_booking = LocalDate.parse(date);
@@ -156,25 +204,13 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
                 // 若選定日期為當天或未來，則比較時間
                 if(i >= time_now.getHour() || date_booking.isAfter(date_today)){
                     //若時間為未來、或時間為當天的當下時刻之後
-                    //資料庫操作
-                    Connection con = null;
-                    PreparedStatement stmt = null;
-                    ResultSet rs = null;
-                    try {
-                        con = openConnection();
-                        stmt = con.prepareStatement("SELECT count(*) as Numbers from booking WHERE classroomId = ? AND date = ? AND (endTime>=? AND startTime<=?)");
-                        stmt.setString(1, classroomId);
-                        stmt.setString(2, date);
-                        stmt.setInt(3, i);
-                        stmt.setInt(4, i);
-                        rs = stmt.executeQuery();
-                        while (rs.next()) {
-                            result.add(i, rs.getInt("Numbers") == 0);
-                        }
+                    boolean overlap = false;
+                    for(HashMap<String, Integer> booked: bookedList){
                         // 重疊 == (start <= 已存在的end) && (end >= 已存在的start)
+                        if(booked.get("endTime")>=i && booked.get("startTime")<=i)
+                            overlap = true;
                     }
-                    catch (Exception throwables) { throwables.printStackTrace(); }
-                    finally { closeConnection(con, stmt, rs); }
+                    result.add(i, !overlap);
                 } else {
                     //若時間當天的過去
                     result.add(i, false);
@@ -192,7 +228,7 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
             Classroom classroom = new Classroom();
             classroom.setId(rs.getString("id"));
             classroom.setType(rs.getString("type"));
-            classroom.setDevices(getIoTDevicesByClassroomId(rs.getString("id")));
+            //classroom.setDevices(getIoTDevicesByClassroomId(rs.getString("id")));
             return classroom;
         }
         catch (Exception throwables) { throwables.printStackTrace(); }

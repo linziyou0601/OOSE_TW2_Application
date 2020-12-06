@@ -1,7 +1,9 @@
 package ui.Booking;
 
+import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
+import javafx.application.Platform;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -10,6 +12,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import mvvm.View;
 import mvvm.ViewModelProviders;
+import ui.Dialog.AlertDirector;
+import ui.Dialog.IAlertBuilder;
+import ui.Dialog.LoadingAlertBuilder;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -121,6 +126,9 @@ public class BookingView implements View {
 
         // 綁定 submitAlert 變數
         bookingViewModel.submitAlertProperty().addListener((observable, oldAlert, newAlert) -> newAlert.show());
+
+        // 綁定 Loading Alert 變數
+        bookingViewModel.loadingAlertProperty().addListener((observable, oldAlert, newAlert) -> Platform.runLater(() -> newAlert.show()));
 
         bookingViewModel.init();
     }

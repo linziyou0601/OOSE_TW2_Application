@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import devices.IoTDevice;
 
-public class PowerBtnObserver implements Observer{
+public class PowerBtnObserver implements IObserver {
     JFXButton powerBtn;
 
     public PowerBtnObserver(JFXButton powerBtn){
@@ -13,7 +13,7 @@ public class PowerBtnObserver implements Observer{
     }
 
     @Override
-    public void update(Observable device) {
+    public void update(IObservable device) {
         String powerIconPathPostfix, powerBtnColor;
         ImageView powerBtnIcon = (ImageView) powerBtn.getGraphic().lookup("#powerBtnIcon");
         if (((IoTDevice)device).getState().equals("ON")){

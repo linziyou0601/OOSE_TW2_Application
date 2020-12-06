@@ -1,11 +1,13 @@
 package database;
 
 import devices.IoTDevice;
+import io.reactivex.*;
 import model.Booking;
 import model.Classroom;
 import model.User;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class DBMgr {
@@ -16,45 +18,116 @@ public class DBMgr {
     }
 
     // For User
-    public void insertUser(User user) {
-        dbmgrImpl.insertUser(user);
+    public Completable insertUser(User user) {
+        Completable completable = Completable.create(subscriber -> {
+            dbmgrImpl.insertUser(user);
+            subscriber.onComplete();
+        });
+        return completable;
     }
-    public User getUserByAccount(String account) {
-        return dbmgrImpl.getUserByAccount(account);
+    public Observable<User> getUserByAccount(String account) {
+        Observable observable = Observable.create((ObservableOnSubscribe<User>) subscriber -> {
+            subscriber.onNext(dbmgrImpl.getUserByAccount(account));
+            subscriber.onComplete();
+        });
+        return observable;
     }
-    public boolean getDuplicateBooking(String userAccount, String date, int startTime, int endTime) { return dbmgrImpl.getDuplicateBooking(userAccount, date, startTime, endTime); };
+    public Observable<Boolean> getDuplicateBooking(String userAccount, String date, int startTime, int endTime) {
+        Observable observable = Observable.create((ObservableOnSubscribe<Boolean>) subscriber -> {
+            subscriber.onNext(dbmgrImpl.getDuplicateBooking(userAccount, date, startTime, endTime));
+            subscriber.onComplete();
+        });
+        return observable;
+    }
 
     // For Classroom
-    public List<Classroom> getClassrooms() {
-        return dbmgrImpl.getClassrooms();
+    public Observable<List<Classroom>> getClassrooms() {
+        Observable observable = Observable.create((ObservableOnSubscribe<List<Classroom>>) subscriber -> {
+            subscriber.onNext(dbmgrImpl.getClassrooms());
+            subscriber.onComplete();
+        });
+        return observable;
     }
-    public Classroom getClassroomById(String id) {
-        return dbmgrImpl.getClassroomById(id);
+    public Observable<List<Classroom>> getClassroomsByKeyword(String keyword) {
+        Observable observable = Observable.create((ObservableOnSubscribe<List<Classroom>>) subscriber -> {
+            subscriber.onNext(dbmgrImpl.getClassroomsByKeyword(keyword));
+            subscriber.onComplete();
+        });
+        return observable;
     }
-    public List<Boolean> getAvailableTime(String classroomId, String date) { return dbmgrImpl.getAvailableTime(classroomId, date); };
+    public Observable<Classroom> getClassroomById(String id) {
+        Observable observable = Observable.create((ObservableOnSubscribe<Classroom>) subscriber -> {
+            subscriber.onNext(dbmgrImpl.getClassroomById(id));
+            subscriber.onComplete();
+        });
+        return observable;
+    }
+    public Observable<List<Boolean>> getAvailableTime(String classroomId, String date) {
+        Observable observable = Observable.create((ObservableOnSubscribe<List<Boolean>>) subscriber -> {
+            subscriber.onNext(dbmgrImpl.getAvailableTime(classroomId, date));
+            subscriber.onComplete();
+        });
+        return observable;
+    }
 
     // For Booking
-    public void insertBooking(Booking booking) {
-        dbmgrImpl.insertBooking(booking);
+    public Completable insertBooking(Booking booking) {
+        Completable completable = Completable.create(subscriber -> {
+            dbmgrImpl.insertBooking(booking);
+            subscriber.onComplete();
+        });
+        return completable;
     }
-    public void updateBooking(Booking booking) {
-        dbmgrImpl.updateBooking(booking);
+    public Completable updateBooking(Booking booking) {
+        Completable completable = Completable.create(subscriber -> {
+            dbmgrImpl.updateBooking(booking);
+            subscriber.onComplete();
+        });
+        return completable;
     }
-    public void deleteBookingById(int id) {
-        dbmgrImpl.deleteBookingById(id);
+    public Completable deleteBookingById(int id) {
+        Completable completable = Completable.create(subscriber -> {
+            dbmgrImpl.deleteBookingById(id);
+            subscriber.onComplete();
+        });
+        return completable;
     }
-    public List<Booking> getBookings() {
-        return dbmgrImpl.getBookings();
+    public Observable<Booking> getBookingById(int id) {
+        Observable observable = Observable.create((ObservableOnSubscribe<Booking>) subscriber -> {
+            subscriber.onNext(dbmgrImpl.getBookingById(id));
+            subscriber.onComplete();
+        });
+        return observable;
     }
-    public Booking getBookingById(int id) {
-        return dbmgrImpl.getBookingById(id);
+    public Observable<List<Booking>> getBookings() {
+        Observable observable = Observable.create((ObservableOnSubscribe<List<Booking>>) subscriber -> {
+            subscriber.onNext(dbmgrImpl.getBookings());
+            subscriber.onComplete();
+        });
+        return observable;
     }
-    public List<Booking> getBookingsByAccount(String account) {
-        return dbmgrImpl.getBookingsByAccount(account);
+    public Observable<List<Booking>> getBookingsByAccount(String account) {
+        Observable observable = Observable.create((ObservableOnSubscribe<List<Booking>>) subscriber -> {
+            subscriber.onNext(dbmgrImpl.getBookingsByAccount(account));
+            subscriber.onComplete();
+        });
+        return observable;
     }
 
     // For IoTDevice
-    public void updateIotDevice(IoTDevice device){ dbmgrImpl.updateIotDevice(device); }
-    public String getStateFromIoTDevicesById(int id){ return dbmgrImpl.getStateFromIoTDevicesById(id); }
+    public Completable updateIotDevice(IoTDevice device){
+        Completable completable = Completable.create(subscriber -> {
+            dbmgrImpl.updateIotDevice(device);
+            subscriber.onComplete();
+        });
+        return completable;
+    }
+    public Observable<String> getStateFromIoTDevicesById(int id) {
+        Observable observable = Observable.create((ObservableOnSubscribe<String>) subscriber -> {
+            subscriber.onNext(dbmgrImpl.getStateFromIoTDevicesById(id));
+            subscriber.onComplete();
+        });
+        return observable;
+    }
     public List<IoTDevice> getIoTDevicesByClassroomId(String id) { return dbmgrImpl.getIoTDevicesByClassroomId(id); }
 }

@@ -1,9 +1,15 @@
 package ui.Login;
 
 import com.jfoenix.controls.*;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import mvvm.View;
 import mvvm.ViewModelProviders;
+import ui.Dialog.AlertDirector;
+import ui.Dialog.IAlertBuilder;
+import ui.Dialog.LoadingAlertBuilder;
 
 
 public class LoginView implements View {
@@ -37,5 +43,8 @@ public class LoginView implements View {
 
         // 綁定 loginAlert 變數
         loginViewModel.loginAlertProperty().addListener((observable, oldAlert, newAlert) -> newAlert.show());
+
+        // 綁定 Loading Alert 變數
+        loginViewModel.loadingAlertProperty().addListener((observable, oldAlert, newAlert) -> Platform.runLater(() -> newAlert.show()));
     }
 }

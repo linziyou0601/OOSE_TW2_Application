@@ -1,9 +1,6 @@
 package ui.Dialog;
 
-import com.jfoenix.controls.JFXAlert;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialogLayout;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.*;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -21,15 +18,18 @@ public class InputAlertBuilder implements IAlertBuilder {
     JFXDialogLayout layout = new JFXDialogLayout();
     String title;
     String text;
+    boolean password;
     AlertButtonType alertButtonType;
     JFXTextField inputTextField = new JFXTextField();
+    JFXPasswordField passwordField = new JFXPasswordField();
     JFXButton defaultButton = new JFXButton("送出");
     JFXButton cancelButton = new JFXButton("取消");
     JFXAlert<String> alert = new JFXAlert<>(ViewManager.getPrimaryStage());
 
-    public InputAlertBuilder(String title, String text, AlertButtonType alertButtonType) {
+    public InputAlertBuilder(String title, String text, AlertButtonType alertButtonType, boolean password) {
         this.title = title;
         this.text = text;
+        this.password = password;
         this.alertButtonType = alertButtonType;
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.setContent(layout);
@@ -53,7 +53,8 @@ public class InputAlertBuilder implements IAlertBuilder {
     @Override
     public IAlertBuilder setBody() {
         inputTextField.setFont(Font.font("Microsoft JhengHei", FontWeight.NORMAL, 16));
-        layout.setBody(new VBox(new Label(text), inputTextField));
+        passwordField.setFont(Font.font("Microsoft JhengHei", FontWeight.NORMAL, 16));
+        layout.setBody(new VBox(new Label(text), (password? passwordField: inputTextField)));
         return this;
     }
 
@@ -96,7 +97,7 @@ public class InputAlertBuilder implements IAlertBuilder {
         defaultButton.setPadding(buttonPadding);
         defaultButton.setDefaultButton(true);
         defaultButton.setOnAction(addEvent -> {
-            alert.setResult(inputTextField.textProperty().get());
+            alert.setResult((password? passwordField: inputTextField).textProperty().get());
             alert.hideWithAnimation();
         });
 
