@@ -24,9 +24,6 @@ import java.util.Iterator;
 public class MainView implements View {
 
     @FXML
-    private JFXButton test_addClassroomBtn; //測試鈕：新增教室物件
-
-    @FXML
     private JFXTextField queryInput;    //搜尋欄位
     @FXML
     private JFXButton searchBtn;    //搜尋按鈕

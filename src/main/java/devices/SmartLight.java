@@ -57,6 +57,8 @@ public class SmartLight implements IoTDevice, IObservable {
             public void onNext(String result) { state = result; }
             @Override
             public void onComplete(){ notifyObservers(); }
+            @Override
+            public void onError(Throwable e){}
         });
     }
 

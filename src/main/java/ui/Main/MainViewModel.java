@@ -75,13 +75,20 @@ public class MainViewModel extends ViewModel {
                 .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
                 .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
                 .subscribe(new RxJavaObserver<>(){
+                    List<Classroom> classrooms;
                     @Override
                     public void onNext(List<Classroom> result) {
-                        classroomList.setAll(result);
+                        classrooms = result;
                     }
                     @Override
                     public void onComplete(){
                         stopLoading();
+                        classroomList.setAll(classrooms);
+                    }
+                    @Override
+                    public void onError(Throwable e){
+                        stopLoading();
+                        classroomList.clear();
                     }
                 });
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====

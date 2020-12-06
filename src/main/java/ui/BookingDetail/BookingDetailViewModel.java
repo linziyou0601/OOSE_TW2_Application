@@ -96,6 +96,10 @@ public class BookingDetailViewModel extends ViewModel {
                         );
                         refresh();
                     }
+                    @Override
+                    public void onError(Throwable e){
+                        stopLoading();
+                    }
                 });
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
     }

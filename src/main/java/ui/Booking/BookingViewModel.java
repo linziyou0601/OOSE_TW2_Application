@@ -107,9 +107,13 @@ public class BookingViewModel extends ViewModel {
                                     public void onComplete(){
                                         stopLoading();
                                     }
+                                    @Override
+                                    public void onError(Throwable e){ stopLoading(); }
                                 });
                         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
                     }
+                    @Override
+                    public void onError(Throwable e){ stopLoading(); }
                 });
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
 
@@ -179,6 +183,8 @@ public class BookingViewModel extends ViewModel {
                             // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
                         }
                     }
+                    @Override
+                    public void onError(Throwable e){ stopLoading(); }
                 });
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
     }

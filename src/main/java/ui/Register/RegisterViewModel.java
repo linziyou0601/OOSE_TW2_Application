@@ -101,10 +101,15 @@ public class RegisterViewModel extends ViewModel {
                     }
                     @Override
                     public void onComplete(){
-                        String prompt = null;
+                        // User有資料
+                        triggerFailedAlert("帳號已被使用");
+                    }
+                    @Override
+                    public void onError(Throwable e){
+                        // User沒資料
                         // 驗證註冊資料
-                        if(existUser!=null) prompt = "帳號已被使用";
-                        else if(account.get()==null || account.get().equals("")) prompt = "帳號未輸入";
+                        String prompt = null;
+                        if(account.get()==null || account.get().equals("")) prompt = "帳號未輸入";
                         else if(email.get()==null || email.get().equals("")) prompt = "電子信箱未輸入";
                         else if(password.get()==null || password.get().equals("")) prompt = "密碼未輸入";
                         else if(!password.get().equals(passwordConfirm.get())) prompt = "密碼不一致";

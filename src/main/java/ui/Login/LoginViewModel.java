@@ -89,18 +89,19 @@ public class LoginViewModel extends ViewModel {
                     @Override
                     public void onComplete(){
                         stopLoading();
-                        String prompt = null;
-                        // 驗證登入資料
-                        if(user == null) prompt = "帳號錯誤";
-                        else if(!user.validate(password.get())) prompt = "密碼錯誤";
-                        // 執行登入邏輯
-                        if(prompt!=null) {
-                            triggerFailedAlert(prompt);
+                        // 驗證登入資料並執行登入邏輯
+                        if(!user.validate(password.get())) {
+                            triggerFailedAlert("密碼錯誤");
                         } else {
                             sessionContext.set("user", user);
                             clearInput();
                             ViewManager.navigateTo(MainView.class);
                         }
+                    }
+                    @Override
+                    public void onError(Throwable e){
+                        stopLoading();
+                        triggerFailedAlert("帳號錯誤");
                     }
                 });
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====

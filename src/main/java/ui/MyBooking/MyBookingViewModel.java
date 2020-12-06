@@ -28,7 +28,7 @@ public class MyBookingViewModel extends ViewModel {
 
     private User currentUser;
     private StringProperty username = new SimpleStringProperty();
-    private StringProperty periodShowType = new SimpleStringProperty("CURRENT");
+    private StringProperty periodShowType = new SimpleStringProperty("");
     private ListProperty<Booking> bookingList = new SimpleListProperty<>(FXCollections.observableArrayList(new ArrayList<>()));
     private ObjectProperty<JFXAlert> cancelAlert = new SimpleObjectProperty<>();
     private ObjectProperty<JFXAlert> loadingAlert = new SimpleObjectProperty<>();
@@ -55,6 +55,7 @@ public class MyBookingViewModel extends ViewModel {
     public void init() {
         currentUser = sessionContext.get("user");
         username.set(currentUser.getUsername());
+        periodShowType.set("CURRENT");
         refresh();
     }
 
@@ -84,6 +85,11 @@ public class MyBookingViewModel extends ViewModel {
                             }
                         }
                     }
+                    @Override
+                    public void onError(Throwable e){
+                        stopLoading();
+                        bookingList.clear();
+                    }
                 });
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
     }
@@ -111,16 +117,19 @@ public class MyBookingViewModel extends ViewModel {
     // 邏輯處理：顯示目前時段
     public void currentPeriod() {
         periodShowType.set("CURRENT");
+        refresh();
     }
 
     // 邏輯處理：顯示目前時段
     public void futurePeriod() {
         periodShowType.set("FUTURE");
+        refresh();
     }
 
     // 邏輯處理：顯示所有時段
     public void allPeriod() {
         periodShowType.set("ALL");
+        refresh();
     }
 
     // 邏輯處理：操作預約教室

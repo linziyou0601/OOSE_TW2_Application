@@ -62,7 +62,6 @@ public class MyBookingView implements View {
             currentBookingBtn.setStyle("-fx-background-color: " + (periodShowType.equals("CURRENT")? "#EAEAEA": "transparent"));
             futureBookingBtn.setStyle("-fx-background-color: " + (periodShowType.equals("FUTURE")? "#EAEAEA": "transparent"));
             allBookingBtn.setStyle("-fx-background-color: " + (periodShowType.equals("ALL")? "#EAEAEA": "transparent"));
-            myBookingViewModel.refresh();
         });
 
         // 雙向綁定View資料和ViewModel資料
