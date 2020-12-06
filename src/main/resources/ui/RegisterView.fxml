@@ -44,7 +44,7 @@
    </AnchorPane>
    <AnchorPane layoutX="300.0" prefHeight="500.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
-         <VBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="53.0" prefWidth="300.0" spacing="30.0" AnchorPane.bottomAnchor="52.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="53.0">
+         <VBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="35.0" prefWidth="300.0" spacing="30.0" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="35.0">
             <children>
                <Label text="註冊">
                   <font>
@@ -63,6 +63,14 @@
                   </VBox.margin>
                </JFXTextField>
                <JFXTextField fx:id="usernameInput" prefHeight="30.0" prefWidth="310.0" promptText="使用者名稱">
+                  <font>
+                     <Font name="Microsoft JhengHei" size="15.0" />
+                  </font>
+                  <VBox.margin>
+                     <Insets left="30.0" right="30.0" />
+                  </VBox.margin>
+               </JFXTextField>
+               <JFXTextField fx:id="emailInput" prefHeight="30.0" prefWidth="310.0" promptText="電子信箱">
                   <font>
                      <Font name="Microsoft JhengHei" size="15.0" />
                   </font>
@@ -106,7 +114,7 @@
                      </JFXButton>
                   </children>
                   <VBox.margin>
-                     <Insets left="30.0" right="30.0" top="30.0" />
+                     <Insets left="30.0" right="30.0" top="5.0" />
                   </VBox.margin>
                </HBox>
             </children>

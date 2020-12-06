@@ -4,7 +4,7 @@ import database.DBMgr;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import java.time.Duration;
-import main.ViewModel;
+import mvvm.ViewModel;
 import main.SessionContext;
 import model.Booking;
 import model.Classroom;
@@ -15,6 +15,7 @@ import org.reactfx.util.Timer;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BookingDetailViewModel extends ViewModel {
 
@@ -49,14 +50,14 @@ public class BookingDetailViewModel extends ViewModel {
     // =============== 邏輯處理 ===============
     // 邏輯處理：登入後參數對session綁定
     public void init() {
-        selectedBooking = sessionContext.get("selectedBooking");
-        classroom = dbmgr.getClassroomById(selectedBooking.getClassroomId());
+        selectedBooking = dbmgr.getBookingById(sessionContext.get("selectedBookingId"));
+        classroom = selectedBooking.getClassroom();
         closeStage.set(false);
         timer = FxTimer.runPeriodically(
             Duration.ofMillis(1000),
             () -> {
                 LocalTime lt = LocalTime.now();
-                LocalTime ltEnd = LocalTime.parse(selectedBooking.getEndTime() + ":59:59.999");
+                LocalTime ltEnd = LocalTime.parse(String.format("%02d", selectedBooking.getEndTime()) + ":59:59.999");
                 Duration duration = Duration.between(lt, ltEnd);
                 if(lt.isAfter(ltEnd)){
                     closeStage.set(true);
@@ -74,17 +75,19 @@ public class BookingDetailViewModel extends ViewModel {
     public void refresh() {
         // 初始化 selectedBooking 參數
         activate.set(selectedBooking.getActivate());
+        System.out.println(selectedBooking.getActivate());
         timeLabel.set((selectedBooking.getStartTime() + ":00 - " + (selectedBooking.getEndTime()+1) + ":00"));
         dateLabel.set(selectedBooking.getDate());
         // 初始化 classroom 參數
         classroomIdLabel.set(classroom.getId());
+        deviceList.clear();
         deviceList.setAll(classroom.getDevices());
     }
 
     // 邏輯處理：開始使用
     public void activateBooking() {
         selectedBooking.setActivate(true);
-        dbmgr.saveBooking(selectedBooking);
+        dbmgr.updateBooking(selectedBooking);
         refresh();
     }
 

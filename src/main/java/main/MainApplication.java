@@ -1,14 +1,9 @@
 package main;
 
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import mvvm.ViewManager;
 import ui.Booking.BookingView;
 import ui.BookingDetail.BookingDetailView;
 import ui.Login.LoginView;
@@ -16,10 +11,9 @@ import ui.Main.MainView;
 import ui.MyBooking.MyBookingView;
 import ui.Register.RegisterView;
 
-import java.net.URL;
-import java.util.HashMap;
-
 public class MainApplication extends Application {
+
+    public static int OBJECT_COUNTER = 0;
 
     public static void main(String[] args) {
         launch(args);

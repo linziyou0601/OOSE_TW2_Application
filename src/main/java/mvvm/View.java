@@ -1,4 +1,4 @@
-package main;
+package mvvm;
 
 public interface View {
     void initialize();

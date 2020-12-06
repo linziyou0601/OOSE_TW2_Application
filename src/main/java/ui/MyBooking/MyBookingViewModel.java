@@ -1,20 +1,23 @@
 package ui.MyBooking;
 
+import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import main.ViewModel;
+import mvvm.ViewModel;
 import main.SessionContext;
-import main.ViewManager;
+import mvvm.ViewManager;
 import model.Booking;
 import model.User;
 import ui.BookingDetail.BookingDetailView;
+import ui.Dialog.*;
 import ui.Login.LoginView;
 import ui.Main.MainView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 public class MyBookingViewModel extends ViewModel {
 
@@ -22,6 +25,7 @@ public class MyBookingViewModel extends ViewModel {
     private StringProperty username = new SimpleStringProperty();
     private StringProperty periodShowType = new SimpleStringProperty("CURRENT");
     private ListProperty<Booking> bookingList = new SimpleListProperty<>(FXCollections.observableArrayList(new ArrayList<>()));
+    private ObjectProperty<JFXAlert> cancelAlert = new SimpleObjectProperty<>();
 
     public MyBookingViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
@@ -33,11 +37,14 @@ public class MyBookingViewModel extends ViewModel {
     public StringProperty periodShowTypeProperty(){ return periodShowType; }
     public String getPeriodShowType(){ return periodShowType.get(); }
     public ListProperty<Booking> bookingListProperty(){ return bookingList; }
+    public ObjectProperty<JFXAlert> cancelAlertProperty(){
+        return cancelAlert;
+    }
 
     // =============== 邏輯處理 ===============
     // 邏輯處理：登入後參數對session綁定
     public void init() {
-        currentUser = sessionContext.get("user");
+        currentUser = dbmgr.getUserByAccount(sessionContext.get("userAccount"));
         username.set(currentUser.getUsername());
         refresh();
     }
@@ -78,10 +85,40 @@ public class MyBookingViewModel extends ViewModel {
     }
 
     // 邏輯處理：操作預約教室
-    public void operateBooking(Booking booking) {
+    public void operateBooking(int id) {
         refresh();
-        sessionContext.set("selectedBooking", booking);
+        sessionContext.set("selectedBookingId", id);
         ViewManager.popUp(BookingDetailView.class);
+    }
+
+    // 邏輯處理：取消預約教室
+    public void cancelBooking(int id) {
+        // Builder Pattern：建立BasicAlert
+        IAlertBuilder alertBuilder = new PasswordAlertBuilder("確認取消預約", "請輸入使用者密碼", IAlertBuilder.AlertButtonType.OK);
+        AlertDirector alertDirector = new AlertDirector(alertBuilder);
+        alertDirector.build();
+        JFXAlert alert = alertBuilder.getAlert();
+        // Show and wait for selection
+        Optional<String> result = alert.showAndWait();
+        if(result.isPresent()){
+            if(currentUser.validate(result.get())) {
+                dbmgr.deleteBookingById(id);
+                triggerAlert(IAlertBuilder.AlertType.SUCCESS, "成功", "已取消預約");
+            } else {
+                triggerAlert(IAlertBuilder.AlertType.ERROR, "失敗", "密碼錯誤");
+            }
+            refresh();
+        }
+    }
+
+    // 邏輯處理：取消預約結果Alert
+    public void triggerAlert(IAlertBuilder.AlertType type, String title, String prompt){
+        // Builder Pattern：建立BasicAlert
+        IAlertBuilder alertBuilder = new BasicAlertBuilder(type, title, prompt, IAlertBuilder.AlertButtonType.OK);
+        AlertDirector alertDirector = new AlertDirector(alertBuilder);
+        alertDirector.build();
+        JFXAlert alert = alertBuilder.getAlert();
+        cancelAlert.set(alert);
     }
 
     // 邏輯處理：換頁 - 總覽

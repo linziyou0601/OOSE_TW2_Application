@@ -2,8 +2,8 @@ package ui.Login;
 
 import com.jfoenix.controls.*;
 import javafx.fxml.FXML;
-import main.View;
-import main.ViewModelProviders;
+import mvvm.View;
+import mvvm.ViewModelProviders;
 
 
 public class LoginView implements View {

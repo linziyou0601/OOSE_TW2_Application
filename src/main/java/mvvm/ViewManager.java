@@ -1,4 +1,4 @@
-package main;
+package mvvm;
 
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -13,6 +13,8 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import main.MainApplication;
+import main.ResizeHelper;
 
 import java.net.URL;
 import java.util.HashMap;

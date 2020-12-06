@@ -1,5 +1,6 @@
 package database;
 
+import devices.IoTDevice;
 import model.Booking;
 import model.Classroom;
 import model.User;
@@ -9,18 +10,25 @@ import java.util.List;
 public interface DBMgrImpl {
 
     // For User
-    void saveUser(User user);
-    List<User> getUsers();
+    void insertUser(User user);
     User getUserByAccount(String account);
+    boolean getDuplicateBooking(String userAccount, String date, int startTime, int endTime);
 
     // For Classroom
-    void saveClassroom(Classroom classroom);
     List<Classroom> getClassrooms();
     Classroom getClassroomById(String id);
+    List<Boolean> getAvailableTime(String classroomId, String date);
 
     // For Booking
-    void saveBooking(Booking booking);
-    List<Booking> getBookings();
+    void insertBooking(Booking booking);
+    void updateBooking(Booking booking);
+    void deleteBookingById(int id);
     Booking getBookingById(int id);
+    List<Booking> getBookings();
     List<Booking> getBookingsByAccount(String account);
+
+    // For IoTDevice
+    void updateIotDevice(IoTDevice device);
+    String getStateFromIoTDevicesById(int id);
+    List<IoTDevice> getIoTDevicesByClassroomId(String id);
 }

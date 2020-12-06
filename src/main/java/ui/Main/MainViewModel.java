@@ -4,8 +4,8 @@ import database.DBMgr;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import main.SessionContext;
-import main.ViewManager;
-import main.ViewModel;
+import mvvm.ViewManager;
+import mvvm.ViewModel;
 import model.Classroom;
 import model.User;
 import ui.Booking.BookingView;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 public class MainViewModel extends ViewModel {
 
+    private User currentUser;
     private StringProperty queryString = new SimpleStringProperty();
     private ObjectProperty<LocalDate> queryDate = new SimpleObjectProperty<>(LocalDate.now());
     private StringProperty username = new SimpleStringProperty();
@@ -37,7 +38,8 @@ public class MainViewModel extends ViewModel {
     // =============== 邏輯處理 ===============
     // 邏輯處理：登入後參數對session綁定
     public void init() {
-        username.set(((User)sessionContext.get("user")).getUsername());
+        currentUser = dbmgr.getUserByAccount(sessionContext.get("userAccount"));
+        username.set(currentUser.getUsername());
         refresh();
     }
 
@@ -52,18 +54,10 @@ public class MainViewModel extends ViewModel {
         ViewManager.navigateTo(LoginView.class);
     }
 
-    // 邏輯處理：新增教室
-    public void addClassroom() {
-        Classroom classroom = new Classroom("教室代碼: " + (count++), "討論室");
-        dbmgr.saveClassroom(classroom);
-        refresh();
-    }
-
     // 邏輯處理：選擇教室
     public void selectClassroom(Classroom classroom) {
-        refresh();
-        sessionContext.set("selectedClassroom", classroom);
-        sessionContext.set("selectedDate", queryDate.get());
+        sessionContext.set("selectedClassroomId", classroom.getId());
+        sessionContext.set("selectedDate", queryDate.get().toString());
         ViewManager.popUp(BookingView.class);
     }
 

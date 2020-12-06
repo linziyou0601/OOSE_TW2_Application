@@ -1,15 +1,10 @@
 package ui.Dialog;
 
-import com.jfoenix.controls.JFXAlert;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.*;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -19,21 +14,19 @@ import mvvm.ViewManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasicAlertBuilder implements IAlertBuilder {
+public class PasswordAlertBuilder implements IAlertBuilder {
     JFXDialogLayout layout = new JFXDialogLayout();
-    ImageView icon = new ImageView();
     String title;
     String text;
-    AlertType alertType;
     AlertButtonType alertButtonType;
-    JFXButton defaultButton = new JFXButton("確定");
+    JFXPasswordField passwordField = new JFXPasswordField();
+    JFXButton defaultButton = new JFXButton("送出");
     JFXButton cancelButton = new JFXButton("取消");
-    JFXAlert<Boolean> alert = new JFXAlert<>(ViewManager.getPrimaryStage());
+    JFXAlert<String> alert = new JFXAlert<>(ViewManager.getPrimaryStage());
 
-    public BasicAlertBuilder(AlertType alertType, String title, String text, AlertButtonType alertButtonType) {
+    public PasswordAlertBuilder(String title, String text, AlertButtonType alertButtonType) {
         this.title = title;
         this.text = text;
-        this.alertType = alertType;
         this.alertButtonType = alertButtonType;
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.setContent(layout);
@@ -47,27 +40,17 @@ public class BasicAlertBuilder implements IAlertBuilder {
 
     @Override
     public IAlertBuilder setHeading() {
-        // 設定icon
-        icon.setFitWidth(25);
-        icon.setFitHeight(25);
         // 設定label
         Label label = new Label(title);
         label.setFont(Font.font("Microsoft JhengHei", FontWeight.BOLD, 20));
-        label.setPadding(new Insets(0,0,0,10));
-        // 設定hbox
-        HBox container = new HBox(icon, label);
-        container.setAlignment(Pos.CENTER_LEFT);
-        // 設定到layout上
-        layout.setHeading(container);
+        layout.setHeading(label);
         return this;
     }
 
     @Override
     public IAlertBuilder setBody() {
-        // 設定label
-        Label label = new Label(text);
-        label.setFont(Font.font("Microsoft JhengHei", FontWeight.NORMAL, 16));
-        layout.setBody(label);
+        passwordField.setFont(Font.font("Microsoft JhengHei", FontWeight.NORMAL, 16));
+        layout.setBody(new VBox(new Label(text), passwordField));
         return this;
     }
 
@@ -92,36 +75,15 @@ public class BasicAlertBuilder implements IAlertBuilder {
         Font buttonFont = Font.font("Microsoft JhengHei", FontWeight.BOLD, 12);
         List<Node> buttons = new ArrayList<>();
 
-        // 依alertType調整顏色
-        switch(alertType) {
-            case ERROR:
-                defaultBack = "#dc3545";
-                icon.setImage(new Image("/images/error_52px.png"));
-                break;
-            case WARNING:
-                defaultBack = "#dc3545";
-                icon.setImage(new Image("/images/warning_52px.png"));
-                break;
-            case INFORMATION:
-                defaultBack = "#2778c4";
-                icon.setImage(new Image("/images/info_52px.png"));
-                break;
-            case SUCCESS:
-                defaultBack = "#28a745";
-                icon.setImage(new Image("/images/success_52px.png"));
-                break;
-        }
-
         // 依alertButtonType調整按鈕
         switch(alertButtonType) {
-            case OK:
-                buttons.add(defaultButton);
-                break;
             case OKCANCEL:
                 buttons.add(defaultButton);
                 buttons.add(cancelButton);
                 break;
+            case OK:
             default:
+                buttons.add(defaultButton);
         }
 
         // 設定defaultButton
@@ -131,9 +93,8 @@ public class BasicAlertBuilder implements IAlertBuilder {
         defaultButton.setPadding(buttonPadding);
         defaultButton.setDefaultButton(true);
         defaultButton.setOnAction(addEvent -> {
-            alert.setResult(true);
+            alert.setResult(passwordField.textProperty().get());
             alert.hideWithAnimation();
-            alert.close();
         });
 
         // 設定cancelButton
@@ -143,9 +104,8 @@ public class BasicAlertBuilder implements IAlertBuilder {
         cancelButton.setPadding(buttonPadding);
         cancelButton.setCancelButton(true);
         cancelButton.setOnAction(addEvent -> {
-            alert.setResult(false);
+            alert.setResult(null);
             alert.hideWithAnimation();
-            alert.close();
         });
 
         // 將Button設定到layout上

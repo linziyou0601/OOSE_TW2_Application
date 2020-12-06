@@ -7,8 +7,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import main.SessionContext;
-import main.ViewManager;
-import main.ViewModel;
+import mvvm.ViewManager;
+import mvvm.ViewModel;
 import model.User;
 import ui.Dialog.AlertDirector;
 import ui.Dialog.BasicAlertBuilder;
@@ -25,7 +25,6 @@ public class LoginViewModel extends ViewModel {
     public LoginViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
         this.sessionContext = SessionContext.getInstance();
-        dbmgr.testQuery();
     }
 
     // =============== Getter及Setter ===============
@@ -67,7 +66,7 @@ public class LoginViewModel extends ViewModel {
         if(prompt!=null) {
             triggerFailedAlert(prompt);
         } else {
-            sessionContext.set("user", user);
+            sessionContext.set("userAccount", user.getAccount());
             clearInput();
             ViewManager.navigateTo(MainView.class);
         }

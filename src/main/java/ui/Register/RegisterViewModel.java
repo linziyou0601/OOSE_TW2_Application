@@ -4,9 +4,9 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import javafx.beans.property.*;
-import main.ViewModel;
+import mvvm.ViewModel;
 import main.SessionContext;
-import main.ViewManager;
+import mvvm.ViewManager;
 import model.User;
 import ui.Dialog.AlertDirector;
 import ui.Dialog.BasicAlertBuilder;
@@ -19,6 +19,7 @@ public class RegisterViewModel extends ViewModel {
 
     private StringProperty username = new SimpleStringProperty();
     private StringProperty account = new SimpleStringProperty();
+    private StringProperty email = new SimpleStringProperty();
     private StringProperty password = new SimpleStringProperty();
     private StringProperty passwordConfirm = new SimpleStringProperty();
     private ObjectProperty<JFXAlert> registerAlert = new SimpleObjectProperty<>();
@@ -35,6 +36,9 @@ public class RegisterViewModel extends ViewModel {
     public StringProperty accountProperty(){
         return account;
     }
+    public StringProperty emailProperty(){
+        return email;
+    }
     public StringProperty passwordProperty(){ return password; }
     public StringProperty passwordConfirmProperty(){
         return passwordConfirm;
@@ -48,6 +52,7 @@ public class RegisterViewModel extends ViewModel {
     public void clearInput() {
         username.set("");
         account.set("");
+        email.set("");
         password.set("");
         passwordConfirm.set("");
     }
@@ -65,6 +70,7 @@ public class RegisterViewModel extends ViewModel {
         // 驗證註冊資料
         if(existUser!=null) prompt = "帳號已被使用";
         else if(account.get()==null || account.get().equals("")) prompt = "帳號未輸入";
+        else if(email.get()==null || email.get().equals("")) prompt = "電子信箱未輸入";
         else if(password.get()==null || password.get().equals("")) prompt = "密碼未輸入";
         else if(!password.get().equals(passwordConfirm.get())) prompt = "密碼不一致";
         else if(username.get()==null || username.get().equals("")) prompt = "使用者名稱未輸入";
@@ -74,7 +80,7 @@ public class RegisterViewModel extends ViewModel {
             triggerFailedAlert(prompt);
         } else {
             String password_hash = BCrypt.with(BCrypt.Version.VERSION_2Y).hashToString(10, password.get().toCharArray());
-            dbmgr.saveUser(new User(account.get(), password_hash, username.get()));
+            dbmgr.insertUser(new User(account.get(), password_hash, username.get(), email.get()));
             clearInput();
             triggerSucceedAlert();
         }

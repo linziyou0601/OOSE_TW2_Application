@@ -1,88 +1,84 @@
 package model;
 
+import main.MainApplication;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class Booking {
-    public static int count = 0;
     private int id;
     private String date;
     private int startTime;
     private int endTime;
+    private String classroomId;
     private Classroom classroom;
     private User user;
     private boolean activate = false;
 
+    public Booking() {}
+
     public Booking(String date, int startTime, int endTime, Classroom classroom, User user) {
-        this.id = Booking.count++;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.classroom = classroom;
+        this.classroomId = classroom.getId();
         this.user = user;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
-
     public String getDate() {
         return date;
     }
-
     public int getStartTime() {
         return startTime;
     }
-
     public int getEndTime() {
         return endTime;
     }
-
     public Classroom getClassroom() {
         return classroom;
     }
-
+    public String getClassroomId() {
+        return classroomId;
+    }
     public User getUser() {
         return user;
     }
-
+    public String getUserAccount() {
+        return user.getAccount();
+    }
     public boolean getActivate() {
         return activate;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
     public void setDate(String date) {
         this.date = date;
     }
-
     public void setStartTime(int startTime) {
         this.startTime = startTime;
     }
-
     public void setEndTime(int endTime) {
         this.endTime = endTime;
     }
-
+    public void setClassroomId(String classroomId) {
+        this.classroomId = classroomId;
+    }
     public void setClassroom(Classroom classroom) {
         this.classroom = classroom;
     }
-
     public void setUser(User user) {
         this.user = user;
     }
-
     public void setActivate(boolean activate) {
         this.activate = activate;
-    }
-
-    // 中介方法（守LoD）
-    public String getClassroomId() {
-        return classroom.getId();
-    }
-
-    public String getUserAccount() {
-        return user.getAccount();
     }
 
     // 待資料庫補齊需要改

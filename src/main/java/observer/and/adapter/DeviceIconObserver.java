@@ -18,7 +18,7 @@ public class DeviceIconObserver implements Observer{
     @Override
     public void update(Observable device) {
         String deviceImagePathPostfix, deviceNameColor;
-        if (((IoTDevice)device).getState()){
+        if (((IoTDevice)device).getState().equals("ON")){
             deviceImagePathPostfix = "green";
             deviceNameColor = "#009688"; //green
         } else {

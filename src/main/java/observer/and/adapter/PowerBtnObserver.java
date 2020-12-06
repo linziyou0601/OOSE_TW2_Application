@@ -16,7 +16,7 @@ public class PowerBtnObserver implements Observer{
     public void update(Observable device) {
         String powerIconPathPostfix, powerBtnColor;
         ImageView powerBtnIcon = (ImageView) powerBtn.getGraphic().lookup("#powerBtnIcon");
-        if (((IoTDevice)device).getState()){
+        if (((IoTDevice)device).getState().equals("ON")){
             powerIconPathPostfix = "red";
             powerBtnColor = "#FF0062"; //red
         } else {

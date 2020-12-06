@@ -6,13 +6,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import main.View;
-import main.ViewModelProviders;
+import mvvm.View;
+import mvvm.ViewModelProviders;
 import model.Booking;
-import ui.Booking.BookingView;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -86,13 +82,17 @@ public class MyBookingView implements View {
                     classroomIdLabel.setText(booking.getClassroomId());
                     operateBtn.setDisable(!booking.isPeriod());
                     cancelBtn.setDisable(!booking.isFuture());
-                    operateBtn.setOnAction(e -> myBookingViewModel.operateBooking(booking));
+                    operateBtn.setOnAction(e -> myBookingViewModel.operateBooking(booking.getId()));
+                    cancelBtn.setOnAction(e -> myBookingViewModel.cancelBooking(booking.getId()));
                     bookingListPane.getChildren().add(rootNode);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
+
+        // 綁定 alert 變數
+        myBookingViewModel.cancelAlertProperty().addListener((observable, oldAlert, newAlert) -> newAlert.show());
 
         myBookingViewModel.init();
     }

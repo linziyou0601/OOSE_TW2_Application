@@ -8,8 +8,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import main.View;
-import main.ViewModelProviders;
+import mvvm.View;
+import mvvm.ViewModelProviders;
 import devices.IoTDevice;
 import observer.and.adapter.DeviceIconObserver;
 import observer.and.adapter.Observable;
@@ -51,7 +51,7 @@ public class BookingDetailView implements View {
 
         // 啟用鈕
         activateBtn.setOnAction(e -> bookingDetailViewModel.activateBooking());
-        activateBtn.disableProperty().bind(bookingDetailViewModel.activateProperty());
+        activateBtn.disableProperty().bindBidirectional(bookingDetailViewModel.activateProperty());
 
         // 關閉popUp訊號
         bookingDetailViewModel.closeStageProperty().addListener((observable, oldValue, newValue) -> {
@@ -68,6 +68,7 @@ public class BookingDetailView implements View {
         // 裝置列表
         deviceListPane.disableProperty().bind(Bindings.createBooleanBinding(() -> !bookingDetailViewModel.getActivate(), bookingDetailViewModel.activateProperty()));
         bookingDetailViewModel.deviceListProperty().addListener((observable, oldValue, deviceList) -> {
+            deviceListPane.getChildren().clear();
             ListIterator<IoTDevice> deviceIter = deviceList.listIterator();
             while(deviceIter.hasNext()){
                 IoTDevice device = deviceIter.next();

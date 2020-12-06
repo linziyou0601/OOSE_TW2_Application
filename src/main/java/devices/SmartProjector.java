@@ -1,25 +1,30 @@
 package devices;
 
+import main.APIService;
+import main.MainApplication;
 import observer.and.adapter.Observable;
 import observer.and.adapter.Observer;
+import org.reactfx.util.FxTimer;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class SmartProjector implements IoTDevice, Observable {
-    private String id;
+    private int id;
     private String name;
-    private boolean state;
+    private String state;
     private List<Observer> observerList = new ArrayList<>();
 
-    public SmartProjector(String id, String name, boolean state) {
+    public SmartProjector(int id, String name, String state) {
         this.id = id;
         this.name = name;
         this.state = state;
+        FxTimer.runPeriodically(Duration.ofMillis(1000), () -> loadState());
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -33,23 +38,26 @@ public class SmartProjector implements IoTDevice, Observable {
         return name;
     }
 
-    public boolean getState(){
+    public String getState(){
         return state;
     }
 
     @Override
     public void uploadState() {
+        APIService.shareIoTState(this);
         notifyObservers();
     }
 
     @Override
     public void loadState() {
-
+        this.state = APIService.loadIoTState(this.id);
+        notifyObservers();
     }
 
     @Override
     public void switchState() {
-        state = !state;
+        if(state.equals("ON")) state = "OFF";
+        else state = "ON";
         uploadState();
     }
 

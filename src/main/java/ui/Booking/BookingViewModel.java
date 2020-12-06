@@ -4,7 +4,7 @@ import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import main.ViewModel;
+import mvvm.ViewModel;
 import main.SessionContext;
 import model.Booking;
 import model.Classroom;
@@ -18,6 +18,8 @@ import java.util.Optional;
 
 public class BookingViewModel extends ViewModel {
 
+    private User currentUser;
+    private String selectedDate;
     private Classroom selectedClassroom;
     private StringProperty classroomIdLabel = new SimpleStringProperty();
     private StringProperty classroomTypeLabel = new SimpleStringProperty();
@@ -56,7 +58,9 @@ public class BookingViewModel extends ViewModel {
     // =============== 邏輯處理 ===============
     // 邏輯處理：登入後參數對session綁定
     public void init() {
-        selectedClassroom = sessionContext.get("selectedClassroom");
+        currentUser = dbmgr.getUserByAccount(sessionContext.get("userAccount"));
+        selectedDate = sessionContext.get("selectedDate");
+        selectedClassroom = dbmgr.getClassroomById(sessionContext.get("selectedClassroomId"));
         classroomIdLabel.set(selectedClassroom.getId());
         classroomTypeLabel.set(selectedClassroom.getType());
         computerCheck.set(selectedClassroom.hasComputer()? "available": "unavailable");
@@ -64,7 +68,7 @@ public class BookingViewModel extends ViewModel {
         blackboardCheck.set(selectedClassroom.hasBlackboard()? "available": "unavailable");
         air_condCheck.set(selectedClassroom.hasAirCond()? "available": "unavailable");
         speakerCheck.set(selectedClassroom.hasSpeaker()? "available": "unavailable");
-        availableTime.setAll(selectedClassroom.getAvailableTimes());
+        availableTime.setAll(dbmgr.getAvailableTime(selectedClassroom.getId(), sessionContext.get("selectedDate")));
         closeStage.set(false);
     }
 
@@ -74,7 +78,9 @@ public class BookingViewModel extends ViewModel {
 
         if(Integer.parseInt(timeEnd.get()) <= Integer.parseInt(timeStart.get())){
             prompt = "結束時間必需大於開始時間";
-        } else {
+        } /*else if(dbmgr.getDuplicateBooking(currentUser.getAccount(), selectedDate, Integer.parseInt(timeStart.get()), Integer.parseInt(timeEnd.get()))){
+            prompt = "該時段已借用其他教室";
+        }*/ else {
             for (int i = Integer.parseInt(timeStart.get()); i < Integer.parseInt(timeEnd.get()); i++) {
                 if (!availableTime.get(i)) {
                     prompt = "時間已被借用";
@@ -86,10 +92,8 @@ public class BookingViewModel extends ViewModel {
         if(prompt != null) {
             triggerFailedAlert(prompt);
         } else {
-            String date = sessionContext.get("selectedDate").toString();
-            User user = sessionContext.get("user");
-            Booking booking = new Booking(date, Integer.parseInt(timeStart.get()), Integer.parseInt(timeEnd.get())-1, selectedClassroom, user);
-            dbmgr.saveBooking(booking);
+            Booking booking = new Booking(selectedDate, Integer.parseInt(timeStart.get()), Integer.parseInt(timeEnd.get())-1, selectedClassroom, currentUser);
+            dbmgr.insertBooking(booking);
             triggerSucceedAlert(booking);
         }
     }

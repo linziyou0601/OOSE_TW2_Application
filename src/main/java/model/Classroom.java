@@ -1,9 +1,12 @@
 package model;
 
+import database.DBMgr;
 import devices.*;
+import main.MainApplication;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class Classroom {
@@ -11,18 +14,7 @@ public class Classroom {
     private String type;
     private List<IoTDevice> devices = new ArrayList<>();
 
-    public Classroom(String id, String type) {
-        this.id = id;
-        this.type = type;
-        devices.add(new SmartLock(id+"_IOT001", "Lock Door", true));
-        devices.add(new SmartLight(id+"_IOT002", "Light 1-1", false));
-        devices.add(new SmartLight(id+"_IOT003", "Light 1-2", false));
-        devices.add(new SmartLight(id+"_IOT004", "Light 2-1", false));
-        devices.add(new SmartLight(id+"_IOT005", "Light 2-2", false));
-        devices.add(new SmartProjector(id+"_IOT006", "Projector", false));
-        devices.add(new SmartComputer(id+"_IOT007", "Computer", false));
-        devices.add(new SmartAirConditioner(id+"_IOT008", "Air Cond", false));
-    }
+    public Classroom() {}
 
     public String getId() {
         return id;
@@ -44,28 +36,40 @@ public class Classroom {
         this.type = type;
     }
 
+    public void setDevices(List<IoTDevice> devices) {
+        this.devices = devices;
+    }
+
     // 待資料庫補齊需要改
     public boolean hasComputer() {
-        return true;
+        for(IoTDevice device: devices)
+            if(device instanceof SmartComputer)
+                return true;
+        return false;
     }
 
     public boolean hasProjector() {
-        return true;
+        for(IoTDevice device: devices)
+            if(device instanceof SmartProjector)
+                return true;
+        return false;
     }
 
     public boolean hasBlackboard() {
-        return false;
-    }
-
-    public boolean hasAirCond() {
         return true;
     }
 
-    public boolean hasSpeaker() {
+    public boolean hasAirCond() {
+        for(IoTDevice device: devices)
+            if(device instanceof SmartAirConditioner)
+                return true;
         return false;
     }
 
-    public List<Boolean> getAvailableTimes() {
-        return new ArrayList<>(Arrays.asList(true, true, true, false, true, true, false, true, false, true, true, false, true, true, true, true, true, false, false, false, true, true, true, true));
+    public boolean hasSpeaker() {
+        for(IoTDevice device: devices)
+            if(device instanceof SmartSpeaker)
+                return true;
+        return false;
     }
 }

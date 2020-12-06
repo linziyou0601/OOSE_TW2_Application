@@ -1,5 +1,7 @@
 package devices;
 
+import database.DBMgr;
+import database.MySQLDBMgrImpl;
 import main.APIService;
 import main.MainApplication;
 import observer.and.adapter.Observable;
@@ -7,17 +9,19 @@ import observer.and.adapter.Observer;
 import org.reactfx.util.FxTimer;
 
 import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class SmartLight implements IoTDevice, Observable {
+public class SmartSpeaker implements IoTDevice, Observable {
     private int id;
     private String name;
     private String state;
     private List<Observer> observerList = new ArrayList<>();
 
-    public SmartLight(int id, String name, String state) {
+    public SmartSpeaker(int id, String name, String state) {
         this.id = id;
         this.name = name;
         this.state = state;

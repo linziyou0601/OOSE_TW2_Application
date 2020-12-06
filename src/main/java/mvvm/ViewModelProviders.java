@@ -1,14 +1,15 @@
-package main;
+package mvvm;
 
 import database.DBMgr;
 import database.MySQLDBMgrImpl;
+import database.MySQLDBMgrImplProxy;
 
 import java.util.HashMap;
 
 public class ViewModelProviders {
     private static final ViewModelProviders vmProvider = new ViewModelProviders();
     private HashMap<String, ViewModel> viewModelStore = new HashMap<>();
-    private DBMgr dbMgr = new DBMgr(new MySQLDBMgrImpl());
+    private DBMgr dbMgr = new DBMgr(new MySQLDBMgrImplProxy());
 
     private ViewModelProviders(){}
 

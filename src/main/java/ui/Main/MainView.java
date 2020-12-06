@@ -3,19 +3,13 @@ package ui.Main;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXMasonryPane;
 import com.jfoenix.controls.JFXTextField;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.stage.Stage;
-import main.View;
-import main.ViewModelProviders;
-import model.Booking;
+import mvvm.View;
+import mvvm.ViewModelProviders;
 import model.Classroom;
 
 import java.io.IOException;
@@ -52,9 +46,6 @@ public class MainView implements View {
     @Override
     public void initialize() {
         mainViewModel = ViewModelProviders.getInstance().get(MainViewModel.class);
-
-        // 測試鈕
-        test_addClassroomBtn.setOnAction(e ->  mainViewModel.addClassroom() );
 
         // 換頁鈕
         toHomeBtn.setOnAction(e -> {});

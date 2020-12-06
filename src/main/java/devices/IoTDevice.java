@@ -1,10 +1,10 @@
 package devices;
 
 public interface IoTDevice {
-    String getId();
+    int getId();
     String getType();
     String getName();
-    boolean getState();
+    String getState();
     void uploadState();
     void loadState();
     void switchState();
