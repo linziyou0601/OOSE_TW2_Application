@@ -1,6 +1,7 @@
 package database;
 
 import devices.IoTDevice;
+import model.Admin;
 import model.Booking;
 import model.Classroom;
 import model.User;
@@ -15,6 +16,12 @@ public class MySQLDBMgrImplProxy implements DBMgrImpl{
 
     private HashMap<String, Classroom> classroomCache = new HashMap<>();
     private HashMap<String, List<IoTDevice>> iotDeviceCache = new HashMap<>();
+
+    // ============================== For Admin ==============================
+    @Override   //無快取
+    public Admin getAdminByAccount(String account) {
+        return mySQLDBMgr.getAdminByAccount(account);
+    }
 
     // ============================== For User ==============================
     @Override   //無快取

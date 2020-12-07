@@ -44,19 +44,19 @@
                           </Label>
                      <HBox layoutX="190.0" layoutY="25.0" spacing="10.0">
                         <children>
-                           <JFXButton fx:id="currentBookingBtn" prefHeight="36.0" prefWidth="95.0" style="-fx-background-color: #EAEAEA;" text="目前時段" textFill="#6f6f6f">
+                           <JFXButton fx:id="currentBookingBtn" onAction="#currentBookingBtnClick" prefHeight="36.0" prefWidth="95.0" style="-fx-background-color: #EAEAEA;" text="目前時段" textFill="#6f6f6f">
                               <font>
                                  <Font name="Microsoft JhengHei Bold" size="16.0" />
                               </font>
                            </JFXButton>
                            <Separator orientation="VERTICAL" prefHeight="30.0" />
-                           <JFXButton fx:id="futureBookingBtn" prefHeight="36.0" prefWidth="95.0" text="未來時段" textFill="#6f6f6f">
+                           <JFXButton fx:id="futureBookingBtn" onAction="#futureBookingBtnClick" prefHeight="36.0" prefWidth="95.0" text="未來時段" textFill="#6f6f6f">
                               <font>
                                  <Font name="Microsoft JhengHei Bold" size="16.0" />
                               </font>
                            </JFXButton>
                            <Separator orientation="VERTICAL" prefHeight="30.0" />
-                           <JFXButton fx:id="allBookingBtn" prefHeight="36.0" prefWidth="95.0" text="全部顯示" textFill="#6f6f6f">
+                           <JFXButton fx:id="allBookingBtn" onAction="#allBookingBtnClick" prefHeight="36.0" prefWidth="95.0" text="全部顯示" textFill="#6f6f6f">
                               <font>
                                  <Font name="Microsoft JhengHei Bold" size="16.0" />
                               </font>
@@ -81,7 +81,7 @@
                                     </font>
                                 </Label>
                            <Separator prefWidth="200.0" />
-                           <JFXButton fx:id="toHomeBtn" alignment="BASELINE_LEFT" focusTraversable="false" graphicTextGap="15.0" prefHeight="40.0" prefWidth="200.0" text="總覽" textFill="WHITE">
+                           <JFXButton fx:id="toHomeBtn" alignment="BASELINE_LEFT" focusTraversable="false" graphicTextGap="15.0" onAction="#toHomeBtnClick" prefHeight="40.0" prefWidth="200.0" text="總覽" textFill="WHITE">
                               <VBox.margin>
                                  <Insets />
                               </VBox.margin>
@@ -108,24 +108,12 @@
                                  </ImageView>
                               </graphic>
                            </JFXButton>
-                           <JFXButton fx:id="toSubscribeBtn" alignment="BASELINE_LEFT" focusTraversable="false" graphicTextGap="15.0" prefHeight="40.0" prefWidth="200.0" text="訂閱列表" textFill="WHITE">
-                              <font>
-                                 <Font name="Microsoft JhengHei Bold" size="15.0" />
-                              </font>
-                              <graphic>
-                                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                       <Image url="@../images/toSubscribe.png" />
-                                    </image>
-                                 </ImageView>
-                              </graphic>
-                           </JFXButton>
                             </children>
                             <padding>
                                 <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
                             </padding>
                         </VBox>
-                            <JFXButton fx:id="logoutBtn" focusTraversable="false" layoutX="70.0" layoutY="600.0" prefHeight="40.0" prefWidth="111.0" style="-fx-border-radius: 5em; -fx-border-color: #FFFFFF; -fx-background-radius: 5em;" text="登出" textFill="WHITE" AnchorPane.bottomAnchor="50.0">
+                            <JFXButton fx:id="logoutBtn" focusTraversable="false" layoutX="70.0" layoutY="600.0" onAction="#logoutBtnClick" prefHeight="40.0" prefWidth="111.0" style="-fx-border-radius: 5em; -fx-border-color: #FFFFFF; -fx-background-radius: 5em;" text="登出" textFill="WHITE" AnchorPane.bottomAnchor="50.0">
                                 <font>
                                     <Font name="Microsoft JhengHei Bold" size="15.0" />
                                 </font>

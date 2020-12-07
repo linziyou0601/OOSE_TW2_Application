@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXMasonryPane?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.DatePicker?>
@@ -16,20 +15,20 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="768.0" minWidth="1280.0" prefHeight="768.0" prefWidth="1280.0" style="-fx-background-color: #F4F4F4;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.Main.MainView">
+<AnchorPane minHeight="768.0" minWidth="1280.0" prefHeight="768.0" prefWidth="1280.0" style="-fx-background-color: #F4F4F4;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.AdminMain.AdminMainView">
    <BorderPane prefHeight="768.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <center>
          <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <center>
                <AnchorPane BorderPane.alignment="CENTER">
                   <children>
-                     <ScrollPane fx:id="mainScrollPane" fitToWidth="true" style="-fx-border-color: #F4F4F4;" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                     <ScrollPane fx:id="mainScrollPane" fitToWidth="true" style="-fx-border-color: #F4F4F4;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                         <content>
-                           <JFXMasonryPane fx:id="classroomListPane" HSpacing="10.0" VSpacing="10.0" cellHeight="160.0" cellWidth="220.0">
+                           <VBox fx:id="classroomListBox" spacing="10.0">
                               <padding>
                                  <Insets left="30.0" right="30.0" />
                               </padding>
-                           </JFXMasonryPane>
+                           </VBox>
                         </content>
                      </ScrollPane>
                   </children>
@@ -38,7 +37,7 @@
             <top>
                <Pane prefHeight="85.0" prefWidth="1030.0" BorderPane.alignment="CENTER">
                   <children>
-                          <Label layoutX="27.0" layoutY="17.0" text="總覽">
+                          <Label layoutX="27.0" layoutY="17.0" text="教室狀態總覽">
                               <font>
                                   <Font name="Microsoft JhengHei Bold" size="36.0" />
                               </font>
@@ -51,7 +50,7 @@
       <left>
          <AnchorPane BorderPane.alignment="CENTER">
             <children>
-               <AnchorPane style="-fx-background-color: #1b6cd7; -fx-background-radius: 0 50 0 0; -fx-border-radius: 0 50 0 0;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <AnchorPane style="-fx-background-color: #4DB6AC; -fx-background-radius: 0 50 0 0; -fx-border-radius: 0 50 0 0;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
                   <children>
                         <VBox alignment="TOP_CENTER" prefWidth="250.0" spacing="20.0" AnchorPane.bottomAnchor="150.0" AnchorPane.topAnchor="0.0">
                             <children>
@@ -61,7 +60,7 @@
                                     </font>
                                 </Label>
                            <Separator prefWidth="200.0" />
-                           <JFXButton fx:id="toHomeBtn" alignment="BASELINE_LEFT" focusTraversable="false" graphicTextGap="15.0" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #1658B1;" text="總覽" textFill="WHITE">
+                           <JFXButton fx:id="toAllClassroomBtn" alignment="BASELINE_LEFT" focusTraversable="false" graphicTextGap="15.0" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #3F8D86;" text="教室總覽" textFill="WHITE">
                               <VBox.margin>
                                  <Insets />
                               </VBox.margin>
@@ -76,7 +75,7 @@
                                  </ImageView>
                               </graphic>
                            </JFXButton>
-                           <JFXButton fx:id="toBookingBtn" alignment="BASELINE_LEFT" focusTraversable="false" graphicTextGap="15.0" onAction="#toBookingBtnClick" prefHeight="40.0" prefWidth="200.0" text="我的預約" textFill="WHITE">
+                           <JFXButton fx:id="toAllBookingBtn" alignment="BASELINE_LEFT" focusTraversable="false" graphicTextGap="15.0" onAction="#toAllBookingBtnClick" prefHeight="40.0" prefWidth="200.0" text="預約總覽" textFill="WHITE">
                               <font>
                                  <Font name="Microsoft JhengHei Bold" size="15.0" />
                               </font>
@@ -110,10 +109,10 @@
                   <children>
                      <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="29.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="30.0">
                         <image>
-                           <Image url="@../images/icons8_school_52px_2.png" />
+                           <Image url="@../images/icons8_school_52px_2_admin.png" />
                         </image>
                      </ImageView>
-                     <Label layoutX="77.0" layoutY="18.0" text="JENNY教室" textFill="#1b6cd7" AnchorPane.leftAnchor="80.0">
+                     <Label layoutX="77.0" layoutY="18.0" text="管理面版" textFill="#4db6ac" AnchorPane.leftAnchor="80.0">
                         <font>
                            <Font name="Microsoft JhengHei Bold" size="25.0" />
                         </font>
@@ -134,7 +133,7 @@
                         <graphic>
                            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                 <Image url="@../images/icons8_search_52px_3.png" />
+                                 <Image url="@../images/icons8_search_52px_1_admin.png" />
                               </image>
                            </ImageView>
                         </graphic>

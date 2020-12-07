@@ -2,6 +2,7 @@ package database;
 
 import devices.IoTDevice;
 import io.reactivex.*;
+import model.Admin;
 import model.Booking;
 import model.Classroom;
 import model.User;
@@ -15,6 +16,15 @@ public class DBMgr {
 
     public DBMgr(DBMgrImpl dbmgrImpl) {
         this.dbmgrImpl = dbmgrImpl;
+    }
+
+    // For Admin
+    public Observable<Admin> getAdminByAccount(String account) {
+        Observable observable = Observable.create((ObservableOnSubscribe<Admin>) subscriber -> {
+            subscriber.onNext(dbmgrImpl.getAdminByAccount(account));
+            subscriber.onComplete();
+        });
+        return observable;
     }
 
     // For User

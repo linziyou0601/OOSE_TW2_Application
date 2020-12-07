@@ -18,7 +18,8 @@ public class SmartLock implements IoTDevice, IObservable {
     private String state;
     private List<IObserver> observerList = new ArrayList<>();
 
-    public SmartLock(int id, String name, String state) {
+    public SmartLock() {}
+    public void initialize(int id, String name, String state) {
         this.id = id;
         this.name = name;
         this.state = state;
@@ -41,6 +42,7 @@ public class SmartLock implements IoTDevice, IObservable {
         return name;
     }
 
+    @Override
     public String getState(){
         return state;
     }

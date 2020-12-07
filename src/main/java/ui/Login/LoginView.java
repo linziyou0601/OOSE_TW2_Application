@@ -26,16 +26,15 @@ public class LoginView implements View {
     @FXML
     private JFXButton loginBtn;
 
+    @FXML
+    private JFXButton toAdminLoginBtn;
+
     private LoginViewModel loginViewModel;
 
     @Override
     public void initialize() {
 
         loginViewModel = ViewModelProviders.getInstance().get(LoginViewModel.class);
-
-        // 換頁鈕
-        signUpBtn.setOnAction(e -> loginViewModel.signUp());
-        loginBtn.setOnAction(e -> loginViewModel.login());
 
         // 雙向綁定View資料和ViewModel資料
         accountInput.textProperty().bindBidirectional(loginViewModel.accountProperty());
@@ -46,5 +45,20 @@ public class LoginView implements View {
 
         // 綁定 Loading Alert 變數
         loginViewModel.loadingAlertProperty().addListener((observable, oldAlert, newAlert) -> Platform.runLater(() -> newAlert.show()));
+    }
+
+    //管理員登入鈕
+    public void toAdminLoginBtnClick() {
+        loginViewModel.toAdminLogin();
+    }
+
+    //註冊鈕
+    public void signUpBtnClick() {
+        loginViewModel.signUp();
+    }
+
+    //登入鈕
+    public void loginBtnClick() {
+        loginViewModel.login();
     }
 }

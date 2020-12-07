@@ -1,6 +1,9 @@
 package database;
 
+import devicefactory.IoTDeviceFactory;
+import devicefactory.IoTDeviceFactoryProducer;
 import devices.IoTDevice;
+import model.Admin;
 import model.Booking;
 import model.Classroom;
 import model.User;
@@ -31,6 +34,31 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
         try { con.close(); } catch(SQLException se) {}
         try { stmt.close(); } catch(SQLException se) {}
         if(rs!=null) try { rs.close(); } catch(SQLException se) {}
+    }
+
+    // ============================== For Admin ==============================
+    @Override
+    public Admin getAdminByAccount(String account){
+        //資料庫操作
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            con = openConnection();
+            stmt = con.prepareStatement("SELECT * from admin WHERE account = ?");
+            stmt.setString(1,account);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                Admin admin = new Admin();
+                admin.setAccount(rs.getString("account"));
+                admin.setUsername(rs.getString("username"));
+                admin.setPassword(rs.getString("password"));
+                return admin;
+            }
+        }
+        catch (Exception throwables) { throwables.printStackTrace(); }
+        finally { closeConnection(con, stmt, rs); }
+        return null;
     }
 
     // ============================== For User ==============================
@@ -402,7 +430,7 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
         return null;
     }
     @Override
-    public List<IoTDevice> getIoTDevicesByClassroomId(String id) {
+    public List<IoTDevice> getIoTDevicesByClassroomId(String classroomId) {
         List<IoTDevice> result = new ArrayList<>();
         //資料庫操作
         Connection con = null;
@@ -411,17 +439,17 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
         try {
             con = openConnection();                                                            // 開啟與MySQL資料庫之間的連線
             stmt = con.prepareStatement("SELECT * from iotdevice where classroomId = ?");  // 取得實例化的Statement物件以執行Query
-            stmt.setString(1, id);                                               // 設定參數
+            stmt.setString(1, classroomId);                                               // 設定參數
             rs = stmt.executeQuery();                                                          // 執行Select Query
             while (rs.next()) {
-                try {
-                    IoTDevice iotDevice = (IoTDevice) Class.forName("devices." + rs.getString("type"))
-                            .getConstructor(int.class, String.class, String.class)
-                            .newInstance(rs.getInt("id"), rs.getString("name"), rs.getString("state"));
-                    result.add(iotDevice);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                String type = rs.getString("type");
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String state = rs.getString("state");
+                // 使用Factory Method取得IoT裝置物件
+                IoTDeviceFactory deviceFactory = IoTDeviceFactoryProducer.getFactory(type);
+                IoTDevice iotDevice = deviceFactory.instantiateIoTDevice(id, name, state);
+                result.add(iotDevice);
             }
         }
         catch (Exception throwables) { throwables.printStackTrace(); }

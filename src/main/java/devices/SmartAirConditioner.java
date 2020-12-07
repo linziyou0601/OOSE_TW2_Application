@@ -17,7 +17,8 @@ public class SmartAirConditioner implements IoTDevice, IObservable {
     private String state;
     private List<IObserver> observerList = new ArrayList<>();
 
-    public SmartAirConditioner(int id, String name, String state) {
+    public SmartAirConditioner() {}
+    public void initialize(int id, String name, String state) {
         this.id = id;
         this.name = name;
         this.state = state;
@@ -40,6 +41,7 @@ public class SmartAirConditioner implements IoTDevice, IObservable {
         return name;
     }
 
+    @Override
     public String getState(){
         return state;
     }

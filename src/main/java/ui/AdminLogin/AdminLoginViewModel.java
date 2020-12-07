@@ -1,35 +1,36 @@
-package ui.Login;
+package ui.AdminLogin;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import main.SessionContext;
-import model.Classroom;
+import model.Admin;
+import model.User;
 import mvvm.RxJavaObserver;
 import mvvm.ViewManager;
 import mvvm.ViewModel;
-import model.User;
-import ui.AdminLogin.AdminLoginView;
+import ui.AdminMain.AdminMainView;
 import ui.Dialog.AlertDirector;
 import ui.Dialog.BasicAlertBuilder;
 import ui.Dialog.IAlertBuilder;
 import ui.Dialog.LoadingAlertBuilder;
+import ui.Login.LoginView;
 import ui.Main.MainView;
 import ui.Register.RegisterView;
 
-import java.util.List;
-
-public class LoginViewModel extends ViewModel {
+public class AdminLoginViewModel extends ViewModel {
 
     private StringProperty account = new SimpleStringProperty();
     private StringProperty password = new SimpleStringProperty();
     private ObjectProperty<JFXAlert> loginAlert = new SimpleObjectProperty<>();
     private ObjectProperty<JFXAlert> loadingAlert = new SimpleObjectProperty<>();
 
-    public LoginViewModel(DBMgr dbmgr) {
+    public AdminLoginViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
         this.sessionContext = SessionContext.getInstance();
     }
@@ -63,45 +64,40 @@ public class LoginViewModel extends ViewModel {
         loadingAlert.get().close();
     }
 
-    // 邏輯處理：前往管理者登入頁面
-    public void toAdminLogin() {
-        ViewManager.navigateTo(AdminLoginView.class);
-    }
-
     // 邏輯處理：清除所有輸入資料
     public void clearInput() {
         account.set("");
         password.set("");
     }
 
-    // 邏輯處理：前往註冊頁面
-    public void signUp() {
-        ViewManager.navigateTo(RegisterView.class);
+    // 邏輯處理：前往使用者登入頁面
+    public void toUserLogin() {
+        ViewManager.navigateTo(LoginView.class);
     }
 
     // 邏輯處理：驗證登入資料
     public void login(){
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
         showLoading();
-        dbmgr.getUserByAccount(account.get())
+        dbmgr.getAdminByAccount(account.get())
                 .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
                 .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
                 .subscribe(new RxJavaObserver<>(){
-                    User user;
+                    Admin admin;
                     @Override
-                    public void onNext(User result) {
-                        user = result;
+                    public void onNext(Admin result) {
+                        admin = result;
                     }
                     @Override
                     public void onComplete(){
                         stopLoading();
                         // 驗證登入資料並執行登入邏輯
-                        if(!user.validate(password.get())) {
+                        if(!admin.validate(password.get())) {
                             triggerFailedAlert("密碼錯誤");
                         } else {
-                            sessionContext.set("user", user);
+                            sessionContext.set("admin", admin);
                             clearInput();
-                            ViewManager.navigateTo(MainView.class);
+                            ViewManager.navigateTo(AdminMainView.class);
                         }
                     }
                     @Override

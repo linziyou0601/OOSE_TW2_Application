@@ -14,7 +14,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="520.0" minWidth="720.0" prefHeight="520.0" prefWidth="720.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.Booking.BookingView">
+<?import java.util.ArrayList?>
+<AnchorPane minHeight="520.0" minWidth="720.0" prefHeight="520.0" prefWidth="720.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.AdminBooking.AdminBookingView">
    <children>
       <AnchorPane layoutX="8.0" layoutY="8.0" minHeight="500.0" minWidth="700.0" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF; -fx-effect: dropshadow(GAUSSIAN, rgba(0,0,0,0.4), 10, 0, 0, 0);" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <AnchorPane prefHeight="370.0" prefWidth="700.0" AnchorPane.bottomAnchor="130.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -293,14 +294,14 @@
             </children>
          </AnchorPane>
       
-            <AnchorPane layoutY="366.0" prefHeight="130.0" prefWidth="700.0" style="-fx-background-color: #1b6cd7; -fx-background-radius: 3em 3em 0 0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="370.0">
+            <AnchorPane layoutY="366.0" prefHeight="130.0" prefWidth="700.0" style="-fx-background-color: #4DB6AC; -fx-background-radius: 3em 3em 0 0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="370.0">
                <children>
-                     <JFXButton fx:id="submitBtn" focusTraversable="false" layoutX="530.0" layoutY="46.0" onAction="#submitBtnClick" style="-fx-background-color: #FFFFFF;" text="確認預約" textFill="#1b6cd7">
+                     <JFXButton fx:id="submitBtn" focusTraversable="false" layoutX="530.0" layoutY="46.0" onAction="#submitBtnClick" style="-fx-background-color: #FFFFFF;" text="代為預約" textFill="#4db6ac">
                   <font>
                      <Font name="Microsoft JhengHei Bold" size="20.0" />
                   </font>
                </JFXButton>
-               <JFXTextField fx:id="timeStartInput" alignment="CENTER" focusColor="TRANSPARENT" labelFloat="true" layoutX="186.0" layoutY="37.0" prefHeight="60.0" prefWidth="60.0" style="-fx-background-color: #1658B1; -fx-background-radius: 15; -fx-border-radius: 15; -fx-text-inner-color: #FFFFFF;" text="00" unFocusColor="TRANSPARENT">
+               <JFXTextField fx:id="timeStartInput" alignment="CENTER" focusColor="TRANSPARENT" labelFloat="true" layoutX="186.0" layoutY="37.0" prefHeight="60.0" prefWidth="60.0" style="-fx-background-color: #3F8D86; -fx-background-radius: 15; -fx-border-radius: 15; -fx-text-inner-color: #FFFFFF;" text="00" unFocusColor="TRANSPARENT">
                   <font>
                      <Font name="Microsoft JhengHei" size="25.0" />
                   </font>
@@ -315,7 +316,7 @@
                      <Font name="Microsoft JhengHei Bold" size="25.0" />
                   </font>
                </Label>
-               <JFXTextField fx:id="timeEndInput" alignment="CENTER" focusColor="TRANSPARENT" labelFloat="true" layoutX="327.0" layoutY="37.0" prefHeight="60.0" prefWidth="60.0" style="-fx-background-color: #1658B1; -fx-background-radius: 15; -fx-border-radius: 15; -fx-text-inner-color: #FFFFFF;" text="00" unFocusColor="TRANSPARENT">
+               <JFXTextField fx:id="timeEndInput" alignment="CENTER" focusColor="TRANSPARENT" labelFloat="true" layoutX="327.0" layoutY="37.0" prefHeight="60.0" prefWidth="60.0" style="-fx-background-color: #3F8D86; -fx-background-radius: 15; -fx-border-radius: 15; -fx-text-inner-color: #FFFFFF;" text="00" unFocusColor="TRANSPARENT">
                   <font>
                      <Font name="Microsoft JhengHei" size="25.0" />
                   </font>

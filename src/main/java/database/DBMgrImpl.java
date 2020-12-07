@@ -1,6 +1,7 @@
 package database;
 
 import devices.IoTDevice;
+import model.Admin;
 import model.Booking;
 import model.Classroom;
 import model.User;
@@ -8,6 +9,9 @@ import model.User;
 import java.util.List;
 
 public interface DBMgrImpl {
+
+    // For Admin
+    Admin getAdminByAccount(String account);
 
     // For User
     void insertUser(User user);

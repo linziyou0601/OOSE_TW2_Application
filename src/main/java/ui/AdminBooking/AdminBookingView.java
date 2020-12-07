@@ -1,6 +1,5 @@
-package ui.Booking;
+package ui.AdminBooking;
 
-import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
@@ -12,14 +11,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import mvvm.View;
 import mvvm.ViewModelProviders;
-import ui.Dialog.AlertDirector;
-import ui.Dialog.IAlertBuilder;
-import ui.Dialog.LoadingAlertBuilder;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-public class BookingView implements View {
+public class AdminBookingView implements View {
 
     @FXML
     private Label classroomIdLabel; //教室名稱標籤
@@ -57,14 +53,14 @@ public class BookingView implements View {
     @FXML
     private JFXButton closeStageBtn;
 
-    private BookingViewModel bookingViewModel;
+    private AdminBookingViewModel adminBookingViewModel;
 
     @Override
     public void initialize() {
-        bookingViewModel = ViewModelProviders.getInstance().get(BookingViewModel.class);
+        adminBookingViewModel = ViewModelProviders.getInstance().get(AdminBookingViewModel.class);
 
         // 關閉popUp訊號
-        bookingViewModel.closeStageProperty().addListener((observable, oldValue, newValue) -> {
+        adminBookingViewModel.closeStageProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue) closeStageBtn.fire();
         });
 
@@ -72,39 +68,39 @@ public class BookingView implements View {
         ChangeListener<String> forceTimeSelectListener = ((observable, oldValue, newValue) -> {
             if (!newValue.matches("^(2[01234]|[10]?\\d)$")) ((StringProperty) observable).set(oldValue);
         });
-        classroomIdLabel.textProperty().bindBidirectional(bookingViewModel.classroomIdLabelProperty());
-        classroomTypeLabel.textProperty().bindBidirectional(bookingViewModel.classroomTypeLabelProperty());
-        timeStartInput.textProperty().bindBidirectional(bookingViewModel.timeStartProperty());
-        timeEndInput.textProperty().bindBidirectional(bookingViewModel.timeEndProperty());
+        classroomIdLabel.textProperty().bindBidirectional(adminBookingViewModel.classroomIdLabelProperty());
+        classroomTypeLabel.textProperty().bindBidirectional(adminBookingViewModel.classroomTypeLabelProperty());
+        timeStartInput.textProperty().bindBidirectional(adminBookingViewModel.timeStartProperty());
+        timeEndInput.textProperty().bindBidirectional(adminBookingViewModel.timeEndProperty());
         timeStartInput.textProperty().addListener(forceTimeSelectListener);
         timeEndInput.textProperty().addListener(forceTimeSelectListener);
 
         // 裝置列表
-        bookingViewModel.computerCheckProperty().addListener((observable, oldValue, filename) -> {
+        adminBookingViewModel.computerCheckProperty().addListener((observable, oldValue, filename) -> {
             computerCheck.setImage(new Image("/images/"+ filename +".png"));
         });
-        bookingViewModel.projectorCheckProperty().addListener((observable, oldValue, filename) -> {
+        adminBookingViewModel.projectorCheckProperty().addListener((observable, oldValue, filename) -> {
             projectorCheck.setImage(new Image("/images/"+ filename +".png"));
         });
-        bookingViewModel.blackboardCheckProperty().addListener((observable, oldValue, filename) -> {
+        adminBookingViewModel.blackboardCheckProperty().addListener((observable, oldValue, filename) -> {
             blackboardCheck.setImage(new Image("/images/"+ filename +".png"));
         });
-        bookingViewModel.air_condCheckProperty().addListener((observable, oldValue, filename) -> {
+        adminBookingViewModel.air_condCheckProperty().addListener((observable, oldValue, filename) -> {
             air_condCheck.setImage(new Image("/images/"+ filename +".png"));
         });
-        bookingViewModel.speakerCheckProperty().addListener((observable, oldValue, filename) -> {
+        adminBookingViewModel.speakerCheckProperty().addListener((observable, oldValue, filename) -> {
             speakerCheck.setImage(new Image("/images/"+ filename +".png"));
         });
 
         // 可用時間
-        bookingViewModel.availableTimeProperty().addListener((observable, oldValue, availablesTimeList) -> {
+        adminBookingViewModel.availableTimeProperty().addListener((observable, oldValue, availablesTimeList) -> {
             ListIterator<Boolean> availableIter = availablesTimeList.listIterator();
             while(availableIter.hasNext()){
                 int index = availableIter.nextIndex();
                 boolean available = availableIter.next();
                 JFXButton timeBtn = timeBtnList.get(index);
                 if(available) {
-                    timeBtn.setStyle("-fx-background-color: #1b6cd7");
+                    timeBtn.setStyle("-fx-background-color: #4DB6AC");
                     timeBtn.setDisable(false);
                 } else {
                     timeBtn.setStyle("-fx-background-color: #E6E6E6");
@@ -118,20 +114,20 @@ public class BookingView implements View {
         while(timeBtnIter.hasNext()) {
             int index = timeBtnIter.nextIndex();
             JFXButton timeBtn = timeBtnIter.next();
-            timeBtn.setOnAction(e -> bookingViewModel.selectTime(index));
+            timeBtn.setOnAction(e -> adminBookingViewModel.selectTime(index));
         }
 
         // 綁定 submitAlert 變數
-        bookingViewModel.submitAlertProperty().addListener((observable, oldAlert, newAlert) -> newAlert.show());
+        adminBookingViewModel.submitAlertProperty().addListener((observable, oldAlert, newAlert) -> newAlert.show());
 
         // 綁定 Loading Alert 變數
-        bookingViewModel.loadingAlertProperty().addListener((observable, oldAlert, newAlert) -> Platform.runLater(() -> newAlert.show()));
+        adminBookingViewModel.loadingAlertProperty().addListener((observable, oldAlert, newAlert) -> Platform.runLater(() -> newAlert.show()));
 
-        bookingViewModel.init();
+        adminBookingViewModel.init();
     }
 
     //預約鈕
     public void submitBtnClick() {
-        bookingViewModel.submit();
+        adminBookingViewModel.submit();
     }
 }

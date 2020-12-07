@@ -41,10 +41,6 @@ public class RegisterView implements View {
     public void initialize() {
         registerViewModel = ViewModelProviders.getInstance().get(RegisterViewModel.class);
 
-        // 換頁鈕
-        signInBtn.setOnAction(e -> registerViewModel.signIn());
-        submitBtn.setOnAction(e -> registerViewModel.submit());
-
         // 雙向綁定View資料和ViewModel資料
         usernameInput.textProperty().bindBidirectional(registerViewModel.usernameProperty());
         accountInput.textProperty().bindBidirectional(registerViewModel.accountProperty());
@@ -57,5 +53,15 @@ public class RegisterView implements View {
 
         // 綁定 Loading Alert 變數
         registerViewModel.loadingAlertProperty().addListener((observable, oldAlert, newAlert) -> Platform.runLater(() -> newAlert.show()));
+    }
+
+    //登入鈕
+    public void signInBtnClick() {
+        registerViewModel.signIn();
+    }
+
+    //送出鈕
+    public void submitBtnClick() {
+        registerViewModel.submit();
     }
 }

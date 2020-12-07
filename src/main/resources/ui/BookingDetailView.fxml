@@ -102,7 +102,7 @@
                            <Insets left="5.0" />
                         </VBox.margin>
                      </Label>
-                     <JFXButton fx:id="activateBtn" focusTraversable="false" prefHeight="44.0" prefWidth="225.0" style="-fx-background-color: #3C92BE; -fx-background-radius: 50; -fx-border-radius: 50;" text="開始使用" textFill="WHITE">
+                     <JFXButton fx:id="activateBtn" focusTraversable="false" onAction="#activateBtnClick" prefHeight="44.0" prefWidth="225.0" style="-fx-background-color: #3C92BE; -fx-background-radius: 50; -fx-border-radius: 50;" text="開始使用" textFill="WHITE">
                         <font>
                            <Font name="Microsoft JhengHei Bold" size="18.0" />
                         </font>
