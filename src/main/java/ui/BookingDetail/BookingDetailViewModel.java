@@ -2,30 +2,27 @@ package ui.BookingDetail;
 
 import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
+import devices.IoTDevice;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import java.time.Duration;
-
-import mvvm.RxJavaCompletableObserver;
-import mvvm.RxJavaObserver;
-import mvvm.ViewModel;
 import main.SessionContext;
 import model.Booking;
 import model.Classroom;
-import devices.IoTDevice;
+import mvvm.RxJavaCompletableObserver;
+import mvvm.RxJavaObserver;
+import mvvm.ViewModel;
 import org.reactfx.util.FxTimer;
 import org.reactfx.util.Timer;
 import ui.Dialog.AlertDirector;
 import ui.Dialog.IAlertBuilder;
 import ui.Dialog.LoadingAlertBuilder;
 
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class BookingDetailViewModel extends ViewModel {
 

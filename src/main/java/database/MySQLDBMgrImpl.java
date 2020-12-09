@@ -11,7 +11,10 @@ import model.User;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MySQLDBMgrImpl implements DBMgrImpl{
     /*private final String url = "jdbc:mariadb://localhost:3306/oosetw2?useUnicode=true&characterEncoding=UTF-8";
@@ -21,6 +24,12 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
     private final String url = "jdbc:mariadb://oosetw2.linziyou.info:3306/oosetw2?useUnicode=true&characterEncoding=UTF-8";
     private final String user = "oosetw2";
     private final String password = "drjennyoosetw";
+
+    // =======================================================================
+    // ======                                                           ======
+    // ======                     For Configuration                     ======
+    // ======                                                           ======
+    // =======================================================================
     public Connection openConnection() {
         // 開啟與MySQL資料庫之間的連線
         Connection con = null;
@@ -36,7 +45,11 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
         if(rs!=null) try { rs.close(); } catch(SQLException se) {}
     }
 
-    // ============================== For Admin ==============================
+    // =======================================================================
+    // ======                                                           ======
+    // ======                         For Admin                         ======
+    // ======                                                           ======
+    // =======================================================================
     @Override
     public Admin getAdminByAccount(String account){
         //資料庫操作
@@ -45,9 +58,9 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
         ResultSet rs = null;
         try {
             con = openConnection();
-            stmt = con.prepareStatement("SELECT * from admin WHERE account = ?");
-            stmt.setString(1,account);
-            rs = stmt.executeQuery();
+            stmt = con.prepareStatement("SELECT * from admin WHERE account = ?");       // 取得實例化的Statement物件以執行Query
+            stmt.setString(1,account);                                        // 設定參數
+            rs = stmt.executeQuery();                                                       // 執行Select Query
             while (rs.next()) {
                 Admin admin = new Admin();
                 admin.setAccount(rs.getString("account"));
@@ -61,7 +74,11 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
         return null;
     }
 
-    // ============================== For User ==============================
+    // =======================================================================
+    // ======                                                           ======
+    // ======                          For User                         ======
+    // ======                                                           ======
+    // =======================================================================
     @Override
     public void insertUser(User user) {
         //資料庫操作
@@ -129,10 +146,14 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
         }
         catch (Exception throwables) { throwables.printStackTrace(); }
         finally { closeConnection(con, stmt, rs); }
-        return true;
+        return false;
     }
 
-    // ============================== For Classroom ==============================
+    // =======================================================================
+    // ======                                                           ======
+    // ======                       For Classroom                       ======
+    // ======                                                           ======
+    // =======================================================================
     @Override
     public List<Classroom> getClassrooms() {
         List<Classroom> result = new ArrayList<>();
@@ -143,8 +164,8 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
         ResultSet rs = null;
         try {
             con = openConnection();
-            stmt = con.prepareStatement("SELECT * from classroom");  // 取得實例化的Statement物件以執行Query
-            rs = stmt.executeQuery();                                            // 執行Select Query
+            stmt = con.prepareStatement("SELECT * from classroom");
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 Classroom classroom = getClassroomFromResultSet(rs);
                 result.add(classroom);
@@ -263,7 +284,11 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
         return null;
     }
 
-    // ============================== For Booking ==============================
+    // =======================================================================
+    // ======                                                           ======
+    // ======                        For Booking                        ======
+    // ======                                                           ======
+    // =======================================================================
     @Override
     public void insertBooking(Booking booking) {
         //資料庫操作
@@ -393,7 +418,11 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
         return null;
     }
 
-    // ============================== For IoTDevice ==============================
+    // =======================================================================
+    // ======                                                           ======
+    // ======                       For IoTDevice                       ======
+    // ======                                                           ======
+    // =======================================================================
     @Override
     public void updateIotDevice(IoTDevice device){
         //資料庫操作
@@ -402,13 +431,32 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
         ResultSet rs = null;
         try {
             con = openConnection();
-            stmt = con.prepareStatement("UPDATE iotdevice SET state = ? WHERE id = ?");  // 取得實例化的Statement物件以執行Query
-            stmt.setString(1, device.getState());                              // 設定參數
-            stmt.setInt(2, device.getId());                                    // 設定參數
-            stmt.executeUpdate();                                                            // 執行Select Query
+            stmt = con.prepareStatement("UPDATE iotdevice SET state = ? WHERE id = ?");
+            stmt.setString(1, device.getState());
+            stmt.setInt(2, device.getId());
+            stmt.executeUpdate();
         }
         catch (Exception throwables) { throwables.printStackTrace(); }
         finally { closeConnection(con, stmt, rs); }
+    }
+    @Override
+    public Map<Integer, String> getStateFromIoTDevices() {
+        Map<Integer, String> result = new HashMap<>();
+        //資料庫操作
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            con = openConnection();
+            stmt = con.prepareStatement("SELECT id, state from iotdevice");
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                result.put(rs.getInt("id"), rs.getString("state"));
+            }
+        }
+        catch (Exception throwables) { throwables.printStackTrace(); }
+        finally { closeConnection(con, stmt, rs); }
+        return result;
     }
     @Override
     public String getStateFromIoTDevicesById(int id) {
@@ -417,10 +465,10 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            con = openConnection();                                                            // 開啟與MySQL資料庫之間的連線
-            stmt = con.prepareStatement("SELECT state from iotdevice where id = ?");  // 取得實例化的Statement物件以執行Query
-            stmt.setInt(1, id);                                               // 設定參數
-            rs = stmt.executeQuery();                                                          // 執行Select Query
+            con = openConnection();
+            stmt = con.prepareStatement("SELECT state from iotdevice where id = ?");
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 return rs.getString("state");
             }
@@ -437,10 +485,10 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            con = openConnection();                                                            // 開啟與MySQL資料庫之間的連線
-            stmt = con.prepareStatement("SELECT * from iotdevice where classroomId = ?");  // 取得實例化的Statement物件以執行Query
-            stmt.setString(1, classroomId);                                               // 設定參數
-            rs = stmt.executeQuery();                                                          // 執行Select Query
+            con = openConnection();
+            stmt = con.prepareStatement("SELECT * from iotdevice where classroomId = ?");
+            stmt.setString(1, classroomId);
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 String type = rs.getString("type");
                 int id = rs.getInt("id");

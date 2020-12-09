@@ -1,6 +1,5 @@
 package ui.Booking;
 
-import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
@@ -12,9 +11,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import mvvm.View;
 import mvvm.ViewModelProviders;
-import ui.Dialog.AlertDirector;
-import ui.Dialog.IAlertBuilder;
-import ui.Dialog.LoadingAlertBuilder;
 
 import java.util.ArrayList;
 import java.util.ListIterator;

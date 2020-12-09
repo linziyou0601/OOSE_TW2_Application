@@ -1,11 +1,7 @@
 package model;
 
-import main.MainApplication;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 public class Booking {
     private int id;

@@ -20,6 +20,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.1.2'
+    implementation group: 'org.mongodb', name: 'mongo-java-driver', version: '3.12.7'
     implementation group: 'com.jfoenix', name: 'jfoenix', version: '9.0.10'
     implementation group: 'org.reactfx', name: 'reactfx', version: '1.4.1'
     implementation group: 'io.reactivex.rxjava2', name: 'rxjavafx', version: '2.2.2'

@@ -2,6 +2,7 @@ package ui.BookingDetail;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXMasonryPane;
+import devices.IoTDevice;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -9,16 +10,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import model.Booking;
 import mvvm.View;
 import mvvm.ViewModelProviders;
-import devices.IoTDevice;
 import observer.and.adapter.DeviceIconObserver;
 import observer.and.adapter.IObservable;
 import observer.and.adapter.PowerBtnObserver;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 

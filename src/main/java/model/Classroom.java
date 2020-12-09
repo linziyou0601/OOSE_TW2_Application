@@ -1,12 +1,8 @@
 package model;
 
-import database.DBMgr;
 import devices.*;
-import main.MainApplication;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 public class Classroom {

@@ -1,7 +1,6 @@
 package mvvm;
 
 import database.DBMgr;
-import database.MySQLDBMgrImpl;
 import database.MySQLDBMgrImplProxy;
 
 import java.util.HashMap;

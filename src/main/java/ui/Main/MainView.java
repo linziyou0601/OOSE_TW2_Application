@@ -1,34 +1,21 @@
 package ui.Main;
 
-import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXMasonryPane;
 import com.jfoenix.controls.JFXTextField;
-import devices.IoTDevice;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
+import model.Classroom;
 import mvvm.View;
 import mvvm.ViewModelProviders;
-import model.Classroom;
-import observer.and.adapter.DeviceIconObserver;
-import observer.and.adapter.IObservable;
-import observer.and.adapter.PowerBtnObserver;
-import ui.Dialog.AlertDirector;
-import ui.Dialog.BasicAlertBuilder;
-import ui.Dialog.IAlertBuilder;
-import ui.Dialog.LoadingAlertBuilder;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 public class MainView implements View {
 

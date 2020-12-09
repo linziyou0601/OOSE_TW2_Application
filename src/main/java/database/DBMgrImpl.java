@@ -7,6 +7,7 @@ import model.Classroom;
 import model.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface DBMgrImpl {
 
@@ -34,6 +35,7 @@ public interface DBMgrImpl {
 
     // For IoTDevice
     void updateIotDevice(IoTDevice device);
+    Map<Integer, String> getStateFromIoTDevices();
     String getStateFromIoTDevicesById(int id);
     List<IoTDevice> getIoTDevicesByClassroomId(String id);
 }

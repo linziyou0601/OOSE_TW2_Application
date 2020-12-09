@@ -10,7 +10,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import main.SessionContext;
 import model.Admin;
-import model.User;
 import mvvm.RxJavaObserver;
 import mvvm.ViewManager;
 import mvvm.ViewModel;
@@ -20,8 +19,6 @@ import ui.Dialog.BasicAlertBuilder;
 import ui.Dialog.IAlertBuilder;
 import ui.Dialog.LoadingAlertBuilder;
 import ui.Login.LoginView;
-import ui.Main.MainView;
-import ui.Register.RegisterView;
 
 public class AdminLoginViewModel extends ViewModel {
 

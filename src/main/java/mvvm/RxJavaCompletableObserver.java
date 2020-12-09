@@ -1,7 +1,6 @@
 package mvvm;
 
 import io.reactivex.CompletableObserver;
-import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
 

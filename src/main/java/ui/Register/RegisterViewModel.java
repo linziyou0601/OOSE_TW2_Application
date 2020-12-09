@@ -5,19 +5,21 @@ import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import main.SessionContext;
+import model.User;
 import mvvm.RxJavaCompletableObserver;
 import mvvm.RxJavaObserver;
-import mvvm.ViewModel;
-import main.SessionContext;
 import mvvm.ViewManager;
-import model.User;
+import mvvm.ViewModel;
 import ui.Dialog.AlertDirector;
 import ui.Dialog.BasicAlertBuilder;
 import ui.Dialog.IAlertBuilder;
 import ui.Dialog.LoadingAlertBuilder;
 import ui.Login.LoginView;
-import ui.Main.MainView;
 
 import java.util.Optional;
 

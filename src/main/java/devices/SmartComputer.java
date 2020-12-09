@@ -1,7 +1,6 @@
 package devices;
 
 import main.APIService;
-import mvvm.RxJavaObserver;
 import observer.and.adapter.IObservable;
 import observer.and.adapter.IObserver;
 import org.reactfx.util.FxTimer;
@@ -22,7 +21,7 @@ public class SmartComputer implements IoTDevice, IObservable {
         this.id = id;
         this.name = name;
         this.state = state;
-        FxTimer.runPeriodically(Duration.ofMillis(5000), () -> loadState());
+        FxTimer.runPeriodically(Duration.ofMillis(1000), () -> loadState());
     }
 
     // ==================== For IoTDevice Interface ====================
@@ -54,14 +53,8 @@ public class SmartComputer implements IoTDevice, IObservable {
 
     @Override
     public void loadState() {
-        APIService.loadIoTState(this.id).subscribe(new RxJavaObserver<>(){
-            @Override
-            public void onNext(String result) { state = result; }
-            @Override
-            public void onComplete(){ notifyObservers(); }
-            @Override
-            public void onError(Throwable e){}
-        });
+        this.state = APIService.loadIoTState(this.id);
+        notifyObservers();
     }
 
     @Override

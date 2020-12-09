@@ -9,21 +9,30 @@ import model.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class MySQLDBMgrImplProxy implements DBMgrImpl{
     private final MySQLDBMgrImpl mySQLDBMgr = new MySQLDBMgrImpl();
 
-    private HashMap<String, Classroom> classroomCache = new HashMap<>();
-    private HashMap<String, List<IoTDevice>> iotDeviceCache = new HashMap<>();
+    private HashMap<String, Classroom> classroomCache = new HashMap<>();        //快取物件暫存區
+    private HashMap<String, List<IoTDevice>> iotDeviceCache = new HashMap<>();  //快取物件暫存區
 
-    // ============================== For Admin ==============================
+    // =======================================================================
+    // ======                                                           ======
+    // ======                         For Admin                         ======
+    // ======                                                           ======
+    // =======================================================================
     @Override   //無快取
     public Admin getAdminByAccount(String account) {
         return mySQLDBMgr.getAdminByAccount(account);
     }
 
-    // ============================== For User ==============================
+    // =======================================================================
+    // ======                                                           ======
+    // ======                          For User                         ======
+    // ======                                                           ======
+    // =======================================================================
     @Override   //無快取
     public void insertUser(User user) {
         mySQLDBMgr.insertUser(user);
@@ -37,19 +46,24 @@ public class MySQLDBMgrImplProxy implements DBMgrImpl{
         return mySQLDBMgr.getDuplicateBooking(userAccount, date, startTime, endTime);
     }
 
-    // ============================== For Classroom ==============================
+    // =======================================================================
+    // ======                                                           ======
+    // ======                       For Classroom                       ======
+    // ======                                                           ======
+    // =======================================================================
     @Override   //快取
     public List<Classroom> getClassrooms() {
+        List<Classroom> result;
         if(classroomCache.size()>0){
-            return (List<Classroom>)classroomCache.values();
+            result = (List<Classroom>)classroomCache.values();
         } else {
-            List<Classroom> result = mySQLDBMgr.getClassrooms();
+            result = mySQLDBMgr.getClassrooms();
             for (Classroom classroom : result) {
                 classroom.setDevices(getIoTDevicesByClassroomId(classroom.getId()));
                 classroomCache.put(classroom.getId(), classroom);
             }
-            return result;
         }
+        return result;
     }
     @Override   //快取
     public List<Classroom> getClassroomsByKeyword(String keyword) {
@@ -82,7 +96,11 @@ public class MySQLDBMgrImplProxy implements DBMgrImpl{
         return mySQLDBMgr.getAvailableTime(classroomId, date);
     }
 
-    // ============================== For Booking ==============================
+    // =======================================================================
+    // ======                                                           ======
+    // ======                        For Booking                        ======
+    // ======                                                           ======
+    // =======================================================================
     @Override   //無快取
     public void insertBooking(Booking booking) {
         //資料庫操作
@@ -119,10 +137,18 @@ public class MySQLDBMgrImplProxy implements DBMgrImpl{
         return result;
     }
 
-    // ============================== For IoTDevice ==============================
+    // =======================================================================
+    // ======                                                           ======
+    // ======                       For IoTDevice                       ======
+    // ======                                                           ======
+    // =======================================================================
     @Override   //無快取
     public void updateIotDevice(IoTDevice device){
         mySQLDBMgr.updateIotDevice(device);
+    }
+    @Override
+    public Map<Integer, String> getStateFromIoTDevices() {
+        return mySQLDBMgr.getStateFromIoTDevices();
     }
     @Override   //無快取
     public String getStateFromIoTDevicesById(int id) {

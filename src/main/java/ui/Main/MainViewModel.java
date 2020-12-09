@@ -1,30 +1,19 @@
 package ui.Main;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.jfoenix.controls.JFXAlert;
-import com.sun.media.jfxmedia.events.PlayerEvent;
 import database.DBMgr;
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
-import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import main.SessionContext;
+import model.Classroom;
+import model.User;
 import mvvm.RxJavaObserver;
 import mvvm.ViewManager;
 import mvvm.ViewModel;
-import model.Classroom;
-import model.User;
-import org.jetbrains.annotations.NotNull;
 import ui.Booking.BookingView;
 import ui.Dialog.AlertDirector;
-import ui.Dialog.BasicAlertBuilder;
 import ui.Dialog.IAlertBuilder;
 import ui.Dialog.LoadingAlertBuilder;
 import ui.Login.LoginView;
@@ -33,7 +22,6 @@ import ui.MyBooking.MyBookingView;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 public class MainViewModel extends ViewModel {
 

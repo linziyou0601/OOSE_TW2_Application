@@ -14,9 +14,10 @@ import ui.Main.MainView;
 import ui.MyBooking.MyBookingView;
 import ui.Register.RegisterView;
 
-public class MainApplication extends Application {
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-    public static int OBJECT_COUNTER = 0;
+public class MainApplication extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -40,5 +41,8 @@ public class MainApplication extends Application {
         primaryStage.setResizable(true);
         primaryStage.setTitle("Login");
         primaryStage.show();
+
+        Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
+        mongoLogger.setLevel(Level.SEVERE);
     }
 }

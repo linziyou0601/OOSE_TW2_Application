@@ -1,15 +1,16 @@
 package database;
 
 import devices.IoTDevice;
-import io.reactivex.*;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
 import model.Admin;
 import model.Booking;
 import model.Classroom;
 import model.User;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 public class DBMgr {
     private DBMgrImpl dbmgrImpl;
@@ -18,7 +19,9 @@ public class DBMgr {
         this.dbmgrImpl = dbmgrImpl;
     }
 
-    // For Admin
+    // =======================================================================
+    // ======                         For Admin                         ======
+    // =======================================================================
     public Observable<Admin> getAdminByAccount(String account) {
         Observable observable = Observable.create((ObservableOnSubscribe<Admin>) subscriber -> {
             subscriber.onNext(dbmgrImpl.getAdminByAccount(account));
@@ -27,7 +30,9 @@ public class DBMgr {
         return observable;
     }
 
-    // For User
+    // =======================================================================
+    // ======                          For User                         ======
+    // =======================================================================
     public Completable insertUser(User user) {
         Completable completable = Completable.create(subscriber -> {
             dbmgrImpl.insertUser(user);
@@ -50,7 +55,9 @@ public class DBMgr {
         return observable;
     }
 
-    // For Classroom
+    // =======================================================================
+    // ======                       For Classroom                       ======
+    // =======================================================================
     public Observable<List<Classroom>> getClassrooms() {
         Observable observable = Observable.create((ObservableOnSubscribe<List<Classroom>>) subscriber -> {
             subscriber.onNext(dbmgrImpl.getClassrooms());
@@ -80,7 +87,9 @@ public class DBMgr {
         return observable;
     }
 
-    // For Booking
+    // =======================================================================
+    // ======                        For Booking                        ======
+    // =======================================================================
     public Completable insertBooking(Booking booking) {
         Completable completable = Completable.create(subscriber -> {
             dbmgrImpl.insertBooking(booking);
@@ -124,13 +133,22 @@ public class DBMgr {
         return observable;
     }
 
-    // For IoTDevice
+    // =======================================================================
+    // ======                       For IoTDevice                       ======
+    // =======================================================================
     public Completable updateIotDevice(IoTDevice device){
         Completable completable = Completable.create(subscriber -> {
             dbmgrImpl.updateIotDevice(device);
             subscriber.onComplete();
         });
         return completable;
+    }
+    public Observable<Map<Integer, String>> getStateFromIoTDevices() {
+        Observable observable = Observable.create((ObservableOnSubscribe<Map<Integer, String>>) subscriber -> {
+            subscriber.onNext(dbmgrImpl.getStateFromIoTDevices());
+            subscriber.onComplete();
+        });
+        return observable;
     }
     public Observable<String> getStateFromIoTDevicesById(int id) {
         Observable observable = Observable.create((ObservableOnSubscribe<String>) subscriber -> {

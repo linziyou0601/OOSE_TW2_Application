@@ -1,17 +1,18 @@
 package ui.Login;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import main.SessionContext;
-import model.Classroom;
+import model.User;
 import mvvm.RxJavaObserver;
 import mvvm.ViewManager;
 import mvvm.ViewModel;
-import model.User;
 import ui.AdminLogin.AdminLoginView;
 import ui.Dialog.AlertDirector;
 import ui.Dialog.BasicAlertBuilder;
@@ -19,8 +20,6 @@ import ui.Dialog.IAlertBuilder;
 import ui.Dialog.LoadingAlertBuilder;
 import ui.Main.MainView;
 import ui.Register.RegisterView;
-
-import java.util.List;
 
 public class LoginViewModel extends ViewModel {
 

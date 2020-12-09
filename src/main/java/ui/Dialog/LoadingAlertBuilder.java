@@ -1,19 +1,13 @@
 package ui.Dialog;
 
-import com.jfoenix.controls.*;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
+import com.jfoenix.controls.JFXAlert;
+import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXSpinner;
 import javafx.scene.control.Label;
-import javafx.scene.control.Spinner;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import mvvm.ViewManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class LoadingAlertBuilder implements IAlertBuilder {
     JFXDialogLayout layout = new JFXDialogLayout();

@@ -12,10 +12,8 @@ import model.Classroom;
 import model.User;
 import mvvm.RxJavaCompletableObserver;
 import mvvm.RxJavaObserver;
-import mvvm.ViewManager;
 import mvvm.ViewModel;
 import ui.Dialog.*;
-import ui.Main.MainView;
 
 import java.util.ArrayList;
 import java.util.List;
