@@ -15,6 +15,7 @@ import mvvm.RxJavaObserver;
 import mvvm.ViewManager;
 import mvvm.ViewModel;
 import ui.AdminBookingDetail.AdminBookingDetailView;
+import ui.AdminLogin.AdminLoginView;
 import ui.AdminMain.AdminMainView;
 import ui.BookingDetail.BookingDetailView;
 import ui.Dialog.*;
@@ -111,7 +112,7 @@ public class AdminAllBookingViewModel extends ViewModel {
     // 邏輯處理：登出
     public void logout() {
         sessionContext.clear();        //清除Session
-        ViewManager.navigateTo(LoginView.class);
+        ViewManager.navigateTo(AdminLoginView.class);
     }
 
     // 邏輯處理：顯示目前時段
