@@ -19,7 +19,7 @@ import ui.Register.RegisterView;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MainApplication extends Application {
+public class MainFxApplication extends Application {
 
     public static void main(String[] args) {
         launch(args);

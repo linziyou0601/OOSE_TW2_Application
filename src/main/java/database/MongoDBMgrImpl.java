@@ -17,10 +17,7 @@ import org.bson.Document;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class MongoDBMgrImpl implements DBMgrImpl{
@@ -182,9 +179,12 @@ public class MongoDBMgrImpl implements DBMgrImpl{
         if(classroomCache.size()>0){
             Pattern p = Pattern.compile(".*"+keyword+".*");
             result = new ArrayList<>();
-            for(String key: classroomCache.keySet())
-                if(p.matcher(key).matches())
-                    result.add(classroomCache.get(key));
+            Iterator classroomCacheItr = classroomCache.entrySet().iterator();
+            while(classroomCacheItr.hasNext()){
+                Map.Entry<String, Classroom> entry = (Map.Entry<String, Classroom>)classroomCacheItr.next();
+                if(p.matcher(entry.getKey()).matches())
+                    result.add(entry.getValue());
+            }
         } else {
             //資料庫操作
             MongoDatabase db = openConnection();

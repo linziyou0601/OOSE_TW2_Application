@@ -1,7 +1,6 @@
 package model;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import main.MainApplication;
 
 public class User {
     private String account;

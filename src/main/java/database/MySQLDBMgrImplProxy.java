@@ -6,10 +6,7 @@ import model.Booking;
 import model.Classroom;
 import model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class MySQLDBMgrImplProxy implements DBMgrImpl{
@@ -71,12 +68,17 @@ public class MySQLDBMgrImplProxy implements DBMgrImpl{
         if(classroomCache.size()>0){
             Pattern p = Pattern.compile(".*"+keyword+".*"); // the regexp you want to match
             result = new ArrayList<>();
-            for(String key: classroomCache.keySet())
-                if(p.matcher(key).matches())
-                    result.add(classroomCache.get(key));
+            Iterator classroomCacheItr = classroomCache.entrySet().iterator();
+            while(classroomCacheItr.hasNext()){
+                Map.Entry<String, Classroom> entry = (Map.Entry<String, Classroom>)classroomCacheItr.next();
+                if(p.matcher(entry.getKey()).matches())
+                    result.add(entry.getValue());
+            }
         } else {
             result = mySQLDBMgr.getClassroomsByKeyword(keyword);
-            for(Classroom classroom: result){
+            Iterator resultItr = result.iterator();
+            while(resultItr.hasNext()){
+                Classroom classroom = (Classroom)resultItr.next();
                 classroom.setDevices(getIoTDevicesByClassroomId(classroom.getId()));
                 classroomCache.put(classroom.getId(), classroom);
             }
@@ -117,7 +119,9 @@ public class MySQLDBMgrImplProxy implements DBMgrImpl{
     @Override   //快取內部之Classroom
     public List<Booking> getBookings() {
         List<Booking> result = mySQLDBMgr.getBookings();
-        for(Booking booking: result){
+        Iterator resultItr = result.iterator();
+        while(resultItr.hasNext()){
+            Booking booking = (Booking)resultItr.next();
             booking.setClassroom(getClassroomById(booking.getClassroomId()));
         }
         return result;
@@ -131,7 +135,9 @@ public class MySQLDBMgrImplProxy implements DBMgrImpl{
     @Override   //快取內部之Classroom
     public List<Booking> getBookingsByAccount(String account) {
         List<Booking> result = mySQLDBMgr.getBookingsByAccount(account);
-        for(Booking booking: result){
+        Iterator resultItr = result.iterator();
+        while(resultItr.hasNext()){
+            Booking booking = (Booking)resultItr.next();
             booking.setClassroom(getClassroomById(booking.getClassroomId()));
         }
         return result;

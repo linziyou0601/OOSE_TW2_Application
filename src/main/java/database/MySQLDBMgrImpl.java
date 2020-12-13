@@ -21,7 +21,7 @@ public class MySQLDBMgrImpl implements DBMgrImpl{
     private final String user = "root";
     private final String password = "";*/
 
-    private final String url = "jdbc:mariadb://oosetw2.linziyou.info:3306/oosetw2?useUnicode=true&characterEncoding=UTF-8";
+    private final String url = "jdbc:mysql://oosetw2.linziyou.info:3306/oosetw2?useUnicode=true&characterEncoding=UTF-8";
     private final String user = "oosetw2";
     private final String password = "drjennyoosetw";
 

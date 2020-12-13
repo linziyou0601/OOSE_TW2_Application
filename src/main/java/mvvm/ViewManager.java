@@ -11,7 +11,7 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import main.MainApplication;
+import main.MainFxApplication;
 import main.ResizeHelper;
 
 import java.net.URL;
@@ -25,7 +25,7 @@ public class ViewManager {
     /* 將View放入Map中 */
     public static void addView(Class viewClass) {
         String viewName = viewClass.getSimpleName();
-        viewPaneMap.put(viewName, MainApplication.class.getResource("/ui/"+viewName+".fxml"));
+        viewPaneMap.put(viewName, MainFxApplication.class.getResource("/ui/"+viewName+".fxml"));
     }
 
     public static void initStage(Stage primaryStage, Class viewClass) {
