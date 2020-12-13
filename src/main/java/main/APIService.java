@@ -24,10 +24,10 @@ public class APIService {
     private static Logger apiServiceLogger = Logger.getGlobal();
 
     public static String loadIoTState(int iotId) {
-        // 若與上次抓取資料「相隔五秒以上」，則抓新的資料
+        // 若與上次抓取資料「相隔3秒以上」，則抓新的資料
         Duration duration = Duration.between(lastUpdateTime, LocalDateTime.now());
         long seconds = Math.abs(duration.getSeconds());
-        if(seconds>=5 && !isLoading) {
+        if(seconds>=3 && !isLoading) {
             isLoading = true;
             apiServiceLogger.info(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + " 正在同步裝置狀態...");
             dbMgr.getStateFromIoTDevices()
