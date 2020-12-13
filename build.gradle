@@ -11,6 +11,16 @@ sourceCompatibility = '15'
 mainClassName = "main.MainApplication"
 compileJava.options.encoding = 'UTF-8'
 
+jar {
+    manifest {
+        attributes "Main-Class": "main.MainApplication"
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 repositories {
     mavenCentral()
 }
