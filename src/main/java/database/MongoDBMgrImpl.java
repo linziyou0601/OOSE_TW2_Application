@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class MongoDBMgrImpl implements DBMgrImpl{
-    private final MongoClientURI uri = new MongoClientURI("mongodb://oosetw2:drjennyoosetw@oosetw2.linziyou.info:27017/oosetw2?authSource=admin");
+    private final MongoClientURI uri = new MongoClientURI("mongodb://oosetw2:drjennyoosetw@oosetw2.linziyou.info:27017/oosetw2");
 
     private HashMap<String, Classroom> classroomCache = new HashMap<>();        //快取物件暫存區
     private HashMap<String, List<IoTDevice>> iotDeviceCache = new HashMap<>();  //快取物件暫存區

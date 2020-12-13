@@ -1,4 +1,4 @@
-package ui.MyBooking;
+package ui.AdminAllBooking;
 
 import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
@@ -7,12 +7,15 @@ import io.reactivex.schedulers.Schedulers;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import main.SessionContext;
+import model.Admin;
 import model.Booking;
 import model.User;
 import mvvm.RxJavaCompletableObserver;
 import mvvm.RxJavaObserver;
 import mvvm.ViewManager;
 import mvvm.ViewModel;
+import ui.AdminBookingDetail.AdminBookingDetailView;
+import ui.AdminMain.AdminMainView;
 import ui.BookingDetail.BookingDetailView;
 import ui.Dialog.*;
 import ui.Login.LoginView;
@@ -23,16 +26,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-public class MyBookingViewModel extends ViewModel {
+public class AdminAllBookingViewModel extends ViewModel {
 
-    private User currentUser;
+    private Admin currentAdmin;
     private StringProperty username = new SimpleStringProperty();
     private StringProperty periodShowType = new SimpleStringProperty("");
     private ListProperty<Booking> bookingList = new SimpleListProperty<>(FXCollections.observableArrayList(new ArrayList<>()));
     private ObjectProperty<JFXAlert> cancelAlert = new SimpleObjectProperty<>();
     private ObjectProperty<JFXAlert> loadingAlert = new SimpleObjectProperty<>();
 
-    public MyBookingViewModel(DBMgr dbmgr) {
+    public AdminAllBookingViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
         this.sessionContext = SessionContext.getInstance();
     }
@@ -51,18 +54,17 @@ public class MyBookingViewModel extends ViewModel {
     // =============== 邏輯處理 ===============
     // 邏輯處理：登入後參數對session綁定
     public void init() {
-        currentUser = sessionContext.get("user");
-        username.set(currentUser.getUsername());
+        currentAdmin = sessionContext.get("admin");
+        username.set(currentAdmin.getUsername());
         periodShowType.set("CURRENT");
         refresh();
     }
 
     // 邏輯處理：刷新頁面資料
     public void refresh() {
-        String account = currentUser.getAccount();
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
         showLoading();
-        dbmgr.getBookingsByAccount(account)
+        dbmgr.getBookings()
                 .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
                 .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
                 .subscribe(new RxJavaObserver<>(){
@@ -134,20 +136,20 @@ public class MyBookingViewModel extends ViewModel {
     public void operateBooking(int id) {
         refresh();
         sessionContext.set("selectedBookingId", id);
-        ViewManager.popUp(BookingDetailView.class);
+        ViewManager.popUp(AdminBookingDetailView.class);
     }
 
     // 邏輯處理：取消預約教室
     public void cancelBooking(int id) {
         // Builder Pattern：建立BasicAlert
-        IAlertBuilder alertBuilder = new InputAlertBuilder("確認取消預約", "請輸入使用者密碼", IAlertBuilder.AlertButtonType.OK, true);
+        IAlertBuilder alertBuilder = new InputAlertBuilder("確認取消預約", "請輸入管理員密碼", IAlertBuilder.AlertButtonType.OK, true);
         AlertDirector alertDirector = new AlertDirector(alertBuilder);
         alertDirector.build();
         JFXAlert alert = alertBuilder.getAlert();
         // Show and wait for selection
         Optional<String> result = alert.showAndWait();
         if(result.isPresent()){
-            if(currentUser.validate(result.get())) {
+            if(currentAdmin.validate(result.get())) {
                 // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
                 showLoading();
                 dbmgr.deleteBookingById(id)
@@ -178,8 +180,8 @@ public class MyBookingViewModel extends ViewModel {
         cancelAlert.set(alert);
     }
 
-    // 邏輯處理：換頁 - 總覽
-    public void toHome() {
-        ViewManager.navigateTo(MainView.class);
+    // 邏輯處理：換頁 - 教室總覽
+    public void toAllClassroom() {
+        ViewManager.navigateTo(AdminMainView.class);
     }
 }

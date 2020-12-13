@@ -12,6 +12,8 @@ import model.Classroom;
 import mvvm.RxJavaObserver;
 import mvvm.ViewManager;
 import mvvm.ViewModel;
+import ui.AdminAllBooking.AdminAllBookingView;
+import ui.AdminAllBooking.AdminAllBookingViewModel;
 import ui.AdminBooking.AdminBookingView;
 import ui.AdminLogin.AdminLoginView;
 import ui.Dialog.AlertDirector;
@@ -110,6 +112,6 @@ public class AdminMainViewModel extends ViewModel {
 
     // 邏輯處理：換頁 - 預約總覽
     public void toAllBooking() {
-        //ViewManager.navigateTo(MyBookingView.class);
+        ViewManager.navigateTo(AdminAllBookingView.class);
     }
 }

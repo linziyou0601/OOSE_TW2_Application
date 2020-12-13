@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXMasonryPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane minHeight="520.0" minWidth="720.0" prefHeight="520.0" prefWidth="720.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.AdminBookingDetail.AdminBookingDetailView">
+   <children>
+      <AnchorPane layoutX="8.0" layoutY="8.0" minHeight="500.0" minWidth="700.0" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF; -fx-effect: dropshadow(GAUSSIAN, rgba(0,0,0,0.4), 10, 0, 0, 0);" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <AnchorPane prefHeight="370.0" prefWidth="700.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+               <HBox alignment="BASELINE_LEFT" layoutX="30.0" layoutY="37.0" prefHeight="40.0" prefWidth="640.0" spacing="20.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+                  <children>
+                     <Label fx:id="classroomIdLabel" text="MA214">
+                        <font>
+                           <Font name="Microsoft JhengHei Bold" size="30.0" />
+                        </font>
+                     </Label>
+                  </children>
+               </HBox>
+               <VBox layoutX="30.0" layoutY="86.0" prefHeight="390.0" prefWidth="360.0" spacing="10.0">
+                  <children>
+                     <Label text="裝置列表">
+                        <font>
+                           <Font name="Microsoft JhengHei Bold" size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="5.0" />
+                        </VBox.margin>
+                     </Label>
+                     <ScrollPane fitToWidth="true" prefHeight="365.0" prefWidth="360.0" style="-fx-border-color: #FFFFFF;">
+                        <content>
+                           <JFXMasonryPane fx:id="deviceListPane" cellHeight="100.0" cellWidth="160.0" />
+                        </content>
+                     </ScrollPane>
+                  </children>
+               </VBox>
+               <VBox layoutX="410.0" layoutY="86.0" prefHeight="131.0" prefWidth="260.0" spacing="10.0">
+                  <children>
+                     <Label text="借用時段">
+                        <font>
+                           <Font name="Microsoft JhengHei Bold" size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="5.0" />
+                        </VBox.margin>
+                     </Label>
+                     <Label fx:id="dateLabel" text="2020-12-01" textFill="#4db6ac">
+                        <font>
+                           <Font name="Microsoft JhengHei Bold" size="20.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="5.0" />
+                        </VBox.margin>
+                     </Label>
+                     <Label fx:id="timeLabel" text="06:00 - 08:00" textFill="#4db6ac">
+                        <font>
+                           <Font name="Microsoft JhengHei Bold" size="20.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="5.0" />
+                        </VBox.margin>
+                     </Label>
+                  </children>
+               </VBox>
+               <VBox layoutX="410.0" layoutY="204.0" prefHeight="272.0" prefWidth="260.0" spacing="10.0">
+                  <children>
+                     <Label text="目前時間">
+                        <font>
+                           <Font name="Microsoft JhengHei Bold" size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="5.0" />
+                        </VBox.margin>
+                     </Label>
+                     <Label fx:id="currentTimeLabel" text="14:52:00" textFill="#4db6ac">
+                        <font>
+                           <Font name="Microsoft JhengHei Bold" size="50.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="5.0" />
+                        </VBox.margin>
+                     </Label>
+                     <Label text="剩餘時間">
+                        <font>
+                           <Font name="Microsoft JhengHei Bold" size="14.0" />
+                        </font>
+                     </Label>
+                     <Label fx:id="restTimeLabel" text="14:52:00" textFill="#c31a1a">
+                        <font>
+                           <Font name="Microsoft JhengHei Bold" size="50.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="5.0" />
+                        </VBox.margin>
+                     </Label>
+                     <Label fx:id="activateLabel" alignment="CENTER" prefHeight="44.0" prefWidth="225.0" style="-fx-background-color: #4db6ac; -fx-background-radius: 50; -fx-border-radius: 50;" text="已開始使用" textFill="WHITE">
+                        <VBox.margin>
+                           <Insets left="5.0" />
+                        </VBox.margin>
+                        <font>
+                           <Font name="Microsoft JhengHei Bold" size="18.0" />
+                        </font>
+                        <padding>
+                           <Insets bottom="5.0" top="5.0" />
+                        </padding>
+                     </Label>
+                  </children>
+               </VBox>
+            </children>
+         </AnchorPane>
+             <AnchorPane prefHeight="40.0" prefWidth="400.0" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                 <children>
+                     <JFXButton fx:id="closeStageBtn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" layoutX="973.0" layoutY="35.0" prefHeight="20.0" prefWidth="20.0" ripplerFill="#ff000000" style="-fx-background-radius: 50%; -fx-border-radius: 50%;" textAlignment="CENTER" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                         <font>
+                             <Font size="1.0" />
+                         </font>
+                         <graphic>
+                             <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                     <Image url="@../images/icons8_multiply_52px_4.png" />
+                                 </image>
+                             </ImageView>
+                         </graphic>
+                     </JFXButton>
+                 </children>
+             </AnchorPane>
+      </AnchorPane>
+   </children>
+</AnchorPane>

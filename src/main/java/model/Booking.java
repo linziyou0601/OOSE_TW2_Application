@@ -48,6 +48,9 @@ public class Booking {
     public String getUserAccount() {
         return user.getAccount();
     }
+    public String getUserUsername() {
+        return user.getUsername();
+    }
     public boolean getActivate() {
         return activate;
     }

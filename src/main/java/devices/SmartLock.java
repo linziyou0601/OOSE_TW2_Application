@@ -22,7 +22,7 @@ public class SmartLock implements IoTDevice, IObservable {
         this.id = id;
         this.name = name;
         this.state = state;
-        FxTimer.runPeriodically(Duration.ofMillis(1000), () -> loadState());
+        FxTimer.runPeriodically(Duration.ofMillis(3000), () -> loadState());
     }
 
     // ==================== For IoTDevice Interface ====================
@@ -54,7 +54,8 @@ public class SmartLock implements IoTDevice, IObservable {
 
     @Override
     public void loadState() {
-        this.state = APIService.loadIoTState(this.id);
+        String loadedState = APIService.loadIoTState(this.id);
+        if(loadedState!=null) this.state = loadedState;
         notifyObservers();
     }
 

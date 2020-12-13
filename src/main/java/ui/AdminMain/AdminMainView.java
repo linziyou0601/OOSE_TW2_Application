@@ -3,6 +3,11 @@ package ui.AdminMain;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import devices.IoTDevice;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
+import io.reactivex.schedulers.Schedulers;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,7 +18,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import model.Admin;
 import model.Classroom;
+import mvvm.RxJavaCompletableObserver;
 import mvvm.View;
 import mvvm.ViewModelProviders;
 import observer.and.adapter.DeviceIconObserver;
@@ -58,9 +65,7 @@ public class AdminMainView implements View {
         usernameLabel.textProperty().bindBidirectional(adminMainViewModel.usernameProperty());
 
         // 教室清單
-        adminMainViewModel.classroomListProperty().addListener((observable, oldValue, classroomList) -> {
-            refreshClassroomListPane(classroomList);
-        });
+        adminMainViewModel.classroomListProperty().addListener((observable, oldValue, classroomList) -> refreshClassroomListPane(classroomList));
 
         // 綁定 Loading Alert 變數
         adminMainViewModel.loadingAlertProperty().addListener((observable, oldAlert, newAlert) -> Platform.runLater(() -> newAlert.show()));
@@ -101,9 +106,15 @@ public class AdminMainView implements View {
                 // 將 classroom 資料設到元件上
                 classroomIdLabel.setText(classroom.getId());
                 classroomTypeLabel.setText(classroom.getType());
-                setDeviceListBox(deviceListBox, classroom.getDevices());
                 bookingTag.setOnMouseClicked(e -> adminMainViewModel.selectClassroom(classroom));
-                classroomListBox.getChildren().add(rootNode);
+
+                setDeviceListBox(deviceListBox, classroom.getDevices())
+                        .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
+                        .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行;
+                        .subscribe(new RxJavaCompletableObserver() {
+                            @Override
+                            public void onComplete() { classroomListBox.getChildren().add(rootNode); }
+                        });
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -111,28 +122,31 @@ public class AdminMainView implements View {
     }
 
     //將裝置設定到教室列表上
-    public void setDeviceListBox(HBox deviceListBox, List<IoTDevice> deviceList) {
-        deviceListBox.getChildren().clear();
-        ListIterator<IoTDevice> deviceIter = deviceList.listIterator();
-        while(deviceIter.hasNext()){
-            IoTDevice device = deviceIter.next();
-            try {
-                // 取得 deviceCard 佈局元件
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/drawable/deviceCard.fxml"));
-                Parent root = loader.load();
-                JFXButton powerBtn = (JFXButton) root.lookup("#powerBtn");
-                ImageView deviceImage = (ImageView) root.lookup("#deviceImage");
-                Label deviceNameLabel = (Label) root.lookup("#deviceNameLabel");
-                // 將資料設到元件上
-                DeviceIconObserver deviceIconObserver = new DeviceIconObserver(deviceImage, deviceNameLabel);
-                PowerBtnObserver powerBtnObserver = new PowerBtnObserver(powerBtn);
-                ((IObservable)device).addObserve(deviceIconObserver);
-                ((IObservable)device).addObserve(powerBtnObserver);
-                powerBtn.setOnAction(e -> device.switchState());
-                deviceListBox.getChildren().add(root);
-            } catch (IOException e) {
-                e.printStackTrace();
+    public Completable setDeviceListBox(HBox deviceListBox, List<IoTDevice> deviceList) {
+        Completable completable = Completable.create(subscriber -> {
+            ListIterator<IoTDevice> deviceIter = deviceList.listIterator();
+            while(deviceIter.hasNext()){
+                IoTDevice device = deviceIter.next();
+                try {
+                    // 取得 deviceCard 佈局元件
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/drawable/deviceCard.fxml"));
+                    Parent root = loader.load();
+                    JFXButton powerBtn = (JFXButton) root.lookup("#powerBtn");
+                    ImageView deviceImage = (ImageView) root.lookup("#deviceImage");
+                    Label deviceNameLabel = (Label) root.lookup("#deviceNameLabel");
+                    // 將資料設到元件上
+                    DeviceIconObserver deviceIconObserver = new DeviceIconObserver(deviceImage, deviceNameLabel);
+                    PowerBtnObserver powerBtnObserver = new PowerBtnObserver(powerBtn);
+                    ((IObservable)device).addObserve(deviceIconObserver);
+                    ((IObservable)device).addObserve(powerBtnObserver);
+                    powerBtn.setOnAction(e -> device.switchState());
+                    deviceListBox.getChildren().add(root);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }
+            subscriber.onComplete();
+        });
+        return completable;
     }
 }

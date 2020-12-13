@@ -36,7 +36,7 @@ public class APIService {
                     .subscribe(new RxJavaObserver<>() {
                         @Override
                         public void onNext(Map<Integer, String> result) {
-                            deviceStateCache = result;
+                            if(result!=null) deviceStateCache = result;
                             lastUpdateTime = LocalDateTime.now();
                             isLoading = false;
                             apiServiceLogger.info(lastUpdateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))  + " 同步完成！");

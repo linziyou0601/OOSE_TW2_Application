@@ -4,7 +4,9 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import mvvm.ViewManager;
+import ui.AdminAllBooking.AdminAllBookingView;
 import ui.AdminBooking.AdminBookingView;
+import ui.AdminBookingDetail.AdminBookingDetailView;
 import ui.AdminLogin.AdminLoginView;
 import ui.AdminMain.AdminMainView;
 import ui.Booking.BookingView;
@@ -35,6 +37,8 @@ public class MainApplication extends Application {
         ViewManager.addView(AdminLoginView.class);
         ViewManager.addView(AdminMainView.class);
         ViewManager.addView(AdminBookingView.class);
+        ViewManager.addView(AdminAllBookingView.class);
+        ViewManager.addView(AdminBookingDetailView.class);
         /* 設定用啟始頁面的View並顯示畫面 */
         ViewManager.initStage(primaryStage, LoginView.class);
         primaryStage.initStyle(StageStyle.UNDECORATED);
