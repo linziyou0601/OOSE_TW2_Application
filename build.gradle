@@ -18,7 +18,8 @@ repositories {
 
 dependencies {
     implementation 'org.jetbrains:annotations:19.0.0'
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.0'
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.1.2'
     implementation group: 'org.mongodb', name: 'mongo-java-driver', version: '3.12.7'
@@ -43,6 +44,10 @@ run {
             "--add-exports=javafx.graphics/com.sun.javafx.stage=ALL-UNNAMED",
             "--add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED"
     ]
+}
+
+test {
+    useJUnitPlatform() // 指明使用JUnit 5來測試
 }
 
 javafx {
