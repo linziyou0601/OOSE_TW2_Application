@@ -25,6 +25,7 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
 
 public class LoginViewModel extends ViewModel {
 
@@ -32,12 +33,14 @@ public class LoginViewModel extends ViewModel {
     private StringProperty account = new SimpleStringProperty();
     private StringProperty password = new SimpleStringProperty();
     private IntegerProperty loginValid = new SimpleIntegerProperty();
+    private StringProperty emailValid = new SimpleStringProperty();
     private BooleanProperty loadingAlert = new SimpleBooleanProperty();
 
     public LoginViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
         this.sessionContext = SessionContext.getInstance();
         loginValid.set(-1);
+        emailValid.set("-1");
         loadingAlert.set(false);
     }
 
@@ -50,6 +53,9 @@ public class LoginViewModel extends ViewModel {
     }
     public IntegerProperty loginValidProperty(){
         return loginValid;
+    }
+    public StringProperty emailValidProperty(){
+        return emailValid;
     }
     public void setLoginValid(int valid){
         loginValid.set(valid);
@@ -76,7 +82,7 @@ public class LoginViewModel extends ViewModel {
     }
 
     // 邏輯處理：驗證登入資料
-    public void loginValid(){
+    public void loginValid() {
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
         loadingAlert.set(true);
 
@@ -140,6 +146,33 @@ public class LoginViewModel extends ViewModel {
                     }
                 });*/
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
+    }
+
+    public void emailValid() {
+        loadingAlert.set(true);
+
+        // =============== 單線程直接跑 [Unit Test 可以通過] ===============
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+            currentUser = dbmgr.syncGetUserByAccount(account.get());
+        });
+
+        try { future.get(); }
+        catch (Exception e) { e.printStackTrace(); }
+
+        if(currentUser!=null){
+            // 驗證登入資料
+            loadingAlert.set(false);
+
+            String regex = "^\\w{1,63}@[a-zA-Z0-9]{2,63}\\.[a-zA-Z]{2,63}(\\.[a-zA-Z]{2,63})?(\\.[a-zA-Z]{2,63})?$";
+            Pattern p = Pattern.compile(regex);
+
+            if(!p.matcher(currentUser.getEmail()).find()) emailValid.set("0");
+            else emailValid.set("1");
+        } else {
+            //找不到使用者
+            loadingAlert.set(false);
+            emailValid.set("0");
+        }
     }
 
     // 邏輯處理：執行登入換頁邏輯

@@ -13,7 +13,9 @@ import io.reactivex.subjects.PublishSubject;
 import model.User;
 import mvvm.RxJavaObserver;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
@@ -25,6 +27,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.regex.*;
 
 class LoginViewModelTest {
 
@@ -49,6 +54,14 @@ class LoginViewModelTest {
         usersMock.put("account5", new User("account5", BCrypt.with(BCrypt.Version.VERSION_2Y).hashToString(10, "pwd123".toCharArray()), "username5", "accu5@testmail.com"));
     }
 
+    @AfterEach
+    protected void tearDown(){
+        usersMock = null;
+        dbmgr = null;
+        scheduler = null;
+        loginViewModel = null;
+    }
+
     @ParameterizedTest
     @CsvSource({"account1,pwd123", "account2,pwd123", "account3,pwd123"})
     public void testLogin(String account, String password) {
@@ -64,5 +77,23 @@ class LoginViewModelTest {
 
         int loginValid = loginViewModel.loginValidProperty().get();
         assertEquals(1, loginValid);
+        System.out.println((int)(Math.random()*10));
     }
+
+    @ParameterizedTest
+    @CsvSource({"account1,accu1@testmail.com", "account2,accu2@testmail.com"})
+    public void testEmail(String account, String email) {
+        Mockito.when(dbmgr.syncGetUserByAccount(Mockito.anyString())).thenAnswer((Answer<User>) invocation -> {
+            return usersMock.get(account);
+        });
+
+        loginViewModel.accountProperty().set(account);
+        loginViewModel.emailValidProperty().set(email);
+        loginViewModel.emailValid();
+
+        String emailVaild = loginViewModel.emailValidProperty().get();
+        assertEquals("1",emailVaild);
+        System.out.println(email);        // true
+    }
+
 }

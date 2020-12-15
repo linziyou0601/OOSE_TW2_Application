@@ -8,7 +8,7 @@ public class User {
     private String username;
     private String email;
     private int point;
-    private String position = "Student";
+    private String position;
 
     public User() {}
 
@@ -40,6 +40,11 @@ public class User {
     }
 
     public String getPosition() {
+        if(Character.isDigit(account.charAt(0))) {
+            position = "Teacher";
+        }else {
+            position = "Student";
+        }
         return position;
     }
 
