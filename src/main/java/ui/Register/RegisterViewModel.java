@@ -5,10 +5,7 @@ import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import main.SessionContext;
 import model.User;
 import mvvm.RxJavaCompletableObserver;
@@ -20,6 +17,7 @@ import ui.Dialog.BasicAlertBuilder;
 import ui.Dialog.IAlertBuilder;
 import ui.Dialog.LoadingAlertBuilder;
 import ui.Login.LoginView;
+import ui.Main.MainView;
 
 import java.util.Optional;
 
@@ -30,12 +28,13 @@ public class RegisterViewModel extends ViewModel {
     private StringProperty email = new SimpleStringProperty();
     private StringProperty password = new SimpleStringProperty();
     private StringProperty passwordConfirm = new SimpleStringProperty();
-    private ObjectProperty<JFXAlert> registerAlert = new SimpleObjectProperty<>();
-    private ObjectProperty<JFXAlert> loadingAlert = new SimpleObjectProperty<>();
+    private StringProperty registerPrompt = new SimpleStringProperty();
+    private BooleanProperty loadingAlert = new SimpleBooleanProperty();
 
     public RegisterViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
         this.sessionContext = SessionContext.getInstance();
+        loadingAlert.set(false);
     }
 
     // =============== Getter及Setter ===============
@@ -52,28 +51,17 @@ public class RegisterViewModel extends ViewModel {
     public StringProperty passwordConfirmProperty(){
         return passwordConfirm;
     }
-    public ObjectProperty<JFXAlert> registerAlertProperty(){
-        return registerAlert;
+    public StringProperty registerPromptProperty(){
+        return registerPrompt;
     }
-    public ObjectProperty<JFXAlert> loadingAlertProperty(){
+    public void setRegisterPrompt(String prompt){
+        registerPrompt.set(prompt);
+    }
+    public BooleanProperty loadingAlertProperty(){
         return loadingAlert;
     }
 
     // =============== 邏輯處理 ===============
-    // 邏輯處理：設定 loading Alert()
-    public void showLoading() {
-        IAlertBuilder alertBuilder = new LoadingAlertBuilder();
-        AlertDirector alertDirector = new AlertDirector(alertBuilder);
-        alertDirector.build();
-        JFXAlert alert = alertBuilder.getAlert();
-        loadingAlert.set(alert);
-    }
-
-    // 邏輯處理：停止 loading Alert()
-    public void stopLoading() {
-        loadingAlert.get().close();
-    }
-
     // 邏輯處理：清除所有輸入資料
     public void clearInput() {
         username.set("");
@@ -89,9 +77,9 @@ public class RegisterViewModel extends ViewModel {
     }
 
     // 邏輯處理：驗證註冊資料
-    public void submit(){
+    public void submitValid(){
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
-        showLoading();
+        loadingAlert.set(true);
         dbmgr.getUserByAccount(account.get())
                 .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
                 .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
@@ -104,11 +92,13 @@ public class RegisterViewModel extends ViewModel {
                     @Override
                     public void onComplete(){
                         // User有資料
-                        triggerFailedAlert("帳號已被使用");
+                        loadingAlert.set(false);
+                        registerPrompt.set("帳號已被使用");
                     }
                     @Override
                     public void onError(Throwable e){
                         // User沒資料
+                        loadingAlert.set(false);
                         // 驗證註冊資料
                         String prompt = null;
                         if(account.get()==null || account.get().equals("")) prompt = "帳號未輸入";
@@ -119,8 +109,7 @@ public class RegisterViewModel extends ViewModel {
 
                         // 執行註冊邏輯
                         if(prompt!=null) {
-                            stopLoading();
-                            triggerFailedAlert(prompt);
+                            registerPrompt.set(prompt);
                         } else {
                             String password_hash = BCrypt.with(BCrypt.Version.VERSION_2Y).hashToString(10, password.get().toCharArray());
                             // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
@@ -130,9 +119,7 @@ public class RegisterViewModel extends ViewModel {
                                     .subscribe(new RxJavaCompletableObserver() {
                                         @Override
                                         public void onComplete() {
-                                            stopLoading();
-                                            clearInput();
-                                            triggerSucceedAlert();
+                                            registerPrompt.set("成功");
                                         }
                                     });
                             // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
@@ -142,27 +129,9 @@ public class RegisterViewModel extends ViewModel {
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
     }
 
-    // 邏輯處理：觸發失敗
-    public void triggerFailedAlert(String prompt){
-        // Builder Pattern：建立BasicAlert
-        IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.ERROR, "錯誤", prompt, IAlertBuilder.AlertButtonType.OK);
-        AlertDirector alertDirector = new AlertDirector(alertBuilder);
-        alertDirector.build();
-        JFXAlert alert = alertBuilder.getAlert();
-        registerAlert.set(alert);
-    }
-
-    // 邏輯處理：觸發成功
-    public void triggerSucceedAlert() {
-        // Builder Pattern：建立BasicAlert
-        IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.SUCCESS, "成功註冊", "導向登入畫面", IAlertBuilder.AlertButtonType.OK);
-        AlertDirector alertDirector = new AlertDirector(alertBuilder);
-        alertDirector.build();
-        JFXAlert alert = alertBuilder.getAlert();
-        // Show and wait for selection
-        Optional<Boolean> result = alert.showAndWait();
-        if(result.isPresent()){
-            ViewManager.navigateTo(LoginView.class);
-        }
+    // 邏輯處理：執行註冊換頁邏輯
+    public void doRegister() {
+        clearInput();
+        ViewManager.navigateTo(LoginView.class);
     }
 }

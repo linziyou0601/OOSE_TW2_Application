@@ -1,6 +1,5 @@
 package ui.AdminBookingDetail;
 
-import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import devices.IoTDevice;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
@@ -10,14 +9,10 @@ import javafx.collections.FXCollections;
 import main.SessionContext;
 import model.Booking;
 import model.Classroom;
-import mvvm.RxJavaCompletableObserver;
 import mvvm.RxJavaObserver;
 import mvvm.ViewModel;
 import org.reactfx.util.FxTimer;
 import org.reactfx.util.Timer;
-import ui.Dialog.AlertDirector;
-import ui.Dialog.IAlertBuilder;
-import ui.Dialog.LoadingAlertBuilder;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -36,11 +31,12 @@ public class AdminBookingDetailViewModel extends ViewModel {
     private StringProperty restTimeLabel = new SimpleStringProperty();
     private BooleanProperty activate = new SimpleBooleanProperty();
     private ListProperty<IoTDevice> deviceList = new SimpleListProperty<>(FXCollections.observableArrayList(new ArrayList<>()));
-    private ObjectProperty<JFXAlert> loadingAlert = new SimpleObjectProperty<>();
+    private BooleanProperty loadingAlert = new SimpleBooleanProperty();
 
     public AdminBookingDetailViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
         this.sessionContext = SessionContext.getInstance();
+        loadingAlert.set(false);
     }
 
     // =============== Getter及Setter ===============
@@ -52,7 +48,7 @@ public class AdminBookingDetailViewModel extends ViewModel {
     public BooleanProperty activateProperty(){ return activate; }
     public boolean getActivate(){ return activate.get(); }
     public ListProperty<IoTDevice> deviceListProperty(){ return deviceList; }
-    public ObjectProperty<JFXAlert> loadingAlertProperty(){
+    public BooleanProperty loadingAlertProperty(){
         return loadingAlert;
     }
 
@@ -60,7 +56,7 @@ public class AdminBookingDetailViewModel extends ViewModel {
     // 邏輯處理：登入後參數對session綁定
     public void init() {
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
-        showLoading();
+        loadingAlert.set(true);
         dbmgr.getBookingById(sessionContext.get("selectedBookingId"))
                 .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
                 .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
@@ -71,7 +67,7 @@ public class AdminBookingDetailViewModel extends ViewModel {
                     }
                     @Override
                     public void onComplete(){
-                        stopLoading();
+                        loadingAlert.set(false);
                         classroom = selectedBooking.getClassroom();
                         timer = FxTimer.runPeriodically(
                                 Duration.ofMillis(1000),
@@ -91,7 +87,7 @@ public class AdminBookingDetailViewModel extends ViewModel {
                     }
                     @Override
                     public void onError(Throwable e){
-                        stopLoading();
+                        loadingAlert.set(false);
                     }
                 });
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
@@ -107,39 +103,6 @@ public class AdminBookingDetailViewModel extends ViewModel {
         classroomIdLabel.set(classroom.getId());
         deviceList.clear();
         deviceList.setAll(classroom.getDevices());
-    }
-
-
-    // 邏輯處理：設定 loading Alert()
-    public void showLoading() {
-        IAlertBuilder alertBuilder = new LoadingAlertBuilder();
-        AlertDirector alertDirector = new AlertDirector(alertBuilder);
-        alertDirector.build();
-        JFXAlert alert = alertBuilder.getAlert();
-        loadingAlert.set(alert);
-    }
-
-    // 邏輯處理：停止 loading Alert()
-    public void stopLoading() {
-        loadingAlert.get().close();
-    }
-
-    // 邏輯處理：開始使用
-    public void activateBooking() {
-        selectedBooking.setActivate(true);
-        // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
-        showLoading();
-        dbmgr.updateBooking(selectedBooking)
-                .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
-                .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行;
-                .subscribe(new RxJavaCompletableObserver() {
-                    @Override
-                    public void onComplete() {
-                        stopLoading();
-                        refresh();
-                    }
-                });
-        // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
     }
 
     public void stopTimer() {

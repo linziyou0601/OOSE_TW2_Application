@@ -1,5 +1,6 @@
 package ui.BookingDetail;
 
+import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXMasonryPane;
 import devices.IoTDevice;
@@ -15,6 +16,9 @@ import mvvm.ViewModelProviders;
 import observer.and.adapter.DeviceIconObserver;
 import observer.and.adapter.IObservable;
 import observer.and.adapter.PowerBtnObserver;
+import ui.Dialog.AlertDirector;
+import ui.Dialog.IAlertBuilder;
+import ui.Dialog.LoadingAlertBuilder;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,16 +48,19 @@ public class BookingDetailView implements View {
 
     private BookingDetailViewModel bookingDetailViewModel;
 
+    private JFXAlert loadingAlert;
+
     @Override
     public void initialize() {
+        // 指定 ViewModel
         bookingDetailViewModel = ViewModelProviders.getInstance().get(BookingDetailViewModel.class);
 
         // 啟用鈕
         activateBtn.disableProperty().bindBidirectional(bookingDetailViewModel.activateProperty());
 
         // 關閉popUp訊號
-        bookingDetailViewModel.closeStageProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue) closeStageBtn.fire();
+        bookingDetailViewModel.timeoutProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue)  closeStageBtn.fire();
         });
 
         // 雙向綁定View資料和ViewModel資料
@@ -65,14 +72,24 @@ public class BookingDetailView implements View {
 
         // 裝置列表
         deviceListPane.disableProperty().bind(Bindings.createBooleanBinding(() -> !bookingDetailViewModel.getActivate(), bookingDetailViewModel.activateProperty()));
-        bookingDetailViewModel.deviceListProperty().addListener((observable, oldValue, deviceList) -> {
-            setDeviceListPane(deviceList);
-        });
+        bookingDetailViewModel.deviceListProperty().addListener((observable, oldValue, deviceList) -> setDeviceListPane(deviceList));
 
         // 綁定 Loading Alert 變數
-        bookingDetailViewModel.loadingAlertProperty().addListener((observable, oldAlert, newAlert) -> Platform.runLater(() -> newAlert.show()));
+        bookingDetailViewModel.loadingAlertProperty().addListener((observable, oldStatus, newStatus) -> {
+            if(newStatus) showLoading();
+            else stopLoading();
+        });
 
-        bookingDetailViewModel.init();
+        // 初始化 Loading Alert（要在主UI線程執行後執行）
+        Platform.runLater(() -> {
+            IAlertBuilder alertBuilder = new LoadingAlertBuilder();
+            AlertDirector alertDirector = new AlertDirector(alertBuilder);
+            alertDirector.build();
+            loadingAlert = alertBuilder.getAlert();
+
+            // 初始化ViewModel
+            bookingDetailViewModel.init();
+        });
     }
 
     //啟用鈕
@@ -104,5 +121,15 @@ public class BookingDetailView implements View {
                 e.printStackTrace();
             }
         }
+    }
+
+    //顯示 Loading Alert
+    public void showLoading() {
+        loadingAlert.show();
+    }
+
+    //停止 Loading Alert
+    public void stopLoading() {
+        loadingAlert.close();
     }
 }

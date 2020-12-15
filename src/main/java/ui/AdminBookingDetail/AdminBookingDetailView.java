@@ -1,5 +1,6 @@
 package ui.AdminBookingDetail;
 
+import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXMasonryPane;
 import devices.IoTDevice;
@@ -15,6 +16,9 @@ import mvvm.ViewModelProviders;
 import observer.and.adapter.DeviceIconObserver;
 import observer.and.adapter.IObservable;
 import observer.and.adapter.PowerBtnObserver;
+import ui.Dialog.AlertDirector;
+import ui.Dialog.IAlertBuilder;
+import ui.Dialog.LoadingAlertBuilder;
 
 import java.io.IOException;
 import java.util.List;
@@ -45,8 +49,11 @@ public class AdminBookingDetailView implements View {
 
     private AdminBookingDetailViewModel adminBookingDetailViewModel;
 
+    private JFXAlert loadingAlert;
+
     @Override
     public void initialize() {
+        // 指定 ViewModel
         adminBookingDetailViewModel = ViewModelProviders.getInstance().get(AdminBookingDetailViewModel.class);
 
         // 啟用鈕
@@ -65,9 +72,21 @@ public class AdminBookingDetailView implements View {
         });
 
         // 綁定 Loading Alert 變數
-        adminBookingDetailViewModel.loadingAlertProperty().addListener((observable, oldAlert, newAlert) -> Platform.runLater(() -> newAlert.show()));
+        adminBookingDetailViewModel.loadingAlertProperty().addListener((observable, oldStatus, newStatus) -> {
+            if(newStatus) showLoading();
+            else stopLoading();
+        });
 
-        adminBookingDetailViewModel.init();
+        // 初始化 Loading Alert（要在主UI線程執行後執行）
+        Platform.runLater(() -> {
+            IAlertBuilder alertBuilder = new LoadingAlertBuilder();
+            AlertDirector alertDirector = new AlertDirector(alertBuilder);
+            alertDirector.build();
+            loadingAlert = alertBuilder.getAlert();
+
+            // 初始化ViewModel
+            adminBookingDetailViewModel.init();
+        });
     }
 
     //將裝置設定到教室上
@@ -94,5 +113,15 @@ public class AdminBookingDetailView implements View {
                 e.printStackTrace();
             }
         }
+    }
+
+    //顯示 Loading Alert
+    public void showLoading() {
+        loadingAlert.show();
+    }
+
+    //停止 Loading Alert
+    public void stopLoading() {
+        loadingAlert.close();
     }
 }

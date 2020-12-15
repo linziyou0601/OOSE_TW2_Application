@@ -1,6 +1,5 @@
 package ui.Main;
 
-import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
@@ -13,9 +12,6 @@ import mvvm.RxJavaObserver;
 import mvvm.ViewManager;
 import mvvm.ViewModel;
 import ui.Booking.BookingView;
-import ui.Dialog.AlertDirector;
-import ui.Dialog.IAlertBuilder;
-import ui.Dialog.LoadingAlertBuilder;
 import ui.Login.LoginView;
 import ui.MyBooking.MyBookingView;
 
@@ -30,12 +26,12 @@ public class MainViewModel extends ViewModel {
     private ObjectProperty<LocalDate> queryDate = new SimpleObjectProperty<>(LocalDate.now());
     private StringProperty username = new SimpleStringProperty();
     private ListProperty<Classroom> classroomList = new SimpleListProperty<>(FXCollections.observableArrayList(new ArrayList<>()));
-    private ObjectProperty<JFXAlert> loadingAlert = new SimpleObjectProperty<>();
-    private int count = 0;
+    private BooleanProperty loadingAlert = new SimpleBooleanProperty();
 
     public MainViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
         this.sessionContext = SessionContext.getInstance();
+        loadingAlert.set(false);
     }
 
     // =============== Getter及Setter ===============
@@ -43,7 +39,7 @@ public class MainViewModel extends ViewModel {
     public ObjectProperty<LocalDate> queryDateProperty(){ return queryDate; }
     public StringProperty usernameProperty(){ return username; }
     public ListProperty<Classroom> classroomListProperty(){ return classroomList; }
-    public ObjectProperty<JFXAlert> loadingAlertProperty(){
+    public BooleanProperty loadingAlertProperty(){
         return loadingAlert;
     }
 
@@ -58,7 +54,7 @@ public class MainViewModel extends ViewModel {
     // 邏輯處理：刷新頁面資料
     public void refresh() {
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
-        showLoading();
+        loadingAlert.set(true);
         dbmgr.getClassroomsByKeyword(queryString.get())
                 .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
                 .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
@@ -70,30 +66,16 @@ public class MainViewModel extends ViewModel {
                     }
                     @Override
                     public void onComplete(){
-                        stopLoading();
+                        loadingAlert.set(false);
                         classroomList.setAll(classrooms);
                     }
                     @Override
                     public void onError(Throwable e){
-                        stopLoading();
+                        loadingAlert.set(false);
                         classroomList.clear();
                     }
                 });
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
-    }
-
-    // 邏輯處理：設定 loading Alert()
-    public void showLoading() {
-        IAlertBuilder alertBuilder = new LoadingAlertBuilder();
-        AlertDirector alertDirector = new AlertDirector(alertBuilder);
-        alertDirector.build();
-        JFXAlert alert = alertBuilder.getAlert();
-        loadingAlert.set(alert);
-    }
-
-    // 邏輯處理：停止 loading Alert()
-    public void stopLoading() {
-        loadingAlert.get().close();
     }
 
     // 邏輯處理：登出

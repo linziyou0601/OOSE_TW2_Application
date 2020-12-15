@@ -4,12 +4,10 @@ import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import main.SessionContext;
 import model.Admin;
+import model.User;
 import mvvm.RxJavaObserver;
 import mvvm.ViewManager;
 import mvvm.ViewModel;
@@ -19,17 +17,21 @@ import ui.Dialog.BasicAlertBuilder;
 import ui.Dialog.IAlertBuilder;
 import ui.Dialog.LoadingAlertBuilder;
 import ui.Login.LoginView;
+import ui.Main.MainView;
 
 public class AdminLoginViewModel extends ViewModel {
 
+    private Admin currentAdmin;
     private StringProperty account = new SimpleStringProperty();
     private StringProperty password = new SimpleStringProperty();
-    private ObjectProperty<JFXAlert> loginAlert = new SimpleObjectProperty<>();
-    private ObjectProperty<JFXAlert> loadingAlert = new SimpleObjectProperty<>();
+    private IntegerProperty loginValid = new SimpleIntegerProperty();
+    private BooleanProperty loadingAlert = new SimpleBooleanProperty();
 
     public AdminLoginViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
         this.sessionContext = SessionContext.getInstance();
+        loginValid.set(-1);
+        loadingAlert.set(false);
     }
 
     // =============== Getter及Setter ===============
@@ -39,28 +41,17 @@ public class AdminLoginViewModel extends ViewModel {
     public StringProperty passwordProperty(){
         return password;
     }
-    public ObjectProperty<JFXAlert> loginAlertProperty(){
-        return loginAlert;
+    public IntegerProperty loginValidProperty(){
+        return loginValid;
     }
-    public ObjectProperty<JFXAlert> loadingAlertProperty(){
+    public void setLoginValid(int valid){
+        loginValid.set(valid);
+    }
+    public BooleanProperty loadingAlertProperty(){
         return loadingAlert;
     }
 
     // =============== 邏輯處理 ===============
-    // 邏輯處理：設定 loading Alert()
-    public void showLoading() {
-        IAlertBuilder alertBuilder = new LoadingAlertBuilder();
-        AlertDirector alertDirector = new AlertDirector(alertBuilder);
-        alertDirector.build();
-        JFXAlert alert = alertBuilder.getAlert();
-        loadingAlert.set(alert);
-    }
-
-    // 邏輯處理：停止 loading Alert()
-    public void stopLoading() {
-        loadingAlert.get().close();
-    }
-
     // 邏輯處理：清除所有輸入資料
     public void clearInput() {
         account.set("");
@@ -73,46 +64,38 @@ public class AdminLoginViewModel extends ViewModel {
     }
 
     // 邏輯處理：驗證登入資料
-    public void login(){
+    public void loginValid(){
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
-        showLoading();
+        loadingAlert.set(true);
         dbmgr.getAdminByAccount(account.get())
                 .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
                 .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
                 .subscribe(new RxJavaObserver<>(){
-                    Admin admin;
                     @Override
                     public void onNext(Admin result) {
-                        admin = result;
+                        currentAdmin = result;
                     }
                     @Override
                     public void onComplete(){
-                        stopLoading();
-                        // 驗證登入資料並執行登入邏輯
-                        if(!admin.validate(password.get())) {
-                            triggerFailedAlert("密碼錯誤");
-                        } else {
-                            sessionContext.set("admin", admin);
-                            clearInput();
-                            ViewManager.navigateTo(AdminMainView.class);
-                        }
+                        // 驗證登入資料
+                        loadingAlert.set(false);
+                        if(!currentAdmin.validate(password.get())) loginValid.set(0);
+                        else loginValid.set(1);
                     }
                     @Override
                     public void onError(Throwable e){
-                        stopLoading();
-                        triggerFailedAlert("帳號錯誤");
+                        //找不到使用者
+                        loadingAlert.set(false);
+                        loginValid.set(0);
                     }
                 });
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
     }
 
-    // 邏輯處理：觸發失敗
-    public void triggerFailedAlert(String prompt){
-        // Builder Pattern：建立BasicAlert
-        IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.ERROR, "錯誤", prompt, IAlertBuilder.AlertButtonType.OK);
-        AlertDirector alertDirector = new AlertDirector(alertBuilder);
-        alertDirector.build();
-        JFXAlert alert = alertBuilder.getAlert();
-        loginAlert.set(alert);
+    // 邏輯處理：執行登入換頁邏輯
+    public void doLogin() {
+        sessionContext.set("admin", currentAdmin);
+        clearInput();
+        ViewManager.navigateTo(AdminMainView.class);
     }
 }

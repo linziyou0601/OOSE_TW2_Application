@@ -1,11 +1,10 @@
 package ui.AdminMain;
 
+import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import devices.IoTDevice;
 import io.reactivex.Completable;
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
 import javafx.application.Platform;
@@ -18,7 +17,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import model.Admin;
 import model.Classroom;
 import mvvm.RxJavaCompletableObserver;
 import mvvm.View;
@@ -26,6 +24,9 @@ import mvvm.ViewModelProviders;
 import observer.and.adapter.DeviceIconObserver;
 import observer.and.adapter.IObservable;
 import observer.and.adapter.PowerBtnObserver;
+import ui.Dialog.AlertDirector;
+import ui.Dialog.IAlertBuilder;
+import ui.Dialog.LoadingAlertBuilder;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -36,27 +37,23 @@ public class AdminMainView implements View {
 
     @FXML
     private JFXTextField queryInput;    //搜尋欄位
-    @FXML
-    private JFXButton searchBtn;    //搜尋按鈕
+
     @FXML
     private DatePicker datepicker;  //日期選擇
 
     @FXML
     private Label usernameLabel;     //顯示目前帳號
-    @FXML
-    private JFXButton toAllClassroomBtn;    //按鈕前往：教室總覽
-    @FXML
-    private JFXButton toAllBookingBtn; //按鈕前往：預約總覽
-    @FXML
-    private JFXButton logoutBtn;    //登出按鈕
 
     @FXML
     private VBox classroomListBox;   //教室清單
 
     private AdminMainViewModel adminMainViewModel;
 
+    private JFXAlert loadingAlert;
+
     @Override
     public void initialize() {
+        // 指定 ViewModel
         adminMainViewModel = ViewModelProviders.getInstance().get(AdminMainViewModel.class);
 
         // 雙向綁定View資料和ViewModel資料
@@ -64,13 +61,25 @@ public class AdminMainView implements View {
         datepicker.valueProperty().bindBidirectional(adminMainViewModel.queryDateProperty());
         usernameLabel.textProperty().bindBidirectional(adminMainViewModel.usernameProperty());
 
+        // 綁定 Loading Alert 變數
+        adminMainViewModel.loadingAlertProperty().addListener((observable, oldStatus, newStatus) -> {
+            if(newStatus) showLoading();
+            else stopLoading();
+        });
+
         // 教室清單
         adminMainViewModel.classroomListProperty().addListener((observable, oldValue, classroomList) -> refreshClassroomListPane(classroomList));
 
-        // 綁定 Loading Alert 變數
-        adminMainViewModel.loadingAlertProperty().addListener((observable, oldAlert, newAlert) -> Platform.runLater(() -> newAlert.show()));
+        // 初始化 Loading Alert（要在主UI線程執行後執行）
+        Platform.runLater(() -> {
+            IAlertBuilder alertBuilder = new LoadingAlertBuilder();
+            AlertDirector alertDirector = new AlertDirector(alertBuilder);
+            alertDirector.build();
+            loadingAlert = alertBuilder.getAlert();
 
-        adminMainViewModel.init();
+            // 初始化ViewModel
+            adminMainViewModel.init();
+        });
     }
 
     //我的預約鈕
@@ -149,4 +158,15 @@ public class AdminMainView implements View {
         });
         return completable;
     }
+
+    //顯示 Loading Alert
+    public void showLoading() {
+        loadingAlert.show();
+    }
+
+    //停止 Loading Alert
+    public void stopLoading() {
+        loadingAlert.close();
+    }
+
 }

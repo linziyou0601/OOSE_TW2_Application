@@ -23,6 +23,7 @@ public class AdminBookingViewModel extends ViewModel {
 
     private String selectedDate;
     private Classroom selectedClassroom;
+    private Booking createdBooking;
     private StringProperty classroomIdLabel = new SimpleStringProperty();
     private StringProperty classroomTypeLabel = new SimpleStringProperty();
     private StringProperty computerCheck = new SimpleStringProperty("incorrect");
@@ -34,15 +35,17 @@ public class AdminBookingViewModel extends ViewModel {
     private StringProperty timeEnd = new SimpleStringProperty("0");
     private BooleanProperty closeStage = new SimpleBooleanProperty();
     private ListProperty<Boolean> availableTime = new SimpleListProperty<>(FXCollections.observableArrayList(new ArrayList<>()));
-    private ObjectProperty<JFXAlert> submitAlert = new SimpleObjectProperty<>();
-    private ObjectProperty<JFXAlert> loadingAlert = new SimpleObjectProperty<>();
+    private StringProperty bookingPrompt = new SimpleStringProperty();
+    private BooleanProperty loadingAlert = new SimpleBooleanProperty();
 
     public AdminBookingViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
         this.sessionContext = SessionContext.getInstance();
+        loadingAlert.set(false);
     }
 
     // =============== Getter及Setter ===============
+    public Booking getCreatedBooking() { return createdBooking; }
     public StringProperty classroomIdLabelProperty(){ return classroomIdLabel; }
     public StringProperty classroomTypeLabelProperty(){ return classroomTypeLabel; }
     public StringProperty computerCheckProperty(){ return computerCheck; }
@@ -54,10 +57,13 @@ public class AdminBookingViewModel extends ViewModel {
     public StringProperty timeEndProperty(){ return timeEnd; }
     public BooleanProperty closeStageProperty(){ return closeStage; }
     public ListProperty<Boolean> availableTimeProperty(){ return availableTime; }
-    public ObjectProperty<JFXAlert> submitAlertProperty(){
-        return submitAlert;
+    public StringProperty bookingPromptProperty(){
+        return bookingPrompt;
     }
-    public ObjectProperty<JFXAlert> loadingAlertProperty(){
+    public void setBookingPrompt(String prompt){
+        bookingPrompt.set(prompt);
+    }
+    public BooleanProperty loadingAlertProperty(){
         return loadingAlert;
     }
 
@@ -66,7 +72,7 @@ public class AdminBookingViewModel extends ViewModel {
     public void init() {
         selectedDate = sessionContext.get("selectedDate");
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
-        showLoading();
+        loadingAlert.set(true);
         dbmgr.getClassroomById(sessionContext.get("selectedClassroomId"))
                 .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
                 .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
@@ -96,153 +102,106 @@ public class AdminBookingViewModel extends ViewModel {
                                     }
                                     @Override
                                     public void onComplete(){
-                                        stopLoading();
+                                        loadingAlert.set(false);
                                     }
                                     @Override
-                                    public void onError(Throwable e){ stopLoading(); }
+                                    public void onError(Throwable e){ loadingAlert.set(false); }
                                 });
                         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
                     }
                     @Override
-                    public void onError(Throwable e){ stopLoading(); }
+                    public void onError(Throwable e){ loadingAlert.set(false); }
                 });
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
 
         closeStage.set(false);
     }
 
-    // 邏輯處理：設定 loading Alert()
-    public void showLoading() {
-        IAlertBuilder alertBuilder = new LoadingAlertBuilder();
-        AlertDirector alertDirector = new AlertDirector(alertBuilder);
-        alertDirector.build();
-        JFXAlert alert = alertBuilder.getAlert();
-        loadingAlert.set(alert);
-    }
-
-    // 邏輯處理：停止 loading Alert()
-    public void stopLoading() {
-        loadingAlert.get().close();
-    }
-
     // 邏輯處理：預約處理
-    public void submit() {
-        // Builder Pattern：建立BasicAlert
-        IAlertBuilder alertBuilder = new InputAlertBuilder("代為預約", "請輸入使用者名稱", IAlertBuilder.AlertButtonType.OK, false);
-        AlertDirector alertDirector = new AlertDirector(alertBuilder);
-        alertDirector.build();
-        JFXAlert alert = alertBuilder.getAlert();
-        // Show and wait for selection
-        Optional<String> result = alert.showAndWait();
-        if(result.isPresent()) {
-            String userAccount = result.get();
-            // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
-            showLoading();
-            dbmgr.getUserByAccount(userAccount)
-                    .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
-                    .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
-                    .subscribe(new RxJavaObserver<>(){
-                        User user;
-                        @Override
-                        public void onNext(User result) {
-                            user = result;
-                        }
-                        @Override
-                        public void onComplete(){
-                            // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
-                            dbmgr.getDuplicateBooking(user.getAccount(), selectedDate, Integer.parseInt(timeStart.get()), Integer.parseInt(timeEnd.get()))
-                                    .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
-                                    .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行;
-                                    .subscribe(new RxJavaObserver<>() {
-                                        boolean isDuplicate;
+    public void submitBookingValid(String userAccount) {
+        // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
+        loadingAlert.set(true);
+        dbmgr.getUserByAccount(userAccount)
+                .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
+                .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
+                .subscribe(new RxJavaObserver<>(){
+                    User user;
+                    @Override
+                    public void onNext(User result) {
+                        user = result;
+                    }
+                    @Override
+                    public void onComplete(){
+                        // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
+                        dbmgr.getDuplicateBooking(user.getAccount(), selectedDate, Integer.parseInt(timeStart.get()), Integer.parseInt(timeEnd.get())-1)
+                                .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
+                                .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行;
+                                .subscribe(new RxJavaObserver<>() {
+                                    boolean isDuplicate;
 
-                                        @Override
-                                        public void onNext(Boolean result) {
-                                            isDuplicate = result;
-                                        }
-                                        @Override
-                                        public void onComplete() {
-                                            String prompt = null;
-                                            if(Integer.parseInt(timeEnd.get()) <= Integer.parseInt(timeStart.get())){
-                                                prompt = "結束時間必需大於開始時間";
-                                            } else if(isDuplicate){
-                                                prompt = "該時段已借用其他教室";
-                                            } else {
-                                                for (int i = Integer.parseInt(timeStart.get()); i < Integer.parseInt(timeEnd.get()); i++) {
-                                                    if (!availableTime.get(i)) {
-                                                        prompt = "時間已被借用";
-                                                        break;
-                                                    }
+                                    @Override
+                                    public void onNext(Boolean result) {
+                                        isDuplicate = result;
+                                    }
+                                    @Override
+                                    public void onComplete() {
+                                        loadingAlert.set(false);
+                                        String prompt = null;
+                                        if(Integer.parseInt(timeEnd.get()) <= Integer.parseInt(timeStart.get())){
+                                            prompt = "結束時間必需大於開始時間";
+                                        } else if(isDuplicate){
+                                            prompt = "該時段已借用其他教室";
+                                        } else {
+                                            for (int i = Integer.parseInt(timeStart.get()); i < Integer.parseInt(timeEnd.get()); i++) {
+                                                if (!availableTime.get(i)) {
+                                                    prompt = "時間已被借用";
+                                                    break;
                                                 }
                                             }
-
-                                            if(prompt != null) {
-                                                stopLoading();
-                                                triggerFailedAlert(prompt);
-                                            } else {
-                                                Booking booking = new Booking(selectedDate, Integer.parseInt(timeStart.get()), Integer.parseInt(timeEnd.get())-1, selectedClassroom, user);
-                                                // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
-                                                dbmgr.insertBooking(booking)
-                                                        .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
-                                                        .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行;
-                                                        .subscribe(new RxJavaCompletableObserver() {
-                                                            @Override
-                                                            public void onComplete() {
-                                                                stopLoading();
-                                                                triggerSucceedAlert(booking);
-                                                            }
-                                                        });
-                                                // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
-                                            }
                                         }
-                                        @Override
-                                        public void onError(Throwable e){ stopLoading(); }
-                                    });
-                            // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
-                        }
-                        @Override
-                        public void onError(Throwable e){
-                            stopLoading();
-                            triggerFailedAlert("查無使用者");
-                        }
-                    });
-            // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
-        }
-    }
 
-    // 邏輯處理：觸發失敗
-    public void triggerFailedAlert(String prompt){
-        // Builder Pattern：建立BasicAlert
-        IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.ERROR, "預約失敗", prompt, IAlertBuilder.AlertButtonType.OK);
-        AlertDirector alertDirector = new AlertDirector(alertBuilder);
-        alertDirector.build();
-        JFXAlert alert = alertBuilder.getAlert();
-        submitAlert.set(alert);
-    }
-
-    // 邏輯處理：觸發成功
-    public void triggerSucceedAlert(Booking booking) {
-        String prompt = "你指定的使用者是: " + booking.getUserAccount() + "\n" +
-                        "你選擇的教室是: " + booking.getClassroomId() + "\n" +
-                        "你選擇的日期是: " + booking.getDate() + "\n" +
-                        "你選擇的時間是: " + booking.getStartTime() + ":00 到 " + (booking.getEndTime()+1) + ":00";
-        // Builder Pattern：建立BasicAlert
-        IAlertBuilder alertBuilder = new BasicAlertBuilder(IAlertBuilder.AlertType.SUCCESS, "預約成功", prompt, IAlertBuilder.AlertButtonType.OK);
-        AlertDirector alertDirector = new AlertDirector(alertBuilder);
-        alertDirector.build();
-        JFXAlert alert = alertBuilder.getAlert();
-        // Show and wait for selection
-        Optional<Boolean> result = alert.showAndWait();
-        if (result.isPresent()) {
-            sessionContext.unset("selectedClassroomId");
-            sessionContext.unset("selectedDate");
-            closeStage.set(true);
-        }
+                                        if(prompt != null) {
+                                            bookingPrompt.set(prompt);
+                                        } else {
+                                            createdBooking = new Booking(selectedDate, Integer.parseInt(timeStart.get()), Integer.parseInt(timeEnd.get())-1, selectedClassroom, user);
+                                            // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
+                                            loadingAlert.set(true);
+                                            dbmgr.insertBooking(createdBooking)
+                                                    .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
+                                                    .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行;
+                                                    .subscribe(new RxJavaCompletableObserver() {
+                                                        @Override
+                                                        public void onComplete() {
+                                                            loadingAlert.set(false);
+                                                            bookingPrompt.set("成功");
+                                                        }
+                                                    });
+                                            // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
+                                        }
+                                    }
+                                    @Override
+                                    public void onError(Throwable e){ loadingAlert.set(false); }
+                                });
+                        // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
+                    }
+                    @Override
+                    public void onError(Throwable e){
+                        loadingAlert.set(false);
+                        bookingPrompt.set("查無使用者");
+                    }
+                });
+        // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
     }
 
     // 邏輯處理：選擇時間
     public void selectTime(int index) {
         timeStart.set(String.valueOf(index));
         timeEnd.set(String.valueOf(index+1));
+    }
+
+    // 邏輯處理：執行預約成功後邏輯
+    public void doPostSubmit() {
+        sessionContext.unset("selectedClassroomId");
+        sessionContext.unset("selectedDate");
     }
 }

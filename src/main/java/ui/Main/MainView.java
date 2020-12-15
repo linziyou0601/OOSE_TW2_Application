@@ -1,6 +1,6 @@
 package ui.Main;
 
-import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXMasonryPane;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
@@ -12,6 +12,9 @@ import javafx.scene.control.Label;
 import model.Classroom;
 import mvvm.View;
 import mvvm.ViewModelProviders;
+import ui.Dialog.AlertDirector;
+import ui.Dialog.IAlertBuilder;
+import ui.Dialog.LoadingAlertBuilder;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -21,27 +24,23 @@ public class MainView implements View {
 
     @FXML
     private JFXTextField queryInput;    //搜尋欄位
-    @FXML
-    private JFXButton searchBtn;    //搜尋按鈕
+
     @FXML
     private DatePicker datepicker;  //日期選擇
 
     @FXML
     private Label usernameLabel;     //顯示目前帳號
-    @FXML
-    private JFXButton toHomeBtn;    //按鈕前往：總覽
-    @FXML
-    private JFXButton toBookingBtn; //按鈕前往：預約
-    @FXML
-    private JFXButton logoutBtn;    //登出按鈕
 
     @FXML
     private JFXMasonryPane classroomListPane;   //教室清單
 
     private MainViewModel mainViewModel;
 
+    private JFXAlert loadingAlert;
+
     @Override
     public void initialize() {
+        // 指定 ViewModel
         mainViewModel = ViewModelProviders.getInstance().get(MainViewModel.class);
 
         // 雙向綁定View資料和ViewModel資料
@@ -49,15 +48,25 @@ public class MainView implements View {
         datepicker.valueProperty().bindBidirectional(mainViewModel.queryDateProperty());
         usernameLabel.textProperty().bindBidirectional(mainViewModel.usernameProperty());
 
-        // 教室清單
-        mainViewModel.classroomListProperty().addListener((observable, oldValue, classroomList) -> {
-            refreshClassroomListPane(classroomList);
+        // 綁定 Loading Alert 變數
+        mainViewModel.loadingAlertProperty().addListener((observable, oldStatus, newStatus) -> {
+            if(newStatus) showLoading();
+            else stopLoading();
         });
 
-        // 綁定 Loading Alert 變數
-        mainViewModel.loadingAlertProperty().addListener((observable, oldAlert, newAlert) -> Platform.runLater(() -> newAlert.show()));
+        // 教室清單
+        mainViewModel.classroomListProperty().addListener((observable, oldValue, classroomList) -> refreshClassroomListPane(classroomList));
 
-        mainViewModel.init();
+        // 初始化 Loading Alert（要在主UI線程執行後執行）
+        Platform.runLater(() -> {
+            IAlertBuilder alertBuilder = new LoadingAlertBuilder();
+            AlertDirector alertDirector = new AlertDirector(alertBuilder);
+            alertDirector.build();
+            loadingAlert = alertBuilder.getAlert();
+
+            // 初始化ViewModel
+            mainViewModel.init();
+        });
     }
 
     //我的預約鈕
@@ -72,6 +81,7 @@ public class MainView implements View {
 
     //搜尋鈕
     public void searchBtnClick() {
+        loadingAlert.show();
         mainViewModel.refresh();
     }
 
@@ -96,5 +106,15 @@ public class MainView implements View {
                 e.printStackTrace();
             }
         }
+    }
+
+    //顯示 Loading Alert
+    public void showLoading() {
+        loadingAlert.show();
+    }
+
+    //停止 Loading Alert
+    public void stopLoading() {
+        loadingAlert.close();
     }
 }

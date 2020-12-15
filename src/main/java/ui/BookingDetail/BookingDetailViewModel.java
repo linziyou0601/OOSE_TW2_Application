@@ -1,6 +1,5 @@
 package ui.BookingDetail;
 
-import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import devices.IoTDevice;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
@@ -15,9 +14,6 @@ import mvvm.RxJavaObserver;
 import mvvm.ViewModel;
 import org.reactfx.util.FxTimer;
 import org.reactfx.util.Timer;
-import ui.Dialog.AlertDirector;
-import ui.Dialog.IAlertBuilder;
-import ui.Dialog.LoadingAlertBuilder;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -35,13 +31,14 @@ public class BookingDetailViewModel extends ViewModel {
     private StringProperty currentTimeLabel = new SimpleStringProperty();
     private StringProperty restTimeLabel = new SimpleStringProperty();
     private BooleanProperty activate = new SimpleBooleanProperty();
-    private BooleanProperty closeStage = new SimpleBooleanProperty();
     private ListProperty<IoTDevice> deviceList = new SimpleListProperty<>(FXCollections.observableArrayList(new ArrayList<>()));
-    private ObjectProperty<JFXAlert> loadingAlert = new SimpleObjectProperty<>();
+    private BooleanProperty timeout = new SimpleBooleanProperty();
+    private BooleanProperty loadingAlert = new SimpleBooleanProperty();
 
     public BookingDetailViewModel(DBMgr dbmgr) {
         this.dbmgr = dbmgr;
         this.sessionContext = SessionContext.getInstance();
+        loadingAlert.set(false);
     }
 
     // =============== Getter及Setter ===============
@@ -52,9 +49,9 @@ public class BookingDetailViewModel extends ViewModel {
     public StringProperty restTimeLabelProperty(){ return restTimeLabel; }
     public BooleanProperty activateProperty(){ return activate; }
     public boolean getActivate(){ return activate.get(); }
-    public BooleanProperty closeStageProperty(){ return closeStage; }
+    public BooleanProperty timeoutProperty(){ return timeout; }
     public ListProperty<IoTDevice> deviceListProperty(){ return deviceList; }
-    public ObjectProperty<JFXAlert> loadingAlertProperty(){
+    public BooleanProperty loadingAlertProperty(){
         return loadingAlert;
     }
 
@@ -62,20 +59,18 @@ public class BookingDetailViewModel extends ViewModel {
     // 邏輯處理：登入後參數對session綁定
     public void init() {
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
-        showLoading();
+        timeout.set(false);
+        loadingAlert.set(true);
         dbmgr.getBookingById(sessionContext.get("selectedBookingId"))
                 .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
                 .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
                 .subscribe(new RxJavaObserver<>(){
                     @Override
-                    public void onNext(Booking result) {
-                        selectedBooking = result;
-                    }
+                    public void onNext(Booking result) { selectedBooking = result; }
                     @Override
                     public void onComplete(){
-                        stopLoading();
+                        loadingAlert.set(false);
                         classroom = selectedBooking.getClassroom();
-                        closeStage.set(false);
                         timer = FxTimer.runPeriodically(
                                 Duration.ofMillis(1000),
                                 () -> {
@@ -83,8 +78,8 @@ public class BookingDetailViewModel extends ViewModel {
                                     LocalTime ltEnd = LocalTime.parse(String.format("%02d", selectedBooking.getEndTime()) + ":59:59.999");
                                     Duration duration = Duration.between(lt, ltEnd);
                                     if(lt.isAfter(ltEnd)){
-                                        closeStage.set(true);
                                         stopTimer();
+                                        timeout.set(true);
                                     } else {
                                         currentTimeLabel.set(lt.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
                                         restTimeLabel.set(String.format("%02d:%02d:%02d", duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart()));
@@ -95,7 +90,8 @@ public class BookingDetailViewModel extends ViewModel {
                     }
                     @Override
                     public void onError(Throwable e){
-                        stopLoading();
+                        loadingAlert.set(false);
+                        timeout.set(true);
                     }
                 });
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
@@ -113,33 +109,18 @@ public class BookingDetailViewModel extends ViewModel {
         deviceList.setAll(classroom.getDevices());
     }
 
-
-    // 邏輯處理：設定 loading Alert()
-    public void showLoading() {
-        IAlertBuilder alertBuilder = new LoadingAlertBuilder();
-        AlertDirector alertDirector = new AlertDirector(alertBuilder);
-        alertDirector.build();
-        JFXAlert alert = alertBuilder.getAlert();
-        loadingAlert.set(alert);
-    }
-
-    // 邏輯處理：停止 loading Alert()
-    public void stopLoading() {
-        loadingAlert.get().close();
-    }
-
     // 邏輯處理：開始使用
     public void activateBooking() {
         selectedBooking.setActivate(true);
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
-        showLoading();
+        loadingAlert.set(true);
         dbmgr.updateBooking(selectedBooking)
                 .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
                 .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行;
                 .subscribe(new RxJavaCompletableObserver() {
                     @Override
                     public void onComplete() {
-                        stopLoading();
+                        loadingAlert.set(false);
                         refresh();
                     }
                 });
