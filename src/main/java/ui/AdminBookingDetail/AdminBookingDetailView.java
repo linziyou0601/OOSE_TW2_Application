@@ -23,7 +23,6 @@ import ui.Dialog.LoadingAlertBuilder;
 import java.io.IOException;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.concurrent.Callable;
 
 public class AdminBookingDetailView implements View {
 
@@ -43,9 +42,6 @@ public class AdminBookingDetailView implements View {
 
     @FXML
     private JFXMasonryPane deviceListPane;   //裝置清單
-
-    @FXML
-    private JFXButton closeStageBtn;
 
     private AdminBookingDetailViewModel adminBookingDetailViewModel;
 

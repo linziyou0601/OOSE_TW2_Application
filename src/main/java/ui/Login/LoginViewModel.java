@@ -1,30 +1,17 @@
 package ui.Login;
 
-import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
-import javafx.application.Platform;
 import javafx.beans.property.*;
 import main.SessionContext;
 import model.User;
 import mvvm.RxJavaObserver;
 import mvvm.ViewManager;
 import mvvm.ViewModel;
-import org.jetbrains.annotations.NotNull;
-import org.reactfx.util.FxTimer;
 import ui.AdminLogin.AdminLoginView;
-import ui.Dialog.AlertDirector;
-import ui.Dialog.BasicAlertBuilder;
-import ui.Dialog.IAlertBuilder;
-import ui.Dialog.LoadingAlertBuilder;
 import ui.Main.MainView;
 import ui.Register.RegisterView;
-
-import java.time.Duration;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 
 public class LoginViewModel extends ViewModel {
 
@@ -79,66 +66,26 @@ public class LoginViewModel extends ViewModel {
     public void loginValid(){
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
         loadingAlert.set(true);
-
-        // =============== 單線程直接跑 [Unit Test 可以通過] ===============
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-            currentUser = dbmgr.syncGetUserByAccount(account.get());
-        });
-
-        try { future.get(); }
-        catch (Exception e) { e.printStackTrace(); }
-
-        if(currentUser!=null){
-            // 驗證登入資料
-            loadingAlert.set(false);
-            if(!currentUser.validate(password.get())) loginValid.set(0);
-            else loginValid.set(1);
-        } else {
-            //找不到使用者
-            loadingAlert.set(false);
-            loginValid.set(0);
-        }
-
-        // =============== 多線程抓資料，Platform.runLater的UI線程更新畫面 [Unit Test 不通過] [原因 runLater是static] ===============
-        /*new Thread(() -> {
-            currentUser = dbmgr.syncGetUserByAccount(account.get());
-            Platform.runLater(() -> {
-                if(currentUser!=null){
-                    // 驗證登入資料
-                    loadingAlert.set(false);
-                    if(!currentUser.validate(password.get())) loginValid.set(0);
-                    else loginValid.set(1);
-                } else {
-                    //找不到使用者
-                    loadingAlert.set(false);
-                    loginValid.set(0);
-                }
-            });
-        }).start();*/
-
-        // =============== RxJava反Observer做法 [Unit Test 有條件通過] [原因 subscriber要另外寫在JUnit裡測模擬資料] ===============
-        /*dbmgr.getUserByAccount(account.get())
+        dbmgr.getUserByAccount(account.get())                   //以account異步請求user物件
                 .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
                 .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
                 .subscribe(new RxJavaObserver<User>() {
                     @Override
-                    public void onNext(User result) {
-                        currentUser = result;
-                    }
+                    public void onNext(User result) { currentUser = result; }           // 當 取得結果時
                     @Override
-                    public void onComplete(){
+                    public void onComplete(){                                           // 當 異步請求完成時
                         // 驗證登入資料
                         loadingAlert.set(false);
                         if(!currentUser.validate(password.get())) loginValid.set(0);
                         else loginValid.set(1);
                     }
                     @Override
-                    public void onError(Throwable e){
+                    public void onError(Throwable e){                                   // 當 結果為Null或請求錯誤時
                         //找不到使用者
                         loadingAlert.set(false);
                         loginValid.set(0);
                     }
-                });*/
+                });
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
     }
 

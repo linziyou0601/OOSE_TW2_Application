@@ -40,9 +40,6 @@ public class DBMgr {
         });
         return completable;
     }
-    public User syncGetUserByAccount(String account) {
-        return dbmgrImpl.getUserByAccount(account);
-    }
     public Observable<User> getUserByAccount(String account) {
         Observable observable = Observable.create((ObservableOnSubscribe<User>) subscriber -> {
             subscriber.onNext(dbmgrImpl.getUserByAccount(account));

@@ -1,23 +1,16 @@
 package ui.AdminLogin;
 
-import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
 import javafx.beans.property.*;
 import main.SessionContext;
 import model.Admin;
-import model.User;
 import mvvm.RxJavaObserver;
 import mvvm.ViewManager;
 import mvvm.ViewModel;
 import ui.AdminMain.AdminMainView;
-import ui.Dialog.AlertDirector;
-import ui.Dialog.BasicAlertBuilder;
-import ui.Dialog.IAlertBuilder;
-import ui.Dialog.LoadingAlertBuilder;
 import ui.Login.LoginView;
-import ui.Main.MainView;
 
 public class AdminLoginViewModel extends ViewModel {
 
@@ -67,23 +60,21 @@ public class AdminLoginViewModel extends ViewModel {
     public void loginValid(){
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
         loadingAlert.set(true);
-        dbmgr.getAdminByAccount(account.get())
+        dbmgr.getAdminByAccount(account.get())                  //以account異步請求admin物件
                 .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
                 .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
                 .subscribe(new RxJavaObserver<>(){
                     @Override
-                    public void onNext(Admin result) {
-                        currentAdmin = result;
-                    }
+                    public void onNext(Admin result) { currentAdmin = result; }         // 當 取得結果時
                     @Override
-                    public void onComplete(){
+                    public void onComplete(){                                           // 當 異步請求完成時
                         // 驗證登入資料
                         loadingAlert.set(false);
                         if(!currentAdmin.validate(password.get())) loginValid.set(0);
                         else loginValid.set(1);
                     }
                     @Override
-                    public void onError(Throwable e){
+                    public void onError(Throwable e){                                   // 當 結果為Null或請求錯誤時
                         //找不到使用者
                         loadingAlert.set(false);
                         loginValid.set(0);

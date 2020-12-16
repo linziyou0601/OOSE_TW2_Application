@@ -1,25 +1,23 @@
 package ui.Register;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import main.SessionContext;
 import model.User;
 import mvvm.RxJavaCompletableObserver;
 import mvvm.RxJavaObserver;
 import mvvm.ViewManager;
 import mvvm.ViewModel;
-import ui.Dialog.AlertDirector;
-import ui.Dialog.BasicAlertBuilder;
-import ui.Dialog.IAlertBuilder;
-import ui.Dialog.LoadingAlertBuilder;
 import ui.Login.LoginView;
-import ui.Main.MainView;
 
-import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegisterViewModel extends ViewModel {
 
@@ -57,6 +55,9 @@ public class RegisterViewModel extends ViewModel {
     public void setRegisterPrompt(String prompt){
         registerPrompt.set(prompt);
     }
+    public String getRegisterPrompt(){
+        return registerPrompt.get();
+    }
     public BooleanProperty loadingAlertProperty(){
         return loadingAlert;
     }
@@ -71,54 +72,70 @@ public class RegisterViewModel extends ViewModel {
         passwordConfirm.set("");
     }
 
-    // 邏輯處理：前往登入頁面
-    public void signIn() {
-        ViewManager.navigateTo(LoginView.class);
+    // 邏輯處理：帳號格式是否正確
+    public boolean isAccountValid(String account) {
+        return (account!=null && !account.equals(""));
+    }
+
+    // 邏輯處理：使用者名稱格式是否正確
+    public boolean isUsernameValid(String username) {
+        return (username!=null && !username.equals(""));
+    }
+
+    // 邏輯處理：信箱格式是否正確
+    public boolean isEmailValid(String email) {
+        //RCF 5322 Email標準
+        Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("(?:[a-z0-9!#$%&'*+\\/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+\\/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
+        return (email!=null && !email.equals("")) && matcher.matches();
+    }
+
+    // 邏輯處理：密碼是否有輸入及是否一致
+    public boolean isPasswordValid(String password, String passwordConfirm) {
+        return (password!=null && !password.equals("")) && password.equals(passwordConfirm);
     }
 
     // 邏輯處理：驗證註冊資料
-    public void submitValid(){
+    public void registerValid(){
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
         loadingAlert.set(true);
-        dbmgr.getUserByAccount(account.get())
+        dbmgr.getUserByAccount(account.get())                   //以account異步請求user物件
                 .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
                 .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
                 .subscribe(new RxJavaObserver<>(){
+                    String prompt = null;
                     User existUser;
                     @Override
-                    public void onNext(User result) {
-                        existUser = result;
-                    }
+                    public void onNext(User result) { existUser = result; }         // 當 取得結果時
                     @Override
-                    public void onComplete(){
+                    public void onComplete(){                                       // 當 異步請求完成時
                         // User有資料
                         loadingAlert.set(false);
                         registerPrompt.set("帳號已被使用");
                     }
                     @Override
-                    public void onError(Throwable e){
+                    public void onError(Throwable e){                               // 當 結果為Null或請求錯誤時
                         // User沒資料
-                        loadingAlert.set(false);
                         // 驗證註冊資料
-                        String prompt = null;
-                        if(account.get()==null || account.get().equals("")) prompt = "帳號未輸入";
-                        else if(email.get()==null || email.get().equals("")) prompt = "電子信箱未輸入";
-                        else if(password.get()==null || password.get().equals("")) prompt = "密碼未輸入";
-                        else if(!password.get().equals(passwordConfirm.get())) prompt = "密碼不一致";
-                        else if(username.get()==null || username.get().equals("")) prompt = "使用者名稱未輸入";
+                        if(!isAccountValid(account.get())) prompt = "帳號格式有誤";
+                        else if(!isUsernameValid(username.get())) prompt = "使用者名稱未輸入";
+                        else if(!isEmailValid(email.get())) prompt = "電子信箱格式有誤";
+                        else if(!isPasswordValid(password.get(), passwordConfirm.get())) prompt = "密碼不一致或或未輸入";
 
                         // 執行註冊邏輯
                         if(prompt!=null) {
+                            loadingAlert.set(false);
                             registerPrompt.set(prompt);
                         } else {
                             String password_hash = BCrypt.with(BCrypt.Version.VERSION_2Y).hashToString(10, password.get().toCharArray());
                             // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
-                            dbmgr.insertUser(new User(account.get(), password_hash, username.get(), email.get()))
-                                    .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
-                                    .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行;
+                            dbmgr.insertUser(new User(account.get(), password_hash, username.get(), email.get()))   //以異步請求insert一個user物件到資料庫
+                                    .subscribeOn(Schedulers.newThread())                                            //請求在新執行緒中執行
+                                    .observeOn(JavaFxScheduler.platform())                                          //最後在主執行緒中執行
                                     .subscribe(new RxJavaCompletableObserver() {
                                         @Override
-                                        public void onComplete() {
+                                        public void onComplete() {                                                  // 當 異步請求完成時
+                                            loadingAlert.set(false);
                                             registerPrompt.set("成功");
                                         }
                                     });
@@ -132,6 +149,11 @@ public class RegisterViewModel extends ViewModel {
     // 邏輯處理：執行註冊換頁邏輯
     public void doRegister() {
         clearInput();
+        ViewManager.navigateTo(LoginView.class);
+    }
+
+    // 邏輯處理：前往登入頁面
+    public void signIn() {
         ViewManager.navigateTo(LoginView.class);
     }
 }

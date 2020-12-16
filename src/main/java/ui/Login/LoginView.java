@@ -1,7 +1,6 @@
 package ui.Login;
 
 import com.jfoenix.controls.JFXAlert;
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
@@ -21,15 +20,6 @@ public class LoginView implements View {
 
     @FXML
     private JFXPasswordField passwordInput;
-
-    @FXML
-    private JFXButton signUpBtn;
-
-    @FXML
-    private JFXButton loginBtn;
-
-    @FXML
-    private JFXButton toAdminLoginBtn;
 
     private LoginViewModel loginViewModel;
 

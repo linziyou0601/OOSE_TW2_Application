@@ -8,7 +8,7 @@ public class User {
     private String username;
     private String email;
     private int point;
-    private String position = "Student";
+    private String position;
 
     public User() {}
 
@@ -17,6 +17,9 @@ public class User {
         this.password = password;
         this.username = username;
         this.email = email;
+        this.point = 100;
+        if(account.substring(0, 1).equals("B") || account.substring(0, 1).equals("A") || account.substring(0, 1).equals("M")) this.position = "Student";
+        else this.position = "Teacher";
     }
 
     public String getAccount() {

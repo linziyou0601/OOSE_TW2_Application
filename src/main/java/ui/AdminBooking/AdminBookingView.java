@@ -52,9 +52,6 @@ public class AdminBookingView implements View {
     private JFXTextField timeEndInput;      //借用終止時間
 
     @FXML
-    private JFXButton submitBtn;    //預約按鈕
-
-    @FXML
     private JFXButton closeStageBtn;
 
     private AdminBookingViewModel adminBookingViewModel;
@@ -65,11 +62,6 @@ public class AdminBookingView implements View {
     public void initialize() {
         // 指定 ViewModel
         adminBookingViewModel = ViewModelProviders.getInstance().get(AdminBookingViewModel.class);
-
-        // 關閉popUp訊號
-        adminBookingViewModel.closeStageProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue) closeStageBtn.fire();
-        });
 
         // 雙向綁定View資料和ViewModel資料
         ChangeListener<String> forceTimeSelectListener = ((observable, oldValue, newValue) -> {

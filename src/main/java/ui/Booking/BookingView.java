@@ -55,9 +55,6 @@ public class BookingView implements View {
     private JFXTextField timeEndInput;      //借用終止時間
 
     @FXML
-    private JFXButton submitBtn;    //預約按鈕
-
-    @FXML
     private JFXButton closeStageBtn;
 
     private BookingViewModel bookingViewModel;

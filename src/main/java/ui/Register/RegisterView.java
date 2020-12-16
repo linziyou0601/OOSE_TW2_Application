@@ -1,19 +1,16 @@
 package ui.Register;
 
 import com.jfoenix.controls.JFXAlert;
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import mvvm.View;
-import mvvm.ViewManager;
 import mvvm.ViewModelProviders;
 import ui.Dialog.AlertDirector;
 import ui.Dialog.BasicAlertBuilder;
 import ui.Dialog.IAlertBuilder;
 import ui.Dialog.LoadingAlertBuilder;
-import ui.Login.LoginView;
 
 import java.util.Optional;
 
@@ -33,12 +30,6 @@ public class RegisterView implements View {
 
     @FXML
     private JFXPasswordField passwordConfirmInput;
-
-    @FXML
-    private JFXButton signInBtn;
-
-    @FXML
-    private JFXButton submitBtn;
 
     private RegisterViewModel registerViewModel;
 
@@ -93,7 +84,7 @@ public class RegisterView implements View {
 
     //送出鈕
     public void submitBtnClick() {
-        registerViewModel.submitValid();
+        registerViewModel.registerValid();
     }
 
     //顯示 Loading Alert

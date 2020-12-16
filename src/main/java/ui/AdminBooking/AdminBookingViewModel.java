@@ -1,6 +1,5 @@
 package ui.AdminBooking;
 
-import com.jfoenix.controls.JFXAlert;
 import database.DBMgr;
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.schedulers.Schedulers;
@@ -13,11 +12,9 @@ import model.User;
 import mvvm.RxJavaCompletableObserver;
 import mvvm.RxJavaObserver;
 import mvvm.ViewModel;
-import ui.Dialog.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class AdminBookingViewModel extends ViewModel {
 
@@ -33,7 +30,6 @@ public class AdminBookingViewModel extends ViewModel {
     private StringProperty speakerCheck = new SimpleStringProperty("incorrect");
     private StringProperty timeStart = new SimpleStringProperty("0");
     private StringProperty timeEnd = new SimpleStringProperty("0");
-    private BooleanProperty closeStage = new SimpleBooleanProperty();
     private ListProperty<Boolean> availableTime = new SimpleListProperty<>(FXCollections.observableArrayList(new ArrayList<>()));
     private StringProperty bookingPrompt = new SimpleStringProperty();
     private BooleanProperty loadingAlert = new SimpleBooleanProperty();
@@ -55,7 +51,6 @@ public class AdminBookingViewModel extends ViewModel {
     public StringProperty speakerCheckProperty(){ return speakerCheck; }
     public StringProperty timeStartProperty(){ return timeStart; }
     public StringProperty timeEndProperty(){ return timeEnd; }
-    public BooleanProperty closeStageProperty(){ return closeStage; }
     public ListProperty<Boolean> availableTimeProperty(){ return availableTime; }
     public StringProperty bookingPromptProperty(){
         return bookingPrompt;
@@ -73,16 +68,14 @@ public class AdminBookingViewModel extends ViewModel {
         selectedDate = sessionContext.get("selectedDate");
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
         loadingAlert.set(true);
-        dbmgr.getClassroomById(sessionContext.get("selectedClassroomId"))
-                .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
-                .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
+        dbmgr.getClassroomById(sessionContext.get("selectedClassroomId"))       //以selected classroom id異步請求目前的classroom物件
+                .subscribeOn(Schedulers.newThread())                            //請求在新執行緒中執行
+                .observeOn(JavaFxScheduler.platform())                          //最後在主執行緒中執行
                 .subscribe(new RxJavaObserver<>(){
                     @Override
-                    public void onNext(Classroom result) {
-                        selectedClassroom = result;
-                    }
+                    public void onNext(Classroom result) { selectedClassroom = result; }            // 當 取得結果時
                     @Override
-                    public void onComplete(){
+                    public void onComplete(){                                                       // 當 異步請求完成時
                         classroomIdLabel.set(selectedClassroom.getId());
                         classroomTypeLabel.set(selectedClassroom.getType());
                         computerCheck.set(selectedClassroom.hasComputer()? "available": "unavailable");
@@ -92,86 +85,76 @@ public class AdminBookingViewModel extends ViewModel {
                         speakerCheck.set(selectedClassroom.hasSpeaker()? "available": "unavailable");
 
                         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
-                        dbmgr.getAvailableTime(selectedClassroom.getId(), sessionContext.get("selectedDate"))
-                                .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
-                                .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
+                        dbmgr.getAvailableTime(selectedClassroom.getId(), sessionContext.get("selectedDate"))           //以classroom id和selected data異步請求教室可用時間List
+                                .subscribeOn(Schedulers.newThread())                                                    //請求在新執行緒中執行
+                                .observeOn(JavaFxScheduler.platform())                                                  //最後在主執行緒中執行
                                 .subscribe(new RxJavaObserver<>(){
                                     @Override
-                                    public void onNext(List<Boolean> result) {
-                                        availableTime.setAll(result);
-                                    }
+                                    public void onNext(List<Boolean> result) { availableTime.setAll(result); }                  // 當 取得結果時
                                     @Override
-                                    public void onComplete(){
-                                        loadingAlert.set(false);
-                                    }
+                                    public void onComplete(){ loadingAlert.set(false); }                                        // 當 異步請求完成時
                                     @Override
-                                    public void onError(Throwable e){ loadingAlert.set(false); }
+                                    public void onError(Throwable e){ loadingAlert.set(false); }                                // 當 取得結果時
                                 });
                         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
                     }
                     @Override
-                    public void onError(Throwable e){ loadingAlert.set(false); }
+                    public void onError(Throwable e){ loadingAlert.set(false); }                    // 當 結果為Null或請求錯誤時
                 });
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
+    }
 
-        closeStage.set(false);
+    // 邏輯處理：給定時間區間驗證教室是否可借用
+    public boolean isPeriodAvailable(int start, int end) {
+        for (int i = start; i <= end; i++)
+            if (!availableTime.get(i))
+                return false;
+        return true;
     }
 
     // 邏輯處理：預約處理
     public void submitBookingValid(String userAccount) {
+        int intTimeStart = Integer.parseInt(timeStart.get());
+        int intTimeEnd = Integer.parseInt(timeEnd.get())-1;
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
         loadingAlert.set(true);
-        dbmgr.getUserByAccount(userAccount)
+        dbmgr.getUserByAccount(userAccount)                     //以account異步請求user物件
                 .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
                 .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
                 .subscribe(new RxJavaObserver<>(){
                     User user;
                     @Override
-                    public void onNext(User result) {
-                        user = result;
-                    }
+                    public void onNext(User result) { user = result; }          // 當 取得結果時
                     @Override
-                    public void onComplete(){
+                    public void onComplete(){                                   // 當 異步請求完成時
                         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
-                        dbmgr.getDuplicateBooking(user.getAccount(), selectedDate, Integer.parseInt(timeStart.get()), Integer.parseInt(timeEnd.get())-1)
-                                .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
-                                .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行;
+                        dbmgr.getDuplicateBooking(user.getAccount(), selectedDate, intTimeStart, intTimeEnd)        //以account、date、time異步請求user物件
+                                .subscribeOn(Schedulers.newThread())                                                //請求在新執行緒中執行
+                                .observeOn(JavaFxScheduler.platform())                                              //最後在主執行緒中執行
                                 .subscribe(new RxJavaObserver<>() {
+                                    private String prompt = null;
                                     boolean isDuplicate;
 
                                     @Override
-                                    public void onNext(Boolean result) {
-                                        isDuplicate = result;
-                                    }
+                                    public void onNext(Boolean result) { isDuplicate = result; }                            // 當 取得結果時
                                     @Override
-                                    public void onComplete() {
-                                        loadingAlert.set(false);
-                                        String prompt = null;
-                                        if(Integer.parseInt(timeEnd.get()) <= Integer.parseInt(timeStart.get())){
-                                            prompt = "結束時間必需大於開始時間";
-                                        } else if(isDuplicate){
-                                            prompt = "該時段已借用其他教室";
-                                        } else {
-                                            for (int i = Integer.parseInt(timeStart.get()); i < Integer.parseInt(timeEnd.get()); i++) {
-                                                if (!availableTime.get(i)) {
-                                                    prompt = "時間已被借用";
-                                                    break;
-                                                }
-                                            }
-                                        }
+                                    public void onComplete() {                                                              // 當 異步請求完成時
+                                        if(intTimeEnd < intTimeStart) prompt = "結束時間必需大於開始時間";
+                                        else if(isDuplicate) prompt = "該時段已借用其他教室";
+                                        else if(!isPeriodAvailable(intTimeStart, intTimeEnd)) prompt = "時間已被借用";
 
                                         if(prompt != null) {
+                                            loadingAlert.set(false);
                                             bookingPrompt.set(prompt);
                                         } else {
-                                            createdBooking = new Booking(selectedDate, Integer.parseInt(timeStart.get()), Integer.parseInt(timeEnd.get())-1, selectedClassroom, user);
+                                            createdBooking = new Booking(selectedDate, intTimeStart, intTimeEnd, selectedClassroom, user);
                                             // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
-                                            loadingAlert.set(true);
-                                            dbmgr.insertBooking(createdBooking)
-                                                    .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
-                                                    .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行;
+                                            dbmgr.insertBooking(createdBooking)                                                     //以異步請求insert一個booking物件到資料庫
+                                                    .subscribeOn(Schedulers.newThread())                                            //請求在新執行緒中執行
+                                                    .observeOn(JavaFxScheduler.platform())                                          //最後在主執行緒中執行
                                                     .subscribe(new RxJavaCompletableObserver() {
                                                         @Override
-                                                        public void onComplete() {
+                                                        public void onComplete() {                                                          // 當 異步請求完成時
                                                             loadingAlert.set(false);
                                                             bookingPrompt.set("成功");
                                                         }
@@ -180,12 +163,12 @@ public class AdminBookingViewModel extends ViewModel {
                                         }
                                     }
                                     @Override
-                                    public void onError(Throwable e){ loadingAlert.set(false); }
+                                    public void onError(Throwable e){ loadingAlert.set(false); }                            // 當 結果為Null或請求錯誤時
                                 });
                         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
                     }
                     @Override
-                    public void onError(Throwable e){
+                    public void onError(Throwable e){                           // 當 結果為Null或請求錯誤時
                         loadingAlert.set(false);
                         bookingPrompt.set("查無使用者");
                     }

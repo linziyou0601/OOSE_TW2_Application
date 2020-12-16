@@ -57,38 +57,36 @@ public class AdminBookingDetailViewModel extends ViewModel {
     public void init() {
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
         loadingAlert.set(true);
-        dbmgr.getBookingById(sessionContext.get("selectedBookingId"))
-                .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
-                .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
+        dbmgr.getBookingById(sessionContext.get("selectedBookingId"))       //以selected booking id異步請求目前的booking物件
+                .subscribeOn(Schedulers.newThread())                        //請求在新執行緒中執行
+                .observeOn(JavaFxScheduler.platform())                      //最後在主執行緒中執行
                 .subscribe(new RxJavaObserver<>(){
                     @Override
-                    public void onNext(Booking result) {
-                        selectedBooking = result;
-                    }
+                    public void onNext(Booking result) { selectedBooking = result; }        // 當 取得結果時
                     @Override
-                    public void onComplete(){
+                    public void onComplete(){                                               // 當 異步請求完成時
                         loadingAlert.set(false);
                         classroom = selectedBooking.getClassroom();
-                        timer = FxTimer.runPeriodically(
-                                Duration.ofMillis(1000),
-                                () -> {
-                                    LocalTime lt = LocalTime.now();
-                                    LocalTime ltEnd = LocalTime.parse(String.format("%02d", selectedBooking.getEndTime()) + ":59:59.999");
-                                    Duration duration = Duration.between(lt, ltEnd);
-                                    if(lt.isAfter(ltEnd)){
-                                        stopTimer();
-                                    } else {
-                                        currentTimeLabel.set(lt.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
-                                        restTimeLabel.set(String.format("%02d:%02d:%02d", duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart()));
-                                    }
+                        timer = FxTimer.runPeriodically( Duration.ofMillis(1000), () -> {
+                                //取得目前時間及到期時間
+                                LocalTime lt = LocalTime.now();
+                                LocalTime ltEnd = LocalTime.parse(String.format("%02d", selectedBooking.getEndTime()) + ":59:59.999");
+                                Duration duration = Duration.between(lt, ltEnd);
+                                //比較時間
+                                if(lt.isAfter(ltEnd)){
+                                    //若已到期
+                                    stopTimer();
+                                } else {
+                                    //若未到期
+                                    currentTimeLabel.set(lt.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+                                    restTimeLabel.set(String.format("%02d:%02d:%02d", duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart()));
                                 }
+                            }
                         );
                         refresh();
                     }
                     @Override
-                    public void onError(Throwable e){
-                        loadingAlert.set(false);
-                    }
+                    public void onError(Throwable e){ loadingAlert.set(false); }            // 當 結果為Null或請求錯誤時
                 });
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
     }

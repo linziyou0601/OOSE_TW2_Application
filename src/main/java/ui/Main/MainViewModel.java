@@ -55,22 +55,20 @@ public class MainViewModel extends ViewModel {
     public void refresh() {
         // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
         loadingAlert.set(true);
-        dbmgr.getClassroomsByKeyword(queryString.get())
+        dbmgr.getClassroomsByKeyword(queryString.get())         //以queryString異步請求classroom的物件List
                 .subscribeOn(Schedulers.newThread())            //請求在新執行緒中執行
                 .observeOn(JavaFxScheduler.platform())          //最後在主執行緒中執行
                 .subscribe(new RxJavaObserver<>(){
                     List<Classroom> classrooms;
                     @Override
-                    public void onNext(List<Classroom> result) {
-                        classrooms = result;
-                    }
+                    public void onNext(List<Classroom> result) { classrooms = result; }     // 當 取得結果時
                     @Override
-                    public void onComplete(){
+                    public void onComplete(){                                               // 當 異步請求完成時
                         loadingAlert.set(false);
                         classroomList.setAll(classrooms);
                     }
                     @Override
-                    public void onError(Throwable e){
+                    public void onError(Throwable e){                                       // 當 結果為Null或請求錯誤時
                         loadingAlert.set(false);
                         classroomList.clear();
                     }
