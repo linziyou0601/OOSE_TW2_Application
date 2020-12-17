@@ -151,11 +151,6 @@ public class AdminBookingView implements View {
 
     //預約鈕
     public void submitBtnClick() {
-        submitBooking();
-    }
-
-    //取消預約教室
-    public void submitBooking() {
         // Builder Pattern：建立BasicAlert
         IAlertBuilder alertBuilder = new InputAlertBuilder("代為預約", "請輸入使用者名稱", IAlertBuilder.AlertButtonType.OK, false);
         AlertDirector alertDirector = new AlertDirector(alertBuilder);

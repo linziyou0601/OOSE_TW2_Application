@@ -16,14 +16,14 @@ public class ViewModelProviders {
         return vmProvider;
     }
 
-    public <T> T get(Class<T> modelClass){
+    public <T> T get(Class<T> vmClass){
         T viewModel = null;
-        String viewModelName = modelClass.getSimpleName();
+        String viewModelName = vmClass.getSimpleName();
         if(viewModelStore.containsKey(viewModelName)){
             viewModel = (T) viewModelStore.get(viewModelName);
         } else {
             try {
-                viewModel = modelClass.getConstructor(DBMgr.class).newInstance(dbMgr);
+                viewModel = vmClass.getConstructor(DBMgr.class).newInstance(dbMgr);
                 viewModelStore.put(viewModelName, (ViewModel) viewModel);
             } catch (Exception e) {
                 e.printStackTrace();

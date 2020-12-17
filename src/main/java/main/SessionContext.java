@@ -1,14 +1,11 @@
 package main;
 
-import model.User;
-
 import java.util.HashMap;
 
 public class SessionContext {
 
     private static final SessionContext sessionContext = new SessionContext();
     private HashMap<String, Object> session = new HashMap<>();
-    private User user;
 
     private SessionContext(){}
 
