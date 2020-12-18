@@ -18,13 +18,13 @@ public class ViewModelProviders {
 
     public <T> T get(Class<T> vmClass){
         T viewModel = null;
-        String viewModelName = vmClass.getSimpleName();
-        if(viewModelStore.containsKey(viewModelName)){
-            viewModel = (T) viewModelStore.get(viewModelName);
-        } else {
+        String viewModelName = vmClass.getSimpleName();         //取得Classname
+        if(viewModelStore.containsKey(viewModelName)){              //若該ViewModel已存在
+            viewModel = (T) viewModelStore.get(viewModelName);      //直接轉型成該VM的class並Return
+        } else {                                                //若該ViewModel不存在
             try {
-                viewModel = vmClass.getConstructor(DBMgr.class).newInstance(dbMgr);
-                viewModelStore.put(viewModelName, (ViewModel) viewModel);
+                viewModel = vmClass.getConstructor(DBMgr.class).newInstance(dbMgr); //以該VM的建構子進行實例化
+                viewModelStore.put(viewModelName, (ViewModel) viewModel);           //存到ViewModel的儲存區
             } catch (Exception e) {
                 e.printStackTrace();
             }

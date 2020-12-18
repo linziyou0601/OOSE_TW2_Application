@@ -65,8 +65,8 @@ public class MySQLDBMgrImplProxy implements DBMgrImpl{
     @Override   //快取
     public List<Classroom> getClassroomsByKeyword(String keyword) {
         List<Classroom> result;
-        if(classroomCache.size()>0){
-            Pattern p = Pattern.compile(".*"+keyword+".*"); // the regexp you want to match
+        if(classroomCache.size()>0){                            //若快取有資料
+            Pattern p = Pattern.compile(".*"+keyword+".*");     // 關鍵字比對
             result = new ArrayList<>();
             Iterator classroomCacheItr = classroomCache.entrySet().iterator();
             while(classroomCacheItr.hasNext()){
@@ -74,12 +74,12 @@ public class MySQLDBMgrImplProxy implements DBMgrImpl{
                 if(p.matcher(entry.getKey()).matches())
                     result.add(entry.getValue());
             }
-        } else {
-            result = mySQLDBMgr.getClassroomsByKeyword(keyword);
+        } else {                                                //若快取無資料
+            result = mySQLDBMgr.getClassroomsByKeyword(keyword);        //代理給RealSubject，但IoT資料先不拿
             Iterator resultItr = result.iterator();
             while(resultItr.hasNext()){
                 Classroom classroom = (Classroom)resultItr.next();
-                classroom.setDevices(getIoTDevicesByClassroomId(classroom.getId()));
+                classroom.setDevices(getIoTDevicesByClassroomId(classroom.getId())); //IoT一樣用Proxy的快取拿
                 classroomCache.put(classroom.getId(), classroom);
             }
         }
