@@ -62,8 +62,5 @@ public class APIService {
                     public void onComplete() {
                         apiServiceLogger.info("上傳完成！");}
                 });
-        if(iotDevice.getId()==3){
-            new Thread(() -> WebduinoService.requestGet(iotDevice.getState())).start();
-        }
     }
 }
