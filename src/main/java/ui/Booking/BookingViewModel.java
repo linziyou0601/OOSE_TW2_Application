@@ -131,14 +131,14 @@ public class BookingViewModel extends ViewModel {
                     public void onNext(Boolean result) { isDuplicate = result; }                                // 當 取得結果時
                     @Override
                     public void onComplete() {                                                                  // 當 異步請求完成時
-                        if(intTimeEnd < intTimeStart) prompt = "結束時間必需大於開始時間";
-                        else if(isDuplicate) prompt = "該時段已借用其他教室";
-                        else if(!isPeriodAvailable(intTimeStart, intTimeEnd)) prompt = "時間已被借用";
-
-                        if(prompt != null) {
-                            loadingAlert.set(false);
-                            bookingPrompt.set(prompt);
-                        } else {
+                        boolean isAvailable = isPeriodAvailable(intTimeStart, intTimeEnd);
+                        if(intTimeEnd < intTimeStart)
+                            prompt = "結束時間必需大於開始時間";
+                        else if(isDuplicate)
+                            prompt = "該時段已借用其他教室";
+                        else if(!isAvailable)
+                            prompt = "時間已被借用";
+                        else {
                             createdBooking = new Booking(selectedDate, intTimeStart, intTimeEnd, selectedClassroom, currentUser);
                             // ===== ↓ 在新執行緒中執行DB請求 ↓ =====
                             dbmgr.insertBooking(createdBooking)                                                         //以異步請求insert一個booking物件到資料庫
@@ -147,16 +147,19 @@ public class BookingViewModel extends ViewModel {
                                     .subscribe(new RxJavaCompletableObserver() {
                                         @Override
                                         public void onComplete() {                                                              // 當 異步請求完成時
-                                            loadingAlert.set(false);
                                             bookingPrompt.set("成功");
                                         }
                                     });
                             // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
                         }
+
+                        loadingAlert.set(false);
+                        bookingPrompt.set(prompt);
                     }
                     @Override
                     public void onError(Throwable e){                                                           // 當 結果為Null或請求錯誤時
                         loadingAlert.set(false);
+                        bookingPrompt.set("無法查詢教室");
                     }
                 });
         // ===== ↑ 在新執行緒中執行DB請求 ↑ =====
