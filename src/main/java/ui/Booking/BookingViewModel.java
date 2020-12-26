@@ -128,7 +128,9 @@ public class BookingViewModel extends ViewModel {
                     boolean isDuplicate;
 
                     @Override
-                    public void onNext(Boolean result) { isDuplicate = result; }                                // 當 取得結果時
+                    public void onNext(Boolean result) {                                                        // 當 若有取得結果時
+                        isDuplicate = result;
+                    }
                     @Override
                     public void onComplete() {                                                                  // 當 異步請求完成時
                         boolean isAvailable = isPeriodAvailable(intTimeStart, intTimeEnd);
